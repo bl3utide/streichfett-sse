@@ -4,3 +4,6 @@
 [submodule "imgui"]
 	path = imgui
 	url = https://github.com/bl3utide/iplib-imgui
+[submodule "rtmidi"]
+	path = rtmidi
+	url = https://github.com/bl3utide/iplib-rtmidi
