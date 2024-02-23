@@ -1,0 +1,6 @@
+[submodule "sdl2"]
+	path = sdl2
+	url = https://github.com/bl3utide/iplib-sdl2
+[submodule "imgui"]
+	path = imgui
+	url = https://github.com/bl3utide/iplib-imgui
