@@ -4,8 +4,7 @@
 #include "logger.hpp"
 #endif
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 
 // public
@@ -51,4 +50,4 @@ void transitionState() noexcept
 #endif
 }
 
-} // ImGuiProject
+} // StreichfettSse

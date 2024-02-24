@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 namespace Gui
 {
@@ -10,4 +9,4 @@ namespace Gui
 // const ImU32  UI_COLOR_EXAMPLE = IM_COL32(255, 255, 255, 255);
 
 } // Gui
-} // ImGuiProject
+} // StreichfettSse

@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 
 extern bool has_error;
@@ -10,4 +9,4 @@ extern bool showing_error_message;
 
 void setAppError(const std::string& message) noexcept;
 
-} // ImGuiProject
+} // StreichfettSse

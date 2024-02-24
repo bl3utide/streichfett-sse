@@ -8,8 +8,7 @@
 #include "logger.hpp"
 #endif
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 namespace Gui
 {
@@ -311,4 +310,4 @@ void drawGui()
 }
 
 } // Gui
-} // ImGuiApp
+} // StreichfettSse

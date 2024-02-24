@@ -8,8 +8,7 @@
 #include "logger.hpp"
 #endif
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 
 // private
@@ -111,18 +110,18 @@ std::string getAppTitle() noexcept
     return APP_TITLE;
 }
 
-} // ImGuiApp
+} // StreichfettSse
 
 int main(int, char**)
 {
 #ifdef _DEBUG
     static plog::DebugLogAppender<plog::LogFormatter> debugLogAppender;
-    plog::init<plog::LogFormatter>(plog::debug, ImGuiProject::DEBUG_FILE_NAME.c_str()).addAppender(&debugLogAppender);
+    plog::init<plog::LogFormatter>(plog::debug, StreichfettSse::DEBUG_FILE_NAME.c_str()).addAppender(&debugLogAppender);
     LOGD << "<beginning of application>";
 #endif
     try
     {
-        ImGuiProject::initialize();
+        StreichfettSse::initialize();
     }
     catch (std::exception& e)
     {
@@ -130,12 +129,12 @@ int main(int, char**)
         LOGD << e.what();
 #endif
         printf("%s", e.what());
-        ImGuiProject::finalize();
+        StreichfettSse::finalize();
         exit(EXIT_FAILURE);
     }
 
-    ImGuiProject::loop();
-    ImGuiProject::finalize();
+    StreichfettSse::loop();
+    StreichfettSse::finalize();
 
 #ifdef _DEBUG
     LOGD << "<end of application>";

@@ -5,8 +5,7 @@
 #include "gui/gui_util.hpp"
 #include "logger.hpp"
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 namespace Gui
 {
@@ -198,5 +197,5 @@ void drawDebugWindows(const int window_w, const int window_h, const State curren
 }
 
 } // Gui
-} // ImGuiApp
+} // StreichfettSse
 #endif

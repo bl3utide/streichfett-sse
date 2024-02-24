@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 
 enum class State : int
@@ -21,4 +20,4 @@ State getNextState() noexcept;
 void setNextState(State state) noexcept;
 void transitionState() noexcept;
 
-} // ImGuiProject
+} // StreichfettSse

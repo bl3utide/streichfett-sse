@@ -9,8 +9,7 @@
 */
 #pragma once
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 
 #define DEF_APP_NAME        "ImGuiProject"      // TODO fix app name
@@ -23,4 +22,4 @@ std::string getAppVersion() noexcept;
 std::string getAppCopyright() noexcept;
 std::string getAppTitle() noexcept;
 
-} // ImGuiApp
+} // StreichfettSse
