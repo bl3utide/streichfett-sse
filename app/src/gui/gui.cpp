@@ -1,7 +1,6 @@
 ﻿#include "common.hpp"
 #include "error.hpp"
 #include "image.hpp"
-#include "main.hpp"
 #include "compressed/arrayed_font.hpp"
 #include "data/internal_patch.hpp"
 #include "gui/gui.hpp"
@@ -19,6 +18,9 @@ namespace Gui
 {
 
 // private
+std::string _app_title;
+std::string _app_version;
+std::string _app_copyright;
 SDL_Window* _window;
 SDL_GLContext _gl_context;
 const int WINDOW_WIDTH = 720;       // DSI: Streichfett
@@ -168,10 +170,10 @@ void drawAboutModal()
             ImGui::Image((void*)(intptr_t)Image::getTextureId(Image::Texture::Icon), ImVec2(80.0f, 80.0f));
 
             ImGui::TableNextColumn();
-            ImGui::Text(getAppTitle().c_str());
-            ImGui::Text("version %s", getAppVersion().c_str());
+            ImGui::Text(_app_title.c_str());
+            ImGui::Text("version %s", _app_version.c_str());
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
-            ImGui::Text(getAppCopyright().c_str());
+            ImGui::Text(_app_copyright.c_str());
 
             ImGui::EndTable();
         }
@@ -197,7 +199,7 @@ void drawHeader(const int window_width)
 {
     ImGui::PushFont((int)Font::Title);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TITLE_TEXT);
-    ImGui::Text(getAppTitle().c_str());
+    ImGui::Text(_app_title.c_str());
     ImGui::PopStyleColor();
     ImGui::PopFont();
 
@@ -205,7 +207,7 @@ void drawHeader(const int window_width)
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
     ImGui::PushFont((int)Font::Version);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_VERSION_TEXT);
-    ImGui::Text(getAppVersion().c_str());
+    ImGui::Text(_app_version.c_str());
     ImGui::PopStyleColor();
     ImGui::PopFont();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 7.0f);
@@ -299,8 +301,12 @@ void postDraw()
     SDL_GL_SwapWindow(_window);
 }
 
-void initialize(const char* app_title)
+void initialize(const std::string& title, const std::string& version, const std::string& copyright)
 {
+    _app_title = title;
+    _app_version = version;
+    _app_copyright = copyright;
+
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
@@ -309,7 +315,7 @@ void initialize(const char* app_title)
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
-    _window = SDL_CreateWindow(app_title,
+    _window = SDL_CreateWindow(_app_title.c_str(),
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         SDL_WINDOW_OPENGL);
