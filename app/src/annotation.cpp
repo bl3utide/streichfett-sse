@@ -23,13 +23,13 @@ Type getType() noexcept
     return _type;
 }
 
-void setText(const Message message, const Type type)
+void setText(const Message message, const Type type) noexcept
 {
     _text = MESSAGES.at(message);
     _type = type;
 }
 
-void setText(const std::string& message, const Type type)
+void setText(const std::string& message, const Type type) noexcept
 {
     _text = message;
     _type = type;
