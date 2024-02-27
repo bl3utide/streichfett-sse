@@ -493,6 +493,11 @@ void drawDebugWindow(bool* open, const int window_w, const int window_h,
     }
     ImGui::End();
 
+    if (_show_processed_message_window)
+    {
+        drawProcessedWindow();
+    }
+
     popDebugStyles();
 }
 
