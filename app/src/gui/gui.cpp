@@ -6,6 +6,7 @@
 #include "data/internal_patch.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
+#include "gui/gui_font.hpp"
 #include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
 #ifdef _DEBUG
@@ -29,98 +30,6 @@ const char* PAGE_STR[static_cast<int>(Page::_COUNT_)] =
     "EDIT",
     "OPTION"
 };
-
-void initFonts()
-{
-    ImFont* font;
-
-    // TODO 独自クラスでFontのパラメータを包み、範囲ループで初期化する
-
-    // TITLE
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::TITLE_DATA,
-        ArrayedFont::TITLE_SIZE,
-        24.0f);
-    IM_ASSERT(font);
-
-    // VERSION
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::SECTION_DATA,
-        ArrayedFont::SECTION_SIZE,
-        16.0f);
-    IM_ASSERT(font);
-
-    // OPTION_ITEM_TEXT
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::SECTION_DATA,
-        ArrayedFont::SECTION_SIZE,
-        18.0f);
-    IM_ASSERT(font);
-
-    // OPTION_ITEM_TEXT_BOLD
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::SECTION_BOLD_DATA,
-        ArrayedFont::SECTION_BOLD_SIZE,
-        18.0f);
-    IM_ASSERT(font);
-
-    // SECTION_TEXT
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::SECTION_DATA,
-        ArrayedFont::SECTION_SIZE,
-        22.0f);
-    IM_ASSERT(font);
-
-    // PATCH_INFO
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::PATCH_NAME_DATA,
-        ArrayedFont::PATCH_NAME_SIZE,
-        22.0f);
-    IM_ASSERT(font);
-
-    // PATCH_NAME
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::PATCH_NAME_DATA,
-        ArrayedFont::PATCH_NAME_SIZE,
-        36.0f);
-    IM_ASSERT(font);
-
-    // TEXT
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::TEXT_DATA,
-        ArrayedFont::TEXT_SIZE,
-        16.0f);
-    IM_ASSERT(font);
-
-    // TEXT_BOLD
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::TEXT_BOLD_DATA,
-        ArrayedFont::TEXT_BOLD_SIZE,
-        16.0f);
-    IM_ASSERT(font);
-
-#ifdef _DEBUG
-    // DEBUG
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::DEBUG_DATA,
-        ArrayedFont::DEBUG_SIZE,
-        14.0f);
-    IM_ASSERT(font);
-
-    // DEBUG_PROC_HEAD
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::DEBUG_DATA,
-        ArrayedFont::DEBUG_SIZE,
-        20.0f);
-
-    // DEBUG_PROC_HEX
-    font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
-        ArrayedFont::DEBUG_DATA,
-        ArrayedFont::DEBUG_SIZE,
-        18.0f);
-    IM_ASSERT(font);
-#endif
-}
 
 void setUiStyle() noexcept
 {
@@ -424,7 +333,10 @@ void initialize(const char* app_title)
     ImGui_ImplSDL2_InitForOpenGL(_window, _gl_context);
     ImGui_ImplOpenGL2_Init();
 
-    initFonts();        // TODO font.xppを作ったらFont::initialize()などに置き換える
+    addAllFonts();
+#ifdef _DEBUG
+    addAllFontsDebug();
+#endif
     setUiStyle();
 }
 

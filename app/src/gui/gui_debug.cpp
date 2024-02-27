@@ -6,6 +6,7 @@
 #include "data/internal_setting.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
+#include "gui/gui_font.hpp"
 #include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
 #include "midi/message_task.hpp"
@@ -27,7 +28,7 @@ Logger::Log _selected_debug_log;
 
 void drawDebugMenuBar(const ImVec2 viewport_pos)
 {
-    ImGui::PushFont((int)Font::Debug);
+    ImGui::PushFont((int)FontDebug::Text);
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.35f, 0.35f, 0.35f, 0.65f));
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(ImVec2(center.x - 140.0f, viewport_pos.y), ImGuiCond_Always);
@@ -317,7 +318,7 @@ void drawProcessedWindow()
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize |
         ImGuiWindowFlags_NoTitleBar);
     {
-        ImGui::PushFont((int)Font::DebugProcHead);
+        ImGui::PushFont((int)FontDebug::ProcHead);
         if (message->transmitted)
             ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_TRANSMIT, "%s", "Transmitted");
         else
@@ -353,7 +354,7 @@ void drawProcessedWindow()
 
         auto hex_space = 30.0f;
 
-        ImGui::PushFont((int)Font::DebugProcHex);
+        ImGui::PushFont((int)FontDebug::ProcHex);
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.12f, 0.12f, 0.12f, 1.0f));
         ImGui::Dummy(ImVec2(0.0f, 0.0f));
         ImGui::SameLine(100);
@@ -497,7 +498,7 @@ void drawDebugWindow(bool* open, const int window_w, const int window_h,
 
 void drawDebugWindows(const int window_w, const int window_h, const State current_state)
 {
-    ImGui::PushFont((int)Font::Debug);
+    ImGui::PushFont((int)FontDebug::Text);
 
     if (_show_demo_window)
     {

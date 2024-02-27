@@ -3,6 +3,7 @@
 #include "data/internal_patch.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
+#include "gui/gui_font.hpp"
 #include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
 #include "midi/message_task.hpp"

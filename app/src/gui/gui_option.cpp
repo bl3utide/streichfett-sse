@@ -3,6 +3,7 @@
 #include "data/internal_setting.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
+#include "gui/gui_font.hpp"
 #include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
 #include "model/global.hpp"
@@ -268,7 +269,6 @@ void drawOptionPanel()
 {
     ImGui::PushFont((int)Font::Section);
     drawOptionGroupConnections();
-
     drawOptionGroupDeviceSettingInfo();
     ImGui::PopFont();
 }

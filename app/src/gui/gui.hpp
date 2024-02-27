@@ -8,23 +8,6 @@ namespace StreichfettSse
 namespace Gui
 {
 
-enum class Font : int
-{
-    Title,
-    Version,
-    OptionItem,
-    OptionItemBold,
-    Section,
-    PatchInfo,
-    PatchName,
-    Text,
-    TextBold,
-    Debug,
-    DebugProcHead,
-    DebugProcHex,
-    _COUNT_,
-};
-
 enum class Page : int
 {
     Edit,
