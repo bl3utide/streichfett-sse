@@ -1,8 +1,14 @@
 ﻿#include "common.hpp"
 #ifdef _DEBUG
 #include "error.hpp"
+#include "operation.hpp"
+#include "data/internal_patch.hpp"
+#include "data/internal_setting.hpp"
 #include "gui/gui.hpp"
+#include "gui/gui_color.hpp"
 #include "gui/gui_util.hpp"
+#include "midi/connector.hpp"
+#include "midi/message_task.hpp"
 #include "logger.hpp"
 
 namespace StreichfettSse
@@ -14,6 +20,8 @@ namespace Gui
 bool _show_debug_menu_bar = true;
 bool _show_demo_window = false;
 bool _show_debug_window = false;
+bool _use_alternative_child_bg = false;
+bool _show_processed_message_window = false;
 int _selected_debug_log_index = -1;
 Logger::Log _selected_debug_log;
 
@@ -46,6 +54,9 @@ void drawDebugMenuBar(const ImVec2 viewport_pos)
             ImGui::MouseCursorToHand();
             ImGui::SameLine();
             ImGui::Checkbox("debug", &_show_debug_window);
+            ImGui::MouseCursorToHand();
+            ImGui::SameLine();
+            ImGui::Checkbox("alt_child_bg", &_use_alternative_child_bg);
             ImGui::MouseCursorToHand();
         }
     }
@@ -86,10 +97,311 @@ void drawDebugTabItemGeneral()
 {
     if (ImGui::BeginTabItem("General"))
     {
-        // TODO add general data
+        Operation op = getOperation();
+        ImGui::Text("%-24s: [%d]%s", "request order",
+            op, OPERATION_STR[static_cast<int>(op)]);
+        ImGui::Text("%-24s: %s", "is_synth_connected", Connector::isSynthConnected() ? "Yes" : "No");
+        ImGui::Text("%-24s: %-4s (%d)%s / %-4s (%d)%s", "synth conn in/out",
+            Connector::synth_conn.input->isPortOpen() ? "open" : "-",
+            Connector::synth_conn.input_port_index,
+            Connector::synth_conn.input_port_name.c_str(),
+            Connector::synth_conn.output->isPortOpen() ? "open" : "-",
+            Connector::synth_conn.output_port_index,
+            Connector::synth_conn.output_port_name.c_str());
+        ImGui::Text("%-24s: %-4s (%d)%s", "key conn in",
+            Connector::key_conn.input->isPortOpen() ? "open" : "-",
+            Connector::key_conn.input_port_index,
+            Connector::key_conn.input_port_name.c_str());
+        if (MessageHandler::inquiry_dump.received)
+        {
+            ImGui::Text("%-24s: %d", "inquired device id", MessageHandler::inquiry_dump.device_id);
+            ImGui::Text("%-24s: %s", "inquired device ver", MessageHandler::inquiry_dump.firmware_version.c_str());
+        }
+        else
+        {
+            ImGui::Text("%-24s: %s", "inquired device", "none");
+        }
+
+        ImGui::Separator(); //--------------------------------------------------
+
+        ImGui::Text("%-24s: %d(max %d)", "task size", MessageTask::taskSize(), MessageTask::largestTaskSizeEver());
 
         ImGui::EndTabItem();
     }
+}
+
+// DSI: Streichfett
+void drawDebugTabItemParams()
+{
+    if (ImGui::BeginTabItem("Params"))
+    {
+        ImGui::BeginChild("params_list", ImVec2(0, 300));
+        {
+            SoundModel::Patch* po = InternalPatch::getOriginalPatch();
+            SoundModel::Patch* pc = InternalPatch::getCurrentPatch();
+
+            auto drawParamRow = [](const char* name, Ev& ov, Ev& cv)
+            {
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::Text("%s", name);
+                ImGui::TableNextColumn();
+                ImGui::Text("%d", ov.ev());
+                ImGui::TableNextColumn();
+                ImGui::Text("%d", cv.ev());
+            };
+
+            if (ImGui::BeginTable("params", 3, ImGuiTableFlags_Borders
+                | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit))
+            {
+                ImGui::TableSetupColumn("Param", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("Original", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+                ImGui::TableSetupColumn("Current", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+
+                ImGui::TableHeadersRow();
+
+                drawParamRow("String Octaves", po->octave_switch, pc->octave_switch);
+                drawParamRow("String Registration", po->registration, pc->registration);
+                drawParamRow("String Ensemble Type", po->ensemble_effect, pc->ensemble_effect);
+                drawParamRow("String Ensemble", po->ensemble, pc->ensemble);
+                drawParamRow("String Crescendo", po->crescendo, pc->crescendo);
+                drawParamRow("String Release", po->release, pc->release);
+                drawParamRow("Solo Tone", po->tone, pc->tone);
+                drawParamRow("Solo Tremolo", po->tremolo, pc->tremolo);
+                drawParamRow("Solo Split", po->split_layer, pc->split_layer);
+                drawParamRow("Solo Sustain", po->envelope_mode, pc->envelope_mode);
+                drawParamRow("Solo Attack", po->attack, pc->attack);
+                drawParamRow("Solo Decay", po->decay, pc->decay);
+                drawParamRow("Balance", po->balance, pc->balance);
+                drawParamRow("FX Animate", po->animate, pc->animate);
+                drawParamRow("FX Phaser", po->phaser, pc->phaser);
+                drawParamRow("FX Reverb", po->reverb, pc->reverb);
+                drawParamRow("Split Key", po->split_key, pc->split_key);
+
+                ImGui::EndTable();
+            }
+        }
+        ImGui::EndChild();
+
+        ImGui::EndTabItem();
+    }
+}
+
+// DSI: Streichfett
+void drawDebugTabItemDeviceSetting()
+{
+    if (ImGui::BeginTabItem("Device Setting"))
+    {
+        GlobalModel::Global* global = InternalSetting::getGlobalData();
+
+        ImGui::Text("%-16s: %s", "MIDI Channel", global->midi_channel.evs());
+        ImGui::Text("%-16s: %d", "Tuning", global->tuning.ev());
+        ImGui::Text("%-16s: %s", "Transpose", global->transpose.evs());
+        ImGui::Text("%-16s: %d", "Pitch Bend Range", global->pitch_bend_range.ev());
+        ImGui::Text("%-16s: %d", "MIDI Device ID", global->device_id.ev());
+
+        ImGui::EndTabItem();
+    }
+}
+
+void drawDebugTabItemSendTest(const State current_state)
+{
+    if (ImGui::BeginTabItem("Send Test"))
+    {
+        using namespace Connector;
+
+        bool is_any_test_sending = Connector::isAnyTestSending();
+        if (current_state != State::Idle || is_any_test_sending)
+        {
+            ImGui::BeginDisabled();
+        }
+
+        for (int i = 0; i < static_cast<int>(SendTestType::_COUNT_); ++i)
+        {
+            switch (i)
+            {
+                case static_cast<int>(SendTestType::Inquiry):
+                    if (ImGui::Button("MIDI Identity Inquiry"))
+                        Connector::sendTest(SendTestType::Inquiry);
+                    ImGui::MouseCursorToHand();
+                    break;
+                case static_cast<int>(SendTestType::GlobalDump):
+                    if (ImGui::Button("Request Global Dump"))
+                        Connector::sendTest(SendTestType::GlobalDump);
+                    ImGui::MouseCursorToHand();
+                    break;
+                case static_cast<int>(SendTestType::SoundDump):
+                    if (ImGui::Button("Request Sound Dump"))
+                        Connector::sendTest(SendTestType::SoundDump);
+                    ImGui::MouseCursorToHand();
+                    break;
+            }
+            ImGui::SameLine(180.0f);
+            switch (send_test[i])
+            {
+                case SendTestResult::NotStarted:
+                    ImGui::Text("");
+                    break;
+                case SendTestResult::WaitReceive:
+                    ImGui::Text("Waiting receiving");
+                    break;
+                case SendTestResult::Ok:
+                    ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_OK, "OK");
+                    break;
+                case SendTestResult::Failed:
+                    ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "NG");
+                    ImGui::SameLine();
+                    if (send_test_failed_cause[i] == SendTestFailedCause::RequestTimeout)
+                        ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Timeout)");
+                    else if (send_test_failed_cause[i] == SendTestFailedCause::EmptyResponse)
+                        ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Empty Response)");
+                    else if (send_test_failed_cause[i] == SendTestFailedCause::IncorrectMessage)
+                        ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Incorrect Message)");
+                    break;
+                default:
+                    ImGui::Text("");
+                    break;
+            }
+        }
+
+        if (current_state != State::Idle || is_any_test_sending)
+        {
+            ImGui::EndDisabled();
+        }
+
+        ImGui::EndTabItem();
+    }
+}
+
+void drawDebugTabItemTransReceiveLog()
+{
+    if (ImGui::BeginTabItem("Transmitted/Received Log"))
+    {
+        ImGui::BeginChild("processed_list", ImVec2(600, 500), false);
+        {
+            int selected_index = 0;
+            std::list<Connector::ProcessedMidiMessage> ph_copy = Connector::processed_history;
+            for (auto iter = ph_copy.begin(); iter != ph_copy.end(); ++iter)
+            {
+                bool is_selected = selected_index == Connector::history_selected_index;
+                ImGui::PushStyleColor(ImGuiCol_Text, iter->transmitted ? DEBUG_UI_COLOR_TEXT_TRANSMIT : DEBUG_UI_COLOR_TEXT_RECEIVE);
+                if (ImGui::Selectable(iter->list_title.c_str(), is_selected))
+                {
+                    Connector::history_selected_index = selected_index;
+
+                    Connector::selected_processed_message =
+                        Connector::ProcessedMidiMessage(
+                            iter->timestamp,
+                            iter->transmitted,
+                            iter->device_name,
+                            iter->description,
+                            iter->data);
+                    _show_processed_message_window = true;
+                }
+                ImGui::MouseCursorToHand();
+                ImGui::PopStyleColor();
+                ++selected_index;
+            }
+        }
+        ImGui::EndChild();
+
+        ImGui::EndTabItem();
+    }
+}
+
+void drawProcessedWindow()
+{
+    Connector::ProcessedMidiMessage* message = &Connector::selected_processed_message;
+
+    ImGui::Begin("processed_detail", &_show_processed_message_window,
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize |
+        ImGuiWindowFlags_NoTitleBar);
+    {
+        ImGui::PushFont((int)Font::DebugProcHead);
+        if (message->transmitted)
+            ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_TRANSMIT, "%s", "Transmitted");
+        else
+            ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_RECEIVE, "%s", "Received");
+        ImGui::PopFont();
+
+        ImGui::SameLine(300.0f);
+        if (ImGui::Button("Copy to clipboard"))
+        {
+            std::stringstream cb;
+            for (int i = 0; i < message->data.size(); ++i)
+            {
+                cb << std::uppercase << std::hex
+                    << std::setfill('0') << std::setw(2)
+                    << static_cast<int>(message->data[i]);
+
+                if (i != message->data.size() - 1)
+                    cb << " ";
+            }
+            ImGui::LogToClipboard();
+            ImGui::LogText(cb.str().c_str());
+            ImGui::LogFinish();
+        }
+        ImGui::MouseCursorToHand();
+
+        ImGui::Text(message->timestamp.c_str());
+        ImGui::Text("%-12s: %s %s", "Device",
+            message->device_name.c_str(), message->transmitted ? "[OUT]" : "[IN]");
+        ImGui::Text("%-12s: %s", "Description", message->description.c_str());
+        ImGui::Text("%-12s: %d", "Size", message->data.size());
+
+        ImGui::Separator();
+
+        auto hex_space = 30.0f;
+
+        ImGui::PushFont((int)Font::DebugProcHex);
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.12f, 0.12f, 0.12f, 1.0f));
+        ImGui::Dummy(ImVec2(0.0f, 0.0f));
+        ImGui::SameLine(100);
+        ImGui::BeginChild("processed_detail_header", ImVec2(340.0f, 18.0f));
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
+            for (int i = 0; i < 10; ++i)
+            {
+                ImGui::Text("%02X", i);
+                ImGui::SameLine(hex_space * (i + 1));
+            }
+            ImGui::PopStyleColor();
+        }
+        ImGui::EndChild();
+        ImGui::PopStyleColor();
+
+        ImGui::BeginChild("processed_detail_content", ImVec2(400.0f, 360.0f));
+        {
+            auto size = message->data.size();
+            auto max_row_idx = size / 10;
+            auto hex_indent = 94.0f;
+            for (auto row_i = 0; row_i <= max_row_idx; ++row_i)
+            {
+                ImGui::Text("%8d:", row_i * 10);
+                ImGui::SameLine(hex_indent);
+                for (auto col_i = 0; col_i < 10; ++col_i)
+                {
+                    auto current_index = row_i * 10 + col_i;
+                    if (current_index < size)
+                    {
+                        ImGui::Text("%02X", message->data[current_index]);
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::BeginTooltip();
+                            ImGui::Text("Index: %d, Data: %02X(%d)", current_index, message->data[current_index], message->data[current_index]);
+                            ImGui::EndTooltip();
+                        }
+                        if (col_i != 9) ImGui::SameLine(hex_space * (col_i + 1) + hex_indent);
+                    }
+                    else
+                        break;
+                }
+            }
+        }
+        ImGui::EndChild();
+        ImGui::PopFont();
+    }
+    ImGui::End();
 }
 
 void drawDebugTabItemLogger()
@@ -170,6 +482,10 @@ void drawDebugWindow(bool* open, const int window_w, const int window_h,
         if (ImGui::BeginTabBar("DebugTab", ImGuiTabBarFlags_None))
         {
             drawDebugTabItemGeneral();
+            drawDebugTabItemParams();
+            drawDebugTabItemDeviceSetting();
+            drawDebugTabItemSendTest(current_state);
+            drawDebugTabItemTransReceiveLog();
             drawDebugTabItemLogger();
             ImGui::EndTabBar();
         }
@@ -194,6 +510,11 @@ void drawDebugWindows(const int window_w, const int window_h, const State curren
         drawDebugWindow(&_show_debug_window, window_w, window_h, current_state);
 
     ImGui::PopFont();
+}
+
+bool isChildBgAlt() noexcept
+{
+    return _use_alternative_child_bg;
 }
 
 } // Gui

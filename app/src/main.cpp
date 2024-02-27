@@ -1,8 +1,13 @@
 ﻿#include "common.hpp"
 #include "error.hpp"
 #include "main.hpp"
+#include "image.hpp"
+#include "operation.hpp"
 #include "state.hpp"
+#include "data/internal_patch.hpp"
+#include "data/internal_setting.hpp"
 #include "gui/gui.hpp"
+#include "midi/connector.hpp"
 #include "util/string_util.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
@@ -27,11 +32,25 @@ void initialize()
         throw std::runtime_error("SDL_Init error");
     }
 
-    Gui::initialize(APP_TITLE);
+    try
+    {
+        Gui::initialize(APP_TITLE);
+        Image::initialize();
+        Connector::initialize();
+    }
+    catch (RtMidiError& error)
+    {
+#ifdef _DEBUG
+        LOGD << error.getMessage();
+#endif
+        throw error;
+    }
 }
 
 void finalize() noexcept
 {
+    Connector::finalize();
+    Image::finalize();
     Gui::finalize();
 
     SDL_Quit();
@@ -56,9 +75,35 @@ void loop()
             switch (getState())
             {
                 case State::InitInternalData:
+                    InternalPatch::initData();
+                    InternalSetting::initData();
+                    Connector::resetAllConnections();
                     setNextState(State::Idle);
                     break;
                 case State::Idle:
+                    Connector::sendOneTaskMessage();
+                    break;
+                case State::RequestInquiry:
+                    Connector::requestInquiry();
+                    break;
+                case State::RequestGlobal:
+                    Connector::requestGlobalData();
+                    break;
+                case State::SendBankProgChange:
+                    Connector::sendProgChange();
+                    break;
+                case State::RequestSound:
+                    Connector::requestSoundData();
+                    break;
+                case State::EnterSoundMode:
+                    setOperation(Operation::Sound);
+                    if (Connector::isSynthConnected()) setNextState(State::RequestGlobal);
+                    else setNextState(State::Idle);
+                    break;
+                case State::EnterOptionMode:
+                    setOperation(Operation::Option);
+                    if (Connector::isSynthConnected()) setNextState(State::RequestGlobal);
+                    else setNextState(State::Idle);
                     break;
                 default:
                     break;

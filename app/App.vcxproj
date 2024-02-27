@@ -103,27 +103,57 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\annotation.cpp" />
     <ClCompile Include="src\common.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\data\internal_patch.cpp" />
+    <ClCompile Include="src\data\internal_setting.cpp" />
     <ClCompile Include="src\error.cpp" />
+    <ClCompile Include="src\gui\gui_font.cpp" />
     <ClCompile Include="src\gui\gui.cpp" />
     <ClCompile Include="src\gui\gui_debug.cpp" />
+    <ClCompile Include="src\gui\gui_edit.cpp" />
+    <ClCompile Include="src\gui\gui_option.cpp" />
     <ClCompile Include="src\gui\gui_util.cpp" />
+    <ClCompile Include="src\image.cpp" />
     <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\midi\connector_callback.cpp" />
+    <ClCompile Include="src\midi\connector.cpp" />
+    <ClCompile Include="src\midi\connector_debug.cpp" />
+    <ClCompile Include="src\midi\message_handler.cpp" />
+    <ClCompile Include="src\midi\message_task.cpp" />
+    <ClCompile Include="src\operation.cpp" />
     <ClCompile Include="src\state.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\annotation.hpp" />
     <ClInclude Include="src\compressed\arrayed_font.hpp" />
+    <ClInclude Include="src\compressed\arrayed_texture.hpp" />
+    <ClInclude Include="src\data\internal_patch.hpp" />
+    <ClInclude Include="src\data\internal_setting.hpp" />
     <ClInclude Include="src\error.hpp" />
+    <ClInclude Include="src\gui\gui_font.hpp" />
     <ClInclude Include="src\gui\gui.hpp" />
     <ClInclude Include="src\gui\gui_color.hpp" />
     <ClInclude Include="src\gui\gui_util.hpp" />
+    <ClInclude Include="src\image.hpp" />
     <ClInclude Include="src\logger.hpp" />
     <ClInclude Include="src\main.hpp" />
     <ClInclude Include="src\common.hpp" />
+    <ClInclude Include="src\midi\connector.hpp" />
+    <ClInclude Include="src\midi\message_handler.hpp" />
+    <ClInclude Include="src\midi\message_task.hpp" />
+    <ClInclude Include="src\model\ev.hpp" />
+    <ClInclude Include="src\model\global_const.hpp" />
+    <ClInclude Include="src\model\global.hpp" />
+    <ClInclude Include="src\model\global_value_util.hpp" />
+    <ClInclude Include="src\model\sound_const.hpp" />
+    <ClInclude Include="src\model\sound.hpp" />
+    <ClInclude Include="src\model\sound_value_util.hpp" />
+    <ClInclude Include="src\operation.hpp" />
     <ClInclude Include="src\state.hpp" />
     <ClInclude Include="src\util\string_util.hpp" />
   </ItemGroup>

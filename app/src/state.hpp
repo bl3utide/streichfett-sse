@@ -7,6 +7,16 @@ enum class State : int
 {
     InitInternalData,
     Idle,
+    RequestInquiry,
+    WaitingConfirm,
+    RequestGlobal,
+    WaitingGlobal,
+    SendBankProgChange,
+    RequestSound,
+    WaitingSound,
+    EnterSoundMode,
+    EnterOptionMode,
+    WaitingSendDelay,
     None,
     _COUNT_
 };
