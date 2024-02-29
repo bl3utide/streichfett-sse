@@ -1,0 +1,2 @@
+#include "resource.h"
+ID_ICON ICON "resource/streichfettsse.ico"

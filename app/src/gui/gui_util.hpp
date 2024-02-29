@@ -18,8 +18,9 @@ bool ImGuiHiddenLabel(bool func(const char*, Args...), int repeat_idx,
 template<class... Args>
 bool ImGuiLeftLabel(bool func(const char*, Args...), int repeat_idx,
     const char* label, bool hide_label, float offset, float width,
-    Args... args)
+    bool param_changed, const ImU32& param_changed_color, Args... args)
 {
+    if (param_changed) ImGui::PushStyleColor(ImGuiCol_Text, param_changed_color);
     if (!hide_label)
     {
         auto padding_y = ImGui::GetStyle().FramePadding.y;
@@ -29,6 +30,7 @@ bool ImGuiLeftLabel(bool func(const char*, Args...), int repeat_idx,
         ImGui::SameLine(offset);
         ImGui::SetCursorPosY(y);
     }
+    if (param_changed) ImGui::PopStyleColor();
     return ImGuiHiddenLabel(func, repeat_idx, label, width, args...);
 }
 

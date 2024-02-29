@@ -1,37 +1,35 @@
 ﻿#pragma once
 
 #include "state.hpp"
+#include "model/sound.hpp"
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 namespace Gui
 {
 
-enum class Font : int
+enum class Page : int
 {
-    Title,
-    Version,
-    OptionItem,
-    OptionItemBold,
-    Section,
-    Text,
-    TextBold,
-    Debug,
-    DebugProcHead,
-    DebugProcHex,
+    Edit,
+    Option,
     _COUNT_,
 };
 
-void initialize(const char* app_title);
+void initialize(const std::string& title, const std::string& version, const std::string& copyright);
 void finalize() noexcept;
 void drawGui();
 
 // sub modules
+void drawEditPanel(SoundModel::Patch* const cp, SoundModel::Patch* const op);
+void drawOptionPanel();
 #ifdef _DEBUG
+namespace Debug
+{
 void drawDebugMenuBar(const ImVec2 viewport_pos);
 void drawDebugWindows(const int window_w, const int window_h, const State current_state);
+bool isChildBgAlt() noexcept;
+} // Debug
 #endif
 
 } // Gui
-} // ImGuiApp
+} // StreichfettSse

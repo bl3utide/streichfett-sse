@@ -4,8 +4,7 @@
 #include "logger.hpp"
 #endif
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 
 // public
@@ -19,4 +18,4 @@ void setAppError(const std::string& message) noexcept
     has_error = true;
 }
 
-} // ImGuiProject
+} // StreichfettSse

@@ -4,8 +4,7 @@
 #include "logger.hpp"
 #endif
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 
 // public
@@ -14,6 +13,16 @@ const char* STATE_STR[static_cast<int>(State::_COUNT_)] =
 {
     "InitInternalData",
     "Idle",
+    "RequestInquiry",
+    "WaitingConfirm",
+    "RequestGlobal",
+    "WaitingGlobal",
+    "SendBankProgChange",
+    "RequestSound",
+    "WaitingSound",
+    "EnterSoundMode",
+    "EnterOptionMode",
+    "WaitingSendDelay",
     "None"
 };
 #endif
@@ -51,4 +60,4 @@ void transitionState() noexcept
 #endif
 }
 
-} // ImGuiProject
+} // StreichfettSse

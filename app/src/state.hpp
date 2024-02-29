@@ -1,13 +1,22 @@
 ﻿#pragma once
 
-// TODO change app namespace
-namespace ImGuiProject
+namespace StreichfettSse
 {
 
 enum class State : int
 {
     InitInternalData,
     Idle,
+    RequestInquiry,
+    WaitingConfirm,
+    RequestGlobal,
+    WaitingGlobal,
+    SendBankProgChange,
+    RequestSound,
+    WaitingSound,
+    EnterSoundMode,
+    EnterOptionMode,
+    WaitingSendDelay,
     None,
     _COUNT_
 };
@@ -21,4 +30,4 @@ State getNextState() noexcept;
 void setNextState(State state) noexcept;
 void transitionState() noexcept;
 
-} // ImGuiProject
+} // StreichfettSse

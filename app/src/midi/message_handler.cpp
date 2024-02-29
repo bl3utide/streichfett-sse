@@ -1,0 +1,321 @@
+﻿#include "common.hpp"
+#include "data/internal_patch.hpp"
+#include "data/internal_setting.hpp"
+#include "midi/message_handler.hpp"
+#include "util/string_util.hpp"
+#ifdef _DEBUG
+#include "logger.hpp"
+#endif
+namespace StreichfettSse
+{
+namespace MessageHandler
+{
+
+// public
+InquiryDump inquiry_dump;
+
+// private
+const char MESSAGE_INQUIRY = 0x06;
+const char MESSAGE_INQUIRY_REQUEST = 0x01;
+const char MESSAGE_INQUIRY_RESPONSE = 0x02;
+const char MESSAGE_SOUND_REQUEST = 0x00;                        // DSI: Streichfett
+const char MESSAGE_GLOBAL_REQUEST = 0x01;                       // DSI: Streichfett
+const char MESSAGE_SOUND_DUMP = 0x10;                           // DSI: Streichfett
+const char MESSAGE_GLOBAL_DUMP = 0x11;                          // DSI: Streichfett
+const char DEVICE_MANUFACTURER_ID = 0x3E;       // Waldorf
+const char DEVICE_FAMILY_CODE = 0x19;           // Streichfett  // DSI: Streichfett
+const char SOUND_NUMBER_EDIT_BUFFER = 0x7F;                     // DSI: Streichfett
+const int SOUND_DATA_START_INDEX = 6;                           // DSI: Streichfett
+const int SOUND_DATA_END_INDEX = 29;                            // DSI: Streichfett
+const int GLOBAL_DATA_START_INDEX = 6;                          // DSI: Streichfett
+const int GLOBAL_DATA_END_INDEX = 13;                           // DSI: Streichfett
+
+bool isSysex(const Bytes& mb) noexcept
+{
+    return mb.front() == 0xF0 && mb.back() == 0xF7;
+}
+
+Bytes getInquiryRequestMessage()
+{
+    Bytes req;
+    req.clear();
+    req.push_back(0xF0);                    // Universal SysEx Header (2 bytes)
+    req.push_back(0x7E);
+    req.push_back(0x7F);                    // Device ID: omni
+    req.push_back(MESSAGE_INQUIRY);         // Identity Request (2 bytes)
+    req.push_back(MESSAGE_INQUIRY_REQUEST);
+    req.push_back(0xF7);
+    return req;
+}
+
+// DSI: Streichfett
+Bytes getSoundRequestMessage(const int sound)
+{
+    Bytes req;
+    req.clear();
+    req.push_back(0xF0);
+    req.push_back(DEVICE_MANUFACTURER_ID);
+    req.push_back(DEVICE_FAMILY_CODE);
+    req.push_back(0x7F);    // Device ID: omni
+    req.push_back(MESSAGE_SOUND_REQUEST);
+    req.push_back(static_cast<unsigned char>(sound));
+    req.push_back(0xF7);
+    return req;
+}
+
+// DSI: Streichfett
+Bytes getGlobalRequestMessage()
+{
+    Bytes req;
+    req.clear();
+    req.push_back(0xF0);
+    req.push_back(DEVICE_MANUFACTURER_ID);
+    req.push_back(DEVICE_FAMILY_CODE);
+    req.push_back(0x7F);    // Device ID: omni
+    req.push_back(MESSAGE_GLOBAL_REQUEST);
+    req.push_back(0x00);    // Reserved
+    req.push_back(0xF7);
+    return req;
+}
+
+Bytes getProgChangeMessage(const int value)
+{
+    const int ch = InternalSetting::getDeviceMidiChannel();
+    char order_byte = 0xC0 + static_cast<unsigned char>(ch);
+
+    Bytes pc;
+    pc.clear();
+    pc.push_back(order_byte);
+    pc.push_back(static_cast<unsigned char>(value));
+    return pc;
+}
+
+// DSI: Streichfett
+Bytes getAllSoundOffMessage()
+{
+    const int ch = InternalSetting::getDeviceMidiChannel();
+    char order_byte = 0xB0 + static_cast<unsigned char>(ch);
+
+    Bytes aso;
+    aso.clear();
+    aso.push_back(order_byte);
+    aso.push_back(static_cast<unsigned char>(0x78));
+    return aso;
+}
+
+bool isNoteOff(const Bytes& mb)
+{
+    return 0x80 <= mb[0] && mb[0] <= 0x8F;
+}
+
+bool isNoteOn(const Bytes& mb)
+{
+    return 0x90 <= mb[0] && mb[0] <= 0x9F;
+}
+
+// DSI: Streichfett
+bool checkInquiryDump(const Bytes& dump)
+{
+    if (!isSysex(dump)) return false;
+
+    // Universal SysEx Header
+    if (dump[1] != 0x7E) return false;
+
+    // Device Inquiry Dump
+    if (dump[3] != MESSAGE_INQUIRY || dump[4] != MESSAGE_INQUIRY_RESPONSE) return false;
+
+    // Waldorf Music Manufacturer ID
+    if (dump[5] != DEVICE_MANUFACTURER_ID) return false;
+
+    // Device Family Code
+    if (dump[6] != DEVICE_FAMILY_CODE) return false;
+
+    inquiry_dump.received = true;
+    inquiry_dump.device_id = (int)dump[2];
+    inquiry_dump.firmware_version = format("%d.%d", dump[10], dump[11]);
+
+    return true;
+}
+
+// DSI: Streichfett
+void checkDump(const Bytes& dump, const DumpType type)
+{
+    if (!isSysex(dump))
+        throw std::exception("checkDump failed");
+
+    // Waldorf Music Manufacturer ID and Device Family Code
+    if (dump[1] != DEVICE_MANUFACTURER_ID || dump[2] != DEVICE_FAMILY_CODE)
+        throw std::exception("checkDump failed");
+
+    if (type == DumpType::Sound)
+    {
+        if (dump[4] != MESSAGE_SOUND_DUMP)
+            throw std::exception("checkDump failed");
+    }
+    else if (type == DumpType::Global)
+    {
+        if (dump[4] != MESSAGE_GLOBAL_DUMP)
+            throw std::exception("checkDump failed");
+    }
+    else
+    {
+        throw std::exception("checkDump failed");
+    }
+}
+
+Bytes getDataBytesFromDump(const Bytes& dump, const DumpType type)
+{
+    Bytes data;
+    if (type == DumpType::Sound)
+    {
+        for (int i = SOUND_DATA_START_INDEX; i <= SOUND_DATA_END_INDEX; ++i)
+            data.push_back(dump[i]);
+    }
+    else if (type == DumpType::Global)
+    {
+        for (int i = GLOBAL_DATA_START_INDEX; i <= GLOBAL_DATA_END_INDEX; ++i)
+            data.push_back(dump[i]);
+    }
+
+    return data;
+}
+
+// DSI: Streichfett
+Bytes getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* const patch)
+{
+    Bytes sound_data = InternalPatch::getDataBytes(patch);
+    int device_id = InternalSetting::getDeviceId();
+
+    Bytes req;
+    req.clear();
+    req.push_back(0xF0);
+    req.push_back(DEVICE_MANUFACTURER_ID);
+    req.push_back(DEVICE_FAMILY_CODE);
+    req.push_back(static_cast<unsigned char>(device_id));
+    req.push_back(MESSAGE_SOUND_DUMP);
+    if (sound == -1)
+        req.push_back(static_cast<unsigned char>(SOUND_NUMBER_EDIT_BUFFER));
+    else
+        req.push_back(static_cast<unsigned char>(sound));
+    for (int i = 0; i < sound_data.size(); ++i)
+        req.push_back(sound_data[i]);
+
+    // calculate bytesum
+    int sum = 0;
+    for (int i = 1; i < req.size(); ++i)
+        sum += req[i];
+    req.push_back(static_cast<unsigned char>(sum & 0x7F));
+    req.push_back(0xF7);
+
+    return req;
+}
+
+// DSI: Streichfett
+//Bytes getSoundParameterChangeMessage(const int index, const int value)    // TODO delete toDvFunc
+Bytes getSoundParameterChangeMessage(const int index, const unsigned char value)
+{
+    // NOTE: For Streichfett, change the parameters with CC
+
+    const int ch = InternalSetting::getDeviceMidiChannel();
+
+    Bytes req;
+    req.clear();
+    req.push_back(0xB0 + static_cast<unsigned char>(ch));
+    req.push_back(static_cast<unsigned char>(index));
+    //req.push_back(static_cast<unsigned char>(value)); // TODO delete toDvFunc
+    req.push_back(value);
+    return req;
+}
+
+#ifdef _DEBUG
+std::string getMessageDesc(const Bytes& data)
+{
+    std::stringstream ss;
+
+    if (data.empty())
+    {
+        ss << "Empty Message";
+    }
+    else if (0x80 <= data[0] && data[0] <= 0x9F)
+    {
+        if (data[0] < 0x90)
+            ss << "Note Off";
+        else
+            ss << "Note On";
+
+        ss << " <" << static_cast<int>(data[1]) << "> Vel(" << static_cast<int>(data[2]) << ")";
+    }
+    else if (0xB0 <= data[0] && data[0] <= 0xBF)
+    {
+        if (data[1] == 0x00)
+            ss << "Bank Select MSB: " << static_cast<int>(data[2]);
+        else if (data[1] == 0x20)
+            ss << "Bank Select LSB: " << static_cast<int>(data[2]);
+        else if (data[1] == 0x78)
+            ss << "All Sound Off";
+        else if (data[1] == 0x79)
+            ss << "Reset All Controllers";
+        else if (data[1] == 0x7A)
+        {
+            ss << "Local Control";
+            if (data[2] == 0)
+                ss << " Off";
+            else if (data[2] == 127)
+                ss << " On";
+            else
+                ss << " (unknown 3rd byte)";
+        }
+        else if (data[1] == 0x7B)
+            ss << "All Notes Off";
+        else
+            ss << "Control Change (" << static_cast<int>(data[1]) << "): "
+                << static_cast<int>(data[2]);
+    }
+    else if (0xC0 <= data[0] && data[0] <= 0xCF)
+        ss << "Program Change (" << static_cast<int>(data[1]) << ")";
+    else if (data[0] == 0xF0 && data[data.size() - 1] == 0xF7)
+    {
+        ss << "SysEx: ";
+        if (data[3] == MESSAGE_INQUIRY)
+        {
+            if (data[4] == MESSAGE_INQUIRY_REQUEST)
+                ss << "Identity Request";
+            else if (data[4] == MESSAGE_INQUIRY_RESPONSE)
+                ss << "Identity Reply";
+        }
+        else if (data[4] == MESSAGE_SOUND_REQUEST)
+        {
+            ss << "Sound Request (";
+            if (data[5] == 0x7F) ss << "edit buffer)";
+            else ss << static_cast<int>(data[5]) << ")";
+        }
+        else if (data[4] == MESSAGE_GLOBAL_REQUEST)
+        {
+            ss << "Global Request";
+        }
+        else if (data[4] == MESSAGE_SOUND_DUMP)
+        {
+            ss << "Sound Dump (";
+            if (data[5] == 0x7F) ss << "edit buffer)";
+            else ss << static_cast<int>(data[5]) << ")";
+        }
+        else if (data[4] == MESSAGE_GLOBAL_DUMP)
+        {
+            ss << "Global Dump";
+        }
+        else
+        {
+            ss << "Device specific or other message";
+        }
+    }
+    else
+    {
+        ss << "?";
+    }
+
+    return ss.str();
+}
+#endif
+
+} // MessageHandler
+} // StreichfettSse
