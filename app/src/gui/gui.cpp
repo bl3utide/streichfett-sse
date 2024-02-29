@@ -376,7 +376,7 @@ void drawGui()
         ImGuiWindowFlags_NoBringToFrontOnFocus);
     {
 #ifdef _DEBUG
-        drawDebugMenuBar(vp_pos);
+        Debug::drawDebugMenuBar(vp_pos);
 #endif
         drawHeader(window_width);
 
@@ -404,7 +404,7 @@ void drawGui()
         float y = ImGui::GetCursorPosY();
         ImGui::SetNextWindowPos(ImVec2(vp_pos.x + (window_width - UI_MAIN_CONTENT_WIDTH) * 0.5f, vp_pos.y + y));
 #ifdef _DEBUG
-        auto use_alt_child_bg = isChildBgAlt();
+        auto use_alt_child_bg = Debug::isChildBgAlt();
         if (use_alt_child_bg) ImGui::PushStyleColor(ImGuiCol_ChildBg, DEBUG_UI_COLOR_CHILD_BG);
 #endif
         ImGui::BeginChild("main", ImVec2(UI_MAIN_CONTENT_WIDTH, -32.0f), true, 0);
@@ -439,7 +439,7 @@ void drawGui()
     }
     ImGui::End();
 #ifdef _DEBUG
-    drawDebugWindows(window_width, window_height, current_state);
+    Debug::drawDebugWindows(window_width, window_height, current_state);
 #endif
 
     postDraw();
