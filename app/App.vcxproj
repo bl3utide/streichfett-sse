@@ -131,6 +131,7 @@
     <ClCompile Include="src\state.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\annotation.hpp" />
     <ClInclude Include="src\compressed\arrayed_font.hpp" />
     <ClInclude Include="src\compressed\arrayed_texture.hpp" />
@@ -165,6 +166,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resource\streichfettsse.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
