@@ -1,8 +1,8 @@
 ﻿#include "common.hpp"
 #ifdef _DEBUG
 #include "data/internal_patch.hpp"
+#include "midi/callback_debug.hpp"
 #include "midi/connector.hpp"
-#include "midi/connector_callback_debug.hpp"
 #include "midi/connector_common.hpp"
 #include "midi/connector_debug.hpp"
 

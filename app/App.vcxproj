@@ -120,9 +120,9 @@
     <ClCompile Include="src\image.cpp" />
     <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\midi\connector_callback.cpp" />
+    <ClCompile Include="src\midi\callback.cpp" />
     <ClCompile Include="src\midi\connector.cpp" />
-    <ClCompile Include="src\midi\connector_callback_debug.cpp" />
+    <ClCompile Include="src\midi\callback_debug.cpp" />
     <ClCompile Include="src\midi\connector_common.cpp" />
     <ClCompile Include="src\midi\connector_debug.cpp" />
     <ClCompile Include="src\midi\message_handler.cpp" />
@@ -146,8 +146,8 @@
     <ClInclude Include="src\main.hpp" />
     <ClInclude Include="src\common.hpp" />
     <ClInclude Include="src\midi\connector.hpp" />
-    <ClInclude Include="src\midi\connector_callback.hpp" />
-    <ClInclude Include="src\midi\connector_callback_debug.hpp" />
+    <ClInclude Include="src\midi\callback.hpp" />
+    <ClInclude Include="src\midi\callback_debug.hpp" />
     <ClInclude Include="src\midi\connector_common.hpp" />
     <ClInclude Include="src\midi\connector_debug.hpp" />
     <ClInclude Include="src\midi\message_handler.hpp" />

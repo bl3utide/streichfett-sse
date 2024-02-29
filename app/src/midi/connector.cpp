@@ -5,8 +5,8 @@
 #include "state.hpp"
 #include "data/internal_patch.hpp"
 #include "data/internal_setting.hpp"
+#include "midi/callback.hpp"
 #include "midi/connector.hpp"
-#include "midi/connector_callback.hpp"
 #include "midi/connector_common.hpp"
 #include "midi/message_task.hpp"
 #ifdef _DEBUG

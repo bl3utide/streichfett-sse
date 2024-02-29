@@ -69,7 +69,7 @@
     <ClCompile Include="src\gui\gui_option.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\midi\connector_callback.cpp">
+    <ClCompile Include="src\midi\callback.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\midi\connector_debug.cpp">
@@ -78,7 +78,7 @@
     <ClCompile Include="src\gui\gui_font.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\midi\connector_callback_debug.cpp">
+    <ClCompile Include="src\midi\callback_debug.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\midi\connector_common.cpp">
@@ -167,13 +167,13 @@
     <ClInclude Include="src\gui\gui_font.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\midi\connector_callback.hpp">
+    <ClInclude Include="src\midi\callback.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\midi\connector_debug.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\midi\connector_callback_debug.hpp">
+    <ClInclude Include="src\midi\callback_debug.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\midi\connector_common.hpp">
