@@ -1,4 +1,4 @@
-﻿# <img src="streichfettsse_icon.png" width="48">Streichfett SSE
+﻿# <img src="streichfettsse_icon.png" width="48"> Streichfett SSE
 A sound editor for Waldorf Streichfett
 
 ![](streichfett_sse_v1.0.png)
