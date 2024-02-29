@@ -89,86 +89,9 @@ extern std::vector<std::string> out_name_list;
 extern bool force_adjust_midi_channel;
 extern int store_delay_duration;
 
-#ifdef _DEBUG
-enum class SendTestType : int
-{
-    Inquiry,
-    GlobalDump,
-    SoundDump,
-    _COUNT_,
-};
-
-enum class SendTestResult : int
-{
-    NotStarted,
-    WaitReceive,
-    Ok,
-    Failed,
-    _COUNT_,
-};
-
-enum class SendTestFailedCause : int
-{
-    RequestTimeout,
-    EmptyResponse,
-    IncorrectMessage,
-    _COUNT_,
-};
-
-extern SendTestResult send_test[static_cast<int>(SendTestType::_COUNT_)];
-extern SendTestFailedCause send_test_failed_cause[static_cast<int>(SendTestType::_COUNT_)];
-
-struct ProcessedMidiMessage
-{
-    std::string timestamp;
-    bool transmitted;               // true: transmitted, false: received
-    std::string device_name;
-    std::string description;
-    MessageHandler::Bytes data;
-    std::string list_title;
-
-    ProcessedMidiMessage()
-    {
-        timestamp = "";
-        transmitted = true;
-        device_name = "";
-        description = "";
-        data = MessageHandler::Bytes();
-        list_title = "";
-    }
-
-    ProcessedMidiMessage(
-        const std::string& ts,
-        const bool t,
-        const std::string& d_name,
-        const std::string& desc,
-        const MessageHandler::Bytes d)
-    {
-        timestamp = ts;
-        transmitted = t;
-        device_name = d_name;
-        description = desc;
-        data.clear();
-        data = d;
-
-        list_title = format("%s %s %s",
-            transmitted ? "T" : "R",
-            timestamp.c_str(),
-            description.c_str());
-    }
-};
-extern std::list<ProcessedMidiMessage> processed_history;
-extern int history_selected_index;
-extern ProcessedMidiMessage selected_processed_message;
-#endif
-
 void initialize();
 void finalize() noexcept;
 void resetAllConnections();
-#ifdef _DEBUG
-void sendTest(SendTestType type);
-bool isAnyTestSending() noexcept;
-#endif
 void checkOpenPorts();
 void keyOpenPort();
 void requestInquiry();

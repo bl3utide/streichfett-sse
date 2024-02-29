@@ -9,6 +9,7 @@
 #include "gui/gui_font.hpp"
 #include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
+#include "midi/connector_debug.hpp"
 #include "midi/message_task.hpp"
 #include "logger.hpp"
 
@@ -209,54 +210,54 @@ void drawDebugTabItemSendTest(const State current_state)
 {
     if (ImGui::BeginTabItem("Send Test"))
     {
-        using namespace Connector;
+        namespace cd = Connector::Debug;
 
-        bool is_any_test_sending = Connector::isAnyTestSending();
+        bool is_any_test_sending = cd::isAnyTestSending();
         if (current_state != State::Idle || is_any_test_sending)
         {
             ImGui::BeginDisabled();
         }
 
-        for (int i = 0; i < static_cast<int>(SendTestType::_COUNT_); ++i)
+        for (int i = 0; i < static_cast<int>(cd::SendTestType::_COUNT_); ++i)
         {
             switch (i)
             {
-                case static_cast<int>(SendTestType::Inquiry):
+                case static_cast<int>(cd::SendTestType::Inquiry):
                     if (ImGui::Button("MIDI Identity Inquiry"))
-                        Connector::sendTest(SendTestType::Inquiry);
+                        cd::sendTest(cd::SendTestType::Inquiry);
                     ImGui::MouseCursorToHand();
                     break;
-                case static_cast<int>(SendTestType::GlobalDump):
+                case static_cast<int>(cd::SendTestType::GlobalDump):
                     if (ImGui::Button("Request Global Dump"))
-                        Connector::sendTest(SendTestType::GlobalDump);
+                        cd::sendTest(cd::SendTestType::GlobalDump);
                     ImGui::MouseCursorToHand();
                     break;
-                case static_cast<int>(SendTestType::SoundDump):
+                case static_cast<int>(cd::SendTestType::SoundDump):
                     if (ImGui::Button("Request Sound Dump"))
-                        Connector::sendTest(SendTestType::SoundDump);
+                        cd::sendTest(cd::SendTestType::SoundDump);
                     ImGui::MouseCursorToHand();
                     break;
             }
             ImGui::SameLine(180.0f);
-            switch (send_test[i])
+            switch (cd::send_test[i])
             {
-                case SendTestResult::NotStarted:
+                case cd::SendTestResult::NotStarted:
                     ImGui::Text("");
                     break;
-                case SendTestResult::WaitReceive:
+                case cd::SendTestResult::WaitReceive:
                     ImGui::Text("Waiting receiving");
                     break;
-                case SendTestResult::Ok:
+                case cd::SendTestResult::Ok:
                     ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_OK, "OK");
                     break;
-                case SendTestResult::Failed:
+                case cd::SendTestResult::Failed:
                     ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "NG");
                     ImGui::SameLine();
-                    if (send_test_failed_cause[i] == SendTestFailedCause::RequestTimeout)
+                    if (cd::send_test_failed_cause[i] == cd::SendTestFailedCause::RequestTimeout)
                         ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Timeout)");
-                    else if (send_test_failed_cause[i] == SendTestFailedCause::EmptyResponse)
+                    else if (cd::send_test_failed_cause[i] == cd::SendTestFailedCause::EmptyResponse)
                         ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Empty Response)");
-                    else if (send_test_failed_cause[i] == SendTestFailedCause::IncorrectMessage)
+                    else if (cd::send_test_failed_cause[i] == cd::SendTestFailedCause::IncorrectMessage)
                         ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Incorrect Message)");
                     break;
                 default:
@@ -276,22 +277,24 @@ void drawDebugTabItemSendTest(const State current_state)
 
 void drawDebugTabItemTransReceiveLog()
 {
+    namespace cd = Connector::Debug;
+
     if (ImGui::BeginTabItem("Transmitted/Received Log"))
     {
         ImGui::BeginChild("processed_list", ImVec2(600, 500), false);
         {
             int selected_index = 0;
-            std::list<Connector::ProcessedMidiMessage> ph_copy = Connector::processed_history;
+            std::list<cd::ProcessedMidiMessage> ph_copy = cd::processed_history;
             for (auto iter = ph_copy.begin(); iter != ph_copy.end(); ++iter)
             {
-                bool is_selected = selected_index == Connector::history_selected_index;
+                bool is_selected = selected_index == cd::history_selected_index;
                 ImGui::PushStyleColor(ImGuiCol_Text, iter->transmitted ? DEBUG_UI_COLOR_TEXT_TRANSMIT : DEBUG_UI_COLOR_TEXT_RECEIVE);
                 if (ImGui::Selectable(iter->list_title.c_str(), is_selected))
                 {
-                    Connector::history_selected_index = selected_index;
+                    cd::history_selected_index = selected_index;
 
-                    Connector::selected_processed_message =
-                        Connector::ProcessedMidiMessage(
+                    cd::selected_processed_message =
+                        cd::ProcessedMidiMessage(
                             iter->timestamp,
                             iter->transmitted,
                             iter->device_name,
@@ -312,7 +315,7 @@ void drawDebugTabItemTransReceiveLog()
 
 void drawProcessedWindow()
 {
-    Connector::ProcessedMidiMessage* message = &Connector::selected_processed_message;
+    Connector::Debug::ProcessedMidiMessage* message = &Connector::Debug::selected_processed_message;
 
     ImGui::Begin("processed_detail", &_show_processed_message_window,
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize |

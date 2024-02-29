@@ -10,6 +10,7 @@
 #include "midi/connector.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
+#include "midi/connector_debug.hpp"
 #endif
 
 namespace StreichfettSse
@@ -384,7 +385,7 @@ void drawGui()
         // Beginning of disable screen operation
         bool is_waiting_store_delay = Connector::isWaitingStoreDelay();
 #ifdef _DEBUG
-        bool is_any_test_sending = Connector::isAnyTestSending();
+        bool is_any_test_sending = Connector::Debug::isAnyTestSending();
 #endif
 
         bool disable_page_content = getState() != State::Idle || is_waiting_store_delay

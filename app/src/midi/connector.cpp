@@ -6,9 +6,12 @@
 #include "data/internal_patch.hpp"
 #include "data/internal_setting.hpp"
 #include "midi/connector.hpp"
+#include "midi/connector_callback.hpp"
+#include "midi/connector_common.hpp"
 #include "midi/message_task.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
+#include "midi/connector_debug.hpp"
 #endif
 
 namespace StreichfettSse
@@ -23,49 +26,13 @@ std::vector<std::string> in_name_list;
 std::vector<std::string> out_name_list;
 bool force_adjust_midi_channel = true;
 int store_delay_duration = 200;
-#ifdef _DEBUG
-SendTestResult send_test[static_cast<int>(SendTestType::_COUNT_)];
-SendTestFailedCause send_test_failed_cause[static_cast<int>(SendTestType::_COUNT_)];
-std::list<ProcessedMidiMessage> processed_history;
-int history_selected_index = -1;
-ProcessedMidiMessage selected_processed_message;
-#endif
 
 // private
-bool _is_waiting_store_delay = false;   // store delay check
-SDL_TimerID _waiting_timer;
 const int TIMEOUT_DURATION = 5000;
 std::string ERROR_MESSAGE_TIMEOUT_CONFIRM = "The confirm sysex request has timed out.";
 std::string ERROR_MESSAGE_TIMEOUT_GLOBAL_DUMP = "The global dump request has timed out.";
 std::string ERROR_MESSAGE_TIMEOUT_SOUND_DUMP = "The sound dump request has timed out.";
 bool _is_synth_connected = false;
-#ifdef _DEBUG
-size_t _processed_history_max_size = 100;
-#endif
-
-#ifdef _DEBUG
-void addProcessedHistory(const bool transmitted, const std::string& device_name, const MessageHandler::Bytes& data)
-{
-    auto now = std::chrono::system_clock::now();
-    auto now_as_time_t = std::chrono::system_clock::to_time_t(now);
-    auto now_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
-    std::stringstream now_ss;
-    now_ss << std::put_time(std::localtime(&now_as_time_t), "%F %T")
-        << '.' << std::setfill('0') << std::setw(3) << now_ms.count();
-    std::string timestamp = now_ss.str();
-
-    auto description = MessageHandler::getMessageDesc(data);
-
-    processed_history.push_front(ProcessedMidiMessage(timestamp, transmitted, device_name, description, data));
-
-    if (processed_history.size() > _processed_history_max_size)
-    {
-        processed_history.resize(_processed_history_max_size);
-    }
-
-    if (history_selected_index != -1) ++history_selected_index;
-}
-#endif
 
 void fetchDeviceList()
 {
@@ -108,247 +75,6 @@ void fetchDeviceList()
     }
 }
 
-/*******************************************************************************
-    Received confirm response callback
-*******************************************************************************/
-void receiveConfirmSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
-{
-    if (message->empty())
-    {
-#ifdef _DEBUG
-        LOGD << "Received dump was empty message";
-#endif
-    }
-    else
-    {
-        if (MessageHandler::checkInquiryDump(*message))
-        {
-            Annotation::clearText();
-            setNextState(State::RequestGlobal);
-            setSynthConnected(true);
-        }
-        else
-        {
-            setAppError("You tried to connect to an incorrect device.");
-            setNextState(State::Idle);
-            setSynthConnected(false);
-        }
-    }
-
-    synth_conn.input->cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-
-#ifdef _DEBUG
-    addProcessedHistory(false, synth_conn.input_port_name, *message);
-#endif
-}
-
-/*******************************************************************************
-    Received global dump response callback
-*******************************************************************************/
-// DSI: Streichfett
-void receiveGlobalDumpSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
-{
-    if (message->empty())
-    {
-#ifdef _DEBUG
-        LOGD << "Received dump was empty message";
-#endif
-    }
-    else
-    {
-        MessageHandler::DumpType dump_type = MessageHandler::DumpType::Global;
-
-        try
-        {
-            // throwable function
-            MessageHandler::checkDump(*message, dump_type);
-
-            MessageHandler::Bytes global_data =
-                MessageHandler::getDataBytesFromDump(*message, dump_type);
-            GlobalModel::Global* setting = InternalSetting::getGlobalData();
-
-            // throwable function
-            InternalSetting::setSettingFromBytes(setting, global_data);
-
-            Operation op = getOperation();
-            if (op == Operation::Sound)
-                setNextState(State::SendBankProgChange);
-            else if (op == Operation::Option)
-                setNextState(State::Idle);
-        }
-        catch (std::exception&)
-        {
-            setAppError("Incorrect Global Dump Message");
-            setNextState(State::Idle);
-            setSynthConnected(false);
-        }
-    }
-
-    synth_conn.input->cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-
-#ifdef _DEBUG
-    addProcessedHistory(false, synth_conn.input_port_name, *message);
-#endif
-}
-
-/*******************************************************************************
-    Received sound dump response callback
-*******************************************************************************/
-// DSI: Streichfett
-void receiveSoundDumpSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
-{
-    if (message->empty())
-    {
-#ifdef _DEBUG
-        LOGD << "Received dump was empty message";
-#endif
-    }
-    else
-    {
-        MessageHandler::DumpType dump_type = MessageHandler::DumpType::Sound;
-
-        try
-        {
-            // throwable function
-            MessageHandler::checkDump(*message, dump_type);
-
-            MessageHandler::Bytes sound_data =
-                MessageHandler::getDataBytesFromDump(*message, dump_type);
-            SoundModel::Patch* original = InternalPatch::getOriginalPatch();
-            SoundModel::Patch* current = InternalPatch::getCurrentPatch();
-
-            // throwable function
-            InternalPatch::setPatchFromBytes(original, sound_data);
-            InternalPatch::copyPatchAtoB(original, current);
-
-            InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
-            char bb = InternalPatch::getSoundBankChar(sound_addr->sound);
-            int bs = InternalPatch::getSoundPatchNumber(sound_addr->sound);
-            char buf[64];
-            sprintf(buf, "Sound %c%d loaded.", bb, bs);
-            Annotation::setText(buf, Annotation::Type::General);
-
-            setNextState(State::Idle);
-        }
-        catch (std::exception&)
-        {
-            setAppError("Incorrect Sound Dump Message");
-        }
-    }
-
-    synth_conn.input->cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-
-#ifdef _DEBUG
-    addProcessedHistory(false, synth_conn.input_port_name, *message);
-#endif
-}
-
-/*******************************************************************************
-    Timeout response callback (General purpose)
-*******************************************************************************/
-Uint32 timeoutCallback(Uint32 interval, void* param)
-{
-    std::string err_message = *static_cast<std::string*>(param);
-
-    synth_conn.input->cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-    setAppError(err_message);
-    setNextState(State::Idle);
-    setSynthConnected(false);
-
-    return interval;
-}
-
-/*******************************************************************************
-    Received message from key-device callback
-*******************************************************************************/
-// DSI: Streichfett
-void receiveKeyDeviceMessageCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
-{
-    if (isSynthConnected() &&
-        (MessageHandler::isNoteOff(*message) || MessageHandler::isNoteOn(*message)))
-    {
-        if (Connector::force_adjust_midi_channel)
-        {
-            const int ch = InternalSetting::getDeviceMidiChannel();
-            MessageHandler::Bytes channel_adj_message;
-            if (MessageHandler::isNoteOff(*message))
-            {
-                channel_adj_message = {
-                    static_cast<unsigned char>(0x80 + ch),
-                    message->at(1),
-                    message->at(2)
-                };
-            }
-            else
-            {
-                channel_adj_message = {
-                    static_cast<unsigned char>(0x90 + ch),
-                    message->at(1),
-                    message->at(2)
-                };
-            }
-            synth_conn.output->sendMessage(&channel_adj_message);
-        }
-        else
-        {
-            synth_conn.output->sendMessage(message);
-        }
-    }
-}
-
-/*******************************************************************************
-    Store delay callback
-*******************************************************************************/
-// DSI: Streichfett
-Uint32 storeDelayCallback(Uint32 interval, void* param)
-{
-    InternalPatch::SoundAddress* sound_address_ptr
-        = static_cast<InternalPatch::SoundAddress*>(param);
-
-    int sound = sound_address_ptr->sound;
-
-    // -1: sent to edit buffer
-    if (sound != -1)
-    {
-        SoundModel::Patch* original = InternalPatch::getOriginalPatch();
-        SoundModel::Patch* current = InternalPatch::getCurrentPatch();
-        InternalPatch::copyPatchAtoB(current, original);
-
-        char bb = InternalPatch::getSoundBankChar(sound);
-        int bs = InternalPatch::getSoundPatchNumber(sound);
-        char buf[64];
-        sprintf(buf, "The sound has stored to %c%d", bb, bs);
-        Annotation::setText(buf, Annotation::Type::General);
-        InternalPatch::current_patch_changed = false;
-    }
-
-    SDL_RemoveTimer(_waiting_timer);
-    _is_waiting_store_delay = false;
-
-    delete sound_address_ptr;
-    sound_address_ptr = nullptr;
-
-    return interval;
-}
-
-Uint32 sendDelayCallback(Uint32 interval, void* param)
-{
-    State* next_state_ptr = static_cast<State*>(param);
-
-    setNextState(*next_state_ptr);
-
-    SDL_RemoveTimer(_waiting_timer);
-
-    delete next_state_ptr;
-    next_state_ptr = nullptr;
-
-    return interval;
-}
-
 void sendDelay(const State next_state, const int delay_millsec)
 {
     State* next_state_ptr = new State(next_state);
@@ -357,84 +83,6 @@ void sendDelay(const State next_state, const int delay_millsec)
     setNextState(State::WaitingSendDelay);
 }
 
-#ifdef _DEBUG
-void receiveTestSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
-{
-    SendTestType* type_ptr = static_cast<SendTestType*>(user_data);
-    int type_index = static_cast<int>(*type_ptr);
-
-    if (message->empty())
-    {
-        send_test[type_index] = SendTestResult::Failed;
-        send_test_failed_cause[type_index] = SendTestFailedCause::EmptyResponse;
-    }
-    else
-    {
-        switch (*type_ptr)
-        {
-            case SendTestType::Inquiry:
-                if (MessageHandler::checkInquiryDump(*message))
-                    send_test[type_index] = SendTestResult::Ok;
-                else
-                {
-                    send_test[type_index] = SendTestResult::Failed;
-                    send_test_failed_cause[type_index] = SendTestFailedCause::IncorrectMessage;
-                }
-                break;
-            case SendTestType::GlobalDump:
-                try
-                {
-                    MessageHandler::checkDump(*message, MessageHandler::DumpType::Global);
-                    send_test[type_index] = SendTestResult::Ok;
-                }
-                catch (std::exception&)
-                {
-                    send_test[type_index] = SendTestResult::Failed;
-                    send_test_failed_cause[type_index] = SendTestFailedCause::IncorrectMessage;
-                }
-                break;
-            case SendTestType::SoundDump:
-                try
-                {
-                    MessageHandler::checkDump(*message, MessageHandler::DumpType::Sound);
-                    send_test[type_index] = SendTestResult::Ok;
-                }
-                catch (std::exception&)
-                {
-                    send_test[type_index] = SendTestResult::Failed;
-                    send_test_failed_cause[type_index] = SendTestFailedCause::IncorrectMessage;
-                }
-                break;
-        }
-    }
-
-    synth_conn.input->cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-
-    delete type_ptr;
-    type_ptr = nullptr;
-
-    addProcessedHistory(false, synth_conn.input_port_name, *message);
-}
-#endif
-
-#ifdef _DEBUG
-Uint32 timeoutTestCallback(Uint32 interval, void* param)
-{
-    SendTestType* type_ptr = static_cast<SendTestType*>(param);
-    int type_index = static_cast<int>(*type_ptr);
-
-    synth_conn.input->cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-    send_test[type_index] = SendTestResult::Failed;
-    send_test_failed_cause[type_index] = SendTestFailedCause::RequestTimeout;
-
-    delete type_ptr;
-    type_ptr = nullptr;
-
-    return interval;
-}
-#endif
 
 void initialize()
 {
@@ -457,68 +105,6 @@ void resetAllConnections()
     fetchDeviceList();
     setSynthConnected(false);
 }
-
-#ifdef _DEBUG
-// DSI: Streichfett
-void sendTest(const SendTestType type)
-{
-    for (int i = 0; i < static_cast<int>(SendTestType::_COUNT_); ++i)
-        send_test[i] = SendTestResult::NotStarted;
-
-    MessageHandler::Bytes request;
-
-    switch (type)
-    {
-        case SendTestType::Inquiry:
-            request = MessageHandler::getInquiryRequestMessage();
-            break;
-        case SendTestType::GlobalDump:
-            request = MessageHandler::getGlobalRequestMessage();
-            break;
-        case SendTestType::SoundDump:
-        {
-            InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
-            request = MessageHandler::getSoundRequestMessage(sound_addr->sound);
-        }
-            break;
-        default:
-            return;
-    }
-
-    send_test[static_cast<int>(type)] = SendTestResult::WaitReceive;
-
-    try
-    {
-        synth_conn.output->sendMessage(&request);
-    }
-    catch (RtMidiError& error)
-    {
-        LOGD << error.getMessage();
-        send_test[static_cast<int>(type)] = SendTestResult::Failed;
-        return;
-    }
-
-    SendTestType* type_ptr = new SendTestType(type);
-
-    synth_conn.input->setCallback(receiveTestSysexCallback, type_ptr);
-    synth_conn.input->ignoreTypes(false, false, false);
-
-    // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, timeoutTestCallback, type_ptr);
-
-    addProcessedHistory(true, synth_conn.output_port_name, request);
-}
-#endif
-
-#ifdef _DEBUG
-bool isAnyTestSending() noexcept
-{
-    return
-        Connector::send_test[static_cast<int>(Connector::SendTestType::Inquiry)] == Connector::SendTestResult::WaitReceive ||
-        Connector::send_test[static_cast<int>(Connector::SendTestType::GlobalDump)] == Connector::SendTestResult::WaitReceive ||
-        Connector::send_test[static_cast<int>(Connector::SendTestType::SoundDump)] == Connector::SendTestResult::WaitReceive;
-}
-#endif
 
 void checkOpenPorts()
 {
@@ -584,7 +170,7 @@ void requestInquiry()
 
     setNextState(State::WaitingConfirm);
 #ifdef _DEBUG
-    addProcessedHistory(true, synth_conn.output_port_name, confirm_req_sysex);
+    Debug::addProcessedHistory(true, synth_conn.output_port_name, confirm_req_sysex);
 #endif
 }
 
@@ -618,7 +204,7 @@ void requestGlobalData()
 
     setNextState(State::WaitingGlobal);
 #ifdef _DEBUG
-    addProcessedHistory(true, synth_conn.output_port_name, global_req_sysex);
+    Debug::addProcessedHistory(true, synth_conn.output_port_name, global_req_sysex);
 #endif
 }
 
@@ -655,7 +241,7 @@ void requestSoundData()
 
     setNextState(State::WaitingSound);
 #ifdef _DEBUG
-    addProcessedHistory(true, synth_conn.output_port_name, sound_req_sysex);
+    Debug::addProcessedHistory(true, synth_conn.output_port_name, sound_req_sysex);
 #endif
 }
 
@@ -692,7 +278,7 @@ void sendSoundDump(const bool is_edit_buffer)
     _waiting_timer = SDL_AddTimer(store_delay_duration, storeDelayCallback, sound_address_ptr);
 
 #ifdef _DEBUG
-    addProcessedHistory(true, synth_conn.output_port_name, sound_dump);
+    Debug::addProcessedHistory(true, synth_conn.output_port_name, sound_dump);
 #endif
 }
 
@@ -720,7 +306,7 @@ void sendProgChange()
         return;
     }
 #ifdef _DEBUG
-    addProcessedHistory(true, synth_conn.output_port_name, prog_change);
+    Debug::addProcessedHistory(true, synth_conn.output_port_name, prog_change);
 #endif
 }
 
@@ -741,7 +327,7 @@ void sendAllSoundOff()
         return;
     }
 #ifdef _DEBUG
-    addProcessedHistory(true, synth_conn.output_port_name, all_sound_off);
+    Debug::addProcessedHistory(true, synth_conn.output_port_name, all_sound_off);
 #endif
 }
 
@@ -752,7 +338,7 @@ void sendOneTaskMessage()
         MessageHandler::Bytes message = MessageTask::lastTask();
         synth_conn.output->sendMessage(&message);
 #ifdef _DEBUG
-        addProcessedHistory(true, synth_conn.output_port_name, message);
+        Debug::addProcessedHistory(true, synth_conn.output_port_name, message);
 #endif
     }
 }
