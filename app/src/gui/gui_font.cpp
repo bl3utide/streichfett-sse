@@ -32,7 +32,7 @@ const std::unordered_map<Font, TextFont> FONTS
     {Font::Version, TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 16.0f)},
     {Font::OptionItem, TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 18.0f)},
     {Font::OptionItemBold, TextFont(ArrayedFont::SECTION_BOLD_DATA, ArrayedFont::SECTION_BOLD_SIZE, 18.0f)},
-    {Font::Section, TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 18.0f)},
+    {Font::Section, TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 22.0f)},
     {Font::PatchInfo, TextFont(ArrayedFont::PATCH_NAME_DATA, ArrayedFont::PATCH_NAME_SIZE, 22.0f)},
     {Font::PatchName, TextFont(ArrayedFont::PATCH_NAME_DATA, ArrayedFont::PATCH_NAME_SIZE, 36.0f)},
     {Font::Text, TextFont(ArrayedFont::TEXT_DATA, ArrayedFont::TEXT_SIZE, 16.0f)},
