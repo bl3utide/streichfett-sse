@@ -2,7 +2,6 @@
 #include "data/internal_patch.hpp"
 #include "model/global.hpp"
 #include "model/sound.hpp"
-#include "util/string_util.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
 #endif

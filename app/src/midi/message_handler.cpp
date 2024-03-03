@@ -2,7 +2,6 @@
 #include "data/internal_patch.hpp"
 #include "data/internal_setting.hpp"
 #include "midi/message_handler.hpp"
-#include "util/string_util.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
 #endif
