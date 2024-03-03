@@ -8,11 +8,11 @@ namespace StreichfettSse
 namespace InternalSetting
 {
 
-void initData();
-GlobalModel::Global* getGlobalData();
+void initData() noexcept;
+GlobalModel::Global* getGlobalData() noexcept;
 void setSettingFromBytes(GlobalModel::Global* global, const MessageHandler::Bytes& data);
-int getDeviceMidiChannel();
-int getDeviceId();
+int getDeviceMidiChannel() noexcept;
+int getDeviceId() noexcept;
 
 } // InternalSetting
 } // StreichfettSse
