@@ -1,8 +1,6 @@
 ﻿#pragma once
 #ifdef _DEBUG
 
-#include "util/string_util.hpp"
-
 namespace StreichfettSse
 {
 namespace Logger

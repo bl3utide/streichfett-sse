@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "midi/message_handler.hpp"
-#include "util/string_util.hpp"
 
 namespace StreichfettSse
 {

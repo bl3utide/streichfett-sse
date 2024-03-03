@@ -27,3 +27,5 @@
 #endif
 
 #include <RtMidi.h>
+
+#include "util/string_util.hpp"

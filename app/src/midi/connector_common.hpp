@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "connector_common.hpp"
 
 namespace StreichfettSse
 {
