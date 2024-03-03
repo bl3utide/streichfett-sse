@@ -1,4 +1,5 @@
 ﻿#include "common.hpp"
+#include "connector_common.hpp"
 
 namespace StreichfettSse
 {
