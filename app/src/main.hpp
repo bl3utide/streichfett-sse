@@ -1,7 +1,7 @@
 ﻿/*
     Streichfett SSE
     Copyright (C) 2024 bl3utide <bl3utide@gmail.com>
-    1.0.0
+    1.0.1
 */
 #pragma once
 
