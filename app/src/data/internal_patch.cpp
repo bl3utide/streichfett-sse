@@ -1,7 +1,5 @@
 ﻿#include "common.hpp"
 #include "data/internal_patch.hpp"
-#include "model/global.hpp"
-#include "model/sound.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
 #endif
