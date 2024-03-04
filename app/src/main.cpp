@@ -108,6 +108,13 @@ void loop()
                     break;
             }
         }
+        catch (RtMidiError& error)
+        {
+#ifdef _DEBUG
+            LOGD << error.getMessage();
+#endif
+            setAppError(format("MIDI error: %s", error.getMessage().c_str()));
+        }
         catch (std::exception& error)
         {
 #ifdef _DEBUG
