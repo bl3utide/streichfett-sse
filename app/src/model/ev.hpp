@@ -150,4 +150,4 @@ private:
     bool haveEvArr() const { return _editor_value_arr != nullptr; }
 };
 
-}
+} // StreichfettSse
