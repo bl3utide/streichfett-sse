@@ -13,7 +13,7 @@ namespace Connector
 namespace Debug
 {
 
-void receiveTestSysexCallback(double delta_time, Bytes* message, void* user_data)
+void receiveTestSysexCallback(double delta_time, ByteVec* message, void* user_data)
 {
     SendTestType* type_ptr = static_cast<SendTestType*>(user_data);
     int type_index = static_cast<int>(*type_ptr);

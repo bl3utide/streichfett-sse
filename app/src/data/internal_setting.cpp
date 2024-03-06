@@ -22,7 +22,7 @@ GlobalModel::Global* getGlobalData() noexcept
 }
 
 // DSI: Streichfett
-void setSettingFromBytes(GlobalModel::Global* global, const Bytes& data)
+void setSettingFromBytes(GlobalModel::Global* global, const ByteVec& data)
 {
     using namespace GlobalModel;
 

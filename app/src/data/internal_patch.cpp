@@ -58,7 +58,7 @@ SoundModel::Patch* getCurrentPatch() noexcept
 }
 
 // DSI: Streichfett
-void setPatchFromBytes(SoundModel::Patch* patch, const Bytes& data)
+void setPatchFromBytes(SoundModel::Patch* patch, const ByteVec& data)
 {
     using namespace SoundModel;
 
@@ -99,9 +99,9 @@ void setPatchFromBytes(SoundModel::Patch* patch, const Bytes& data)
 }
 
 // DSI: Streichfett
-Bytes getDataBytes(const SoundModel::Patch* const patch)
+ByteVec getDataBytes(const SoundModel::Patch* const patch)
 {
-    Bytes data;
+    ByteVec data;
 
     // convert Editor values to Device values
     data.clear();

@@ -28,21 +28,21 @@ struct InquiryDump
 
 extern InquiryDump inquiry_dump;
 
-Bytes getInquiryRequestMessage();
-Bytes getSoundRequestMessage(const int sound);  // DSI: Streichfett
-Bytes getGlobalRequestMessage();
-Bytes getProgChangeMessage(const int value);
-Bytes getAllSoundOffMessage();
-bool isNoteOff(const Bytes& mb);
-bool isNoteOn(const Bytes& mb);
-bool checkInquiryDump(const Bytes& dump);
-void checkDump(const Bytes& dump, const DumpType type);
-Bytes getDataBytesFromDump(const Bytes& dump, const DumpType type);
-Bytes getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* const patch);      // DSI: Streichfett
-//Bytes getSoundParameterChangeMessage(const int index, const int value);   // TODO delete toDvFunc
-Bytes getSoundParameterChangeMessage(const int index, const unsigned char value);
+ByteVec getInquiryRequestMessage();
+ByteVec getSoundRequestMessage(const int sound);  // DSI: Streichfett
+ByteVec getGlobalRequestMessage();
+ByteVec getProgChangeMessage(const int value);
+ByteVec getAllSoundOffMessage();
+bool isNoteOff(const ByteVec& mb);
+bool isNoteOn(const ByteVec& mb);
+bool checkInquiryDump(const ByteVec& dump);
+void checkDump(const ByteVec& dump, const DumpType type);
+ByteVec getDataBytesFromDump(const ByteVec& dump, const DumpType type);
+ByteVec getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* const patch);      // DSI: Streichfett
+//ByteVec getSoundParameterChangeMessage(const int index, const int value);   // TODO delete toDvFunc
+ByteVec getSoundParameterChangeMessage(const int index, const Byte value);
 #ifdef _DEBUG
-std::string getMessageDesc(const Bytes& data);
+std::string getMessageDesc(const ByteVec& data);
 #endif
 
 } // MessageHandler

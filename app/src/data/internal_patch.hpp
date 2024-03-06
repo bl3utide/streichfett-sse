@@ -33,8 +33,8 @@ char getSoundBankChar(const int sound) noexcept;        // DSI: Streichfett
 int getSoundPatchNumber(const int sound) noexcept;      // DSI: Streichfett
 SoundModel::Patch* getOriginalPatch() noexcept;
 SoundModel::Patch* getCurrentPatch() noexcept;
-void setPatchFromBytes(SoundModel::Patch* patch, const Bytes& data);
-Bytes getDataBytes(const SoundModel::Patch* const patch);
+void setPatchFromBytes(SoundModel::Patch* patch, const ByteVec& data);
+ByteVec getDataBytes(const SoundModel::Patch* const patch);
 void copyPatchAtoB(SoundModel::Patch* a, SoundModel::Patch* b);
 
 } // InternalPatch

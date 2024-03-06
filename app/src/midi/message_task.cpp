@@ -11,12 +11,12 @@ namespace MessageTask
 {
 
 // private
-std::list<Bytes> _task_list;
+std::list<ByteVec> _task_list;
 #ifdef _DEBUG
 size_t _largest_task_size_ever = 0;
 #endif
 
-void addTask(Bytes& m)
+void addTask(ByteVec& m)
 {
     _task_list.push_front(m);
 #ifdef _DEBUG
@@ -25,15 +25,15 @@ void addTask(Bytes& m)
 }
 
 //void addParamChangedTask(const int index, const int value)    // TODO delete toDvFunc
-void addParamChangedTask(const int index, const unsigned char value)
+void addParamChangedTask(const int index, const Byte value)
 {
     if (index != -1)
         addTask(MessageHandler::getSoundParameterChangeMessage(index, value));
 }
 
-Bytes lastTask()
+ByteVec lastTask()
 {
-    Bytes lastTask = _task_list.back();
+    ByteVec lastTask = _task_list.back();
     _task_list.pop_back();
     return lastTask;
 }
