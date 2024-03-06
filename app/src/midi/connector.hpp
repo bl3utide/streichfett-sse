@@ -1,7 +1,5 @@
 ﻿#pragma once
 
-#include "midi/message_handler.hpp"
-
 namespace StreichfettSse
 {
 namespace Connector

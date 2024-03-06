@@ -29,3 +29,9 @@
 #include <RtMidi.h>
 
 #include "util/string_util.hpp"
+
+// TODO define in external module
+namespace StreichfettSse
+{
+using Bytes = std::vector<unsigned char>;
+} // StreichfettSse

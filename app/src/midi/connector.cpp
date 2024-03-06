@@ -8,6 +8,7 @@
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_common.hpp"
+#include "midi/message_handler.hpp"
 #include "midi/message_task.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
@@ -155,7 +156,7 @@ void requestInquiry()
     MessageHandler::inquiry_dump.received = false;
 
     // send sysex message to device via midi out device
-    MessageHandler::Bytes confirm_req_sysex =
+    Bytes confirm_req_sysex =
         MessageHandler::getInquiryRequestMessage();
     synth_conn.output->sendMessage(&confirm_req_sysex);
 
@@ -176,7 +177,7 @@ void requestInquiry()
 
 void requestGlobalData()
 {
-    MessageHandler::Bytes global_req_sysex =
+    Bytes global_req_sysex =
         MessageHandler::getGlobalRequestMessage();
 
     try
@@ -213,7 +214,7 @@ void requestSoundData()
 {
     InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
 
-    MessageHandler::Bytes sound_req_sysex =
+    Bytes sound_req_sysex =
         MessageHandler::getSoundRequestMessage(sound_addr->sound);
 
     try
@@ -253,7 +254,7 @@ void sendSoundDump(const bool is_edit_buffer)
     int sound = is_edit_buffer ? -1 : sound_addr->sound;
     SoundModel::Patch* current_patch = InternalPatch::getCurrentPatch();
 
-    MessageHandler::Bytes sound_dump =
+    Bytes sound_dump =
         MessageHandler::getSoundDumpMessageFromPatch(sound, current_patch);
 
     try
@@ -287,7 +288,7 @@ void sendProgChange()
 {
     InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
 
-    MessageHandler::Bytes prog_change =
+    Bytes prog_change =
         MessageHandler::getProgChangeMessage(sound_addr->sound);
 
     try
@@ -312,7 +313,7 @@ void sendProgChange()
 
 void sendAllSoundOff()
 {
-    MessageHandler::Bytes all_sound_off = MessageHandler::getAllSoundOffMessage();
+    Bytes all_sound_off = MessageHandler::getAllSoundOffMessage();
 
     try
     {
@@ -335,7 +336,7 @@ void sendOneTaskMessage()
 {
     if (MessageTask::taskSize() > 0)
     {
-        MessageHandler::Bytes message = MessageTask::lastTask();
+        Bytes message = MessageTask::lastTask();
         synth_conn.output->sendMessage(&message);
 #ifdef _DEBUG
         Debug::addProcessedHistory(true, synth_conn.output_port_name, message);

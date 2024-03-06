@@ -8,6 +8,7 @@
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_common.hpp"
+#include "midi/message_handler.hpp"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
 #endif
@@ -20,7 +21,7 @@ namespace Connector
 /*******************************************************************************
     Received confirm response callback
 *******************************************************************************/
-void receiveConfirmSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
+void receiveConfirmSysexCallback(double delta_time, Bytes* message, void* user_data)
 {
     if (message->empty())
     {
@@ -56,7 +57,7 @@ void receiveConfirmSysexCallback(double delta_time, MessageHandler::Bytes* messa
     Received global dump response callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveGlobalDumpSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
+void receiveGlobalDumpSysexCallback(double delta_time, Bytes* message, void* user_data)
 {
     if (message->empty())
     {
@@ -73,7 +74,7 @@ void receiveGlobalDumpSysexCallback(double delta_time, MessageHandler::Bytes* me
             // throwable function
             MessageHandler::checkDump(*message, dump_type);
 
-            MessageHandler::Bytes global_data =
+            Bytes global_data =
                 MessageHandler::getDataBytesFromDump(*message, dump_type);
             GlobalModel::Global* setting = InternalSetting::getGlobalData();
 
@@ -106,7 +107,7 @@ void receiveGlobalDumpSysexCallback(double delta_time, MessageHandler::Bytes* me
     Received sound dump response callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveSoundDumpSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
+void receiveSoundDumpSysexCallback(double delta_time, Bytes* message, void* user_data)
 {
     if (message->empty())
     {
@@ -123,7 +124,7 @@ void receiveSoundDumpSysexCallback(double delta_time, MessageHandler::Bytes* mes
             // throwable function
             MessageHandler::checkDump(*message, dump_type);
 
-            MessageHandler::Bytes sound_data =
+            Bytes sound_data =
                 MessageHandler::getDataBytesFromDump(*message, dump_type);
             SoundModel::Patch* original = InternalPatch::getOriginalPatch();
             SoundModel::Patch* current = InternalPatch::getCurrentPatch();
@@ -175,7 +176,7 @@ Uint32 timeoutCallback(Uint32 interval, void* param)
     Received message from key-device callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveKeyDeviceMessageCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
+void receiveKeyDeviceMessageCallback(double delta_time, Bytes* message, void* user_data)
 {
     if (isSynthConnected() &&
         (MessageHandler::isNoteOff(*message) || MessageHandler::isNoteOn(*message)))
@@ -183,7 +184,7 @@ void receiveKeyDeviceMessageCallback(double delta_time, MessageHandler::Bytes* m
         if (Connector::force_adjust_midi_channel)
         {
             const int ch = InternalSetting::getDeviceMidiChannel();
-            MessageHandler::Bytes channel_adj_message;
+            Bytes channel_adj_message;
             if (MessageHandler::isNoteOff(*message))
             {
                 channel_adj_message = {

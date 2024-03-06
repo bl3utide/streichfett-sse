@@ -10,6 +10,7 @@
 #include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
+#include "midi/message_handler.hpp"
 #include "midi/message_task.hpp"
 #include "logger.hpp"
 

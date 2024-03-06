@@ -7,8 +7,6 @@ namespace StreichfettSse
 namespace MessageHandler
 {
 
-using Bytes = std::vector<unsigned char>;
-
 enum class DumpType : int
 {
     Sound,
