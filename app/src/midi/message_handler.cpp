@@ -14,16 +14,16 @@ namespace MessageHandler
 InquiryDump inquiry_dump;
 
 // private
-const char MESSAGE_INQUIRY = 0x06;
-const char MESSAGE_INQUIRY_REQUEST = 0x01;
-const char MESSAGE_INQUIRY_RESPONSE = 0x02;
-const char MESSAGE_SOUND_REQUEST = 0x00;                        // DSI: Streichfett
-const char MESSAGE_GLOBAL_REQUEST = 0x01;                       // DSI: Streichfett
-const char MESSAGE_SOUND_DUMP = 0x10;                           // DSI: Streichfett
-const char MESSAGE_GLOBAL_DUMP = 0x11;                          // DSI: Streichfett
-const char DEVICE_MANUFACTURER_ID = 0x3E;       // Waldorf
-const char DEVICE_FAMILY_CODE = 0x19;           // Streichfett  // DSI: Streichfett
-const char SOUND_NUMBER_EDIT_BUFFER = 0x7F;                     // DSI: Streichfett
+const Byte MESSAGE_INQUIRY = 0x06;
+const Byte MESSAGE_INQUIRY_REQUEST = 0x01;
+const Byte MESSAGE_INQUIRY_RESPONSE = 0x02;
+const Byte MESSAGE_SOUND_REQUEST = 0x00;                        // DSI: Streichfett
+const Byte MESSAGE_GLOBAL_REQUEST = 0x01;                       // DSI: Streichfett
+const Byte MESSAGE_SOUND_DUMP = 0x10;                           // DSI: Streichfett
+const Byte MESSAGE_GLOBAL_DUMP = 0x11;                          // DSI: Streichfett
+const Byte DEVICE_MANUFACTURER_ID = 0x3E;       // Waldorf
+const Byte DEVICE_FAMILY_CODE = 0x19;           // Streichfett  // DSI: Streichfett
+const Byte SOUND_NUMBER_EDIT_BUFFER = 0x7F;                     // DSI: Streichfett
 const int SOUND_DATA_START_INDEX = 6;                           // DSI: Streichfett
 const int SOUND_DATA_END_INDEX = 29;                            // DSI: Streichfett
 const int GLOBAL_DATA_START_INDEX = 6;                          // DSI: Streichfett
@@ -80,7 +80,7 @@ ByteVec getGlobalRequestMessage()
 ByteVec getProgChangeMessage(const int value)
 {
     const int ch = InternalSetting::getDeviceMidiChannel();
-    char order_byte = 0xC0 + static_cast<Byte>(ch);
+    Byte order_byte = 0xC0 + static_cast<Byte>(ch);
 
     ByteVec pc;
     pc.clear();
@@ -93,7 +93,7 @@ ByteVec getProgChangeMessage(const int value)
 ByteVec getAllSoundOffMessage()
 {
     const int ch = InternalSetting::getDeviceMidiChannel();
-    char order_byte = 0xB0 + static_cast<Byte>(ch);
+    Byte order_byte = 0xB0 + static_cast<Byte>(ch);
 
     ByteVec aso;
     aso.clear();
