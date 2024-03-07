@@ -403,27 +403,17 @@ void drawGui()
 
         float y = ImGui::GetCursorPosY();
         ImGui::SetNextWindowPos(ImVec2(vp_pos.x + (window_width - UI_MAIN_CONTENT_WIDTH) * 0.5f, vp_pos.y + y));
-#ifdef _DEBUG
-        auto use_alt_child_bg = Debug::isChildBgAlt();
-        if (use_alt_child_bg) ImGui::PushStyleColor(ImGuiCol_ChildBg, DEBUG_UI_COLOR_CHILD_BG);
-#endif
         ImGui::BeginChild("main", ImVec2(UI_MAIN_CONTENT_WIDTH, -32.0f), true, 0);
         {
             drawContent();
         }
         ImGui::EndChild();
-#ifdef _DEBUG
-        if (use_alt_child_bg) ImGui::PopStyleColor();
-#endif
 
         if (disable_page_content) ImGui::EndDisabled();
         // End of disable screen operation
 
         y = ImGui::GetCursorPosY();
         ImGui::SetNextWindowPos(ImVec2(vp_pos.x + (window_width - UI_MAIN_CONTENT_WIDTH) * 0.5f, vp_pos.y + y));
-#ifdef _DEBUG
-        if (use_alt_child_bg) ImGui::PushStyleColor(ImGuiCol_ChildBg, DEBUG_UI_COLOR_CHILD_BG);
-#endif
         ImGui::BeginChild("annotation", ImVec2(UI_MAIN_CONTENT_WIDTH, 30.0f), true, ImGuiWindowFlags_NoScrollbar);
         {
             ImGui::PushFont((int)Font::TextBold);
@@ -433,9 +423,6 @@ void drawGui()
             ImGui::PopFont();
         }
         ImGui::EndChild();
-#ifdef _DEBUG
-        if (use_alt_child_bg) ImGui::PopStyleColor();
-#endif
     }
     ImGui::End();
 #ifdef _DEBUG

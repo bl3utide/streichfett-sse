@@ -25,7 +25,6 @@ namespace Debug
 bool _show_debug_menu_bar = true;
 bool _show_demo_window = false;
 bool _show_debug_window = false;
-bool _use_alternative_child_bg = false;
 bool _show_processed_message_window = false;
 int _selected_debug_log_index = -1;
 Logger::Log _selected_debug_log;
@@ -35,7 +34,7 @@ void drawDebugMenuBar(const ImVec2 viewport_pos)
     ImGui::PushFont((int)FontDebug::Text);
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.35f, 0.35f, 0.35f, 0.65f));
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-    ImGui::SetNextWindowPos(ImVec2(center.x - 140.0f, viewport_pos.y), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(center.x - 80.0f, viewport_pos.y), ImGuiCond_Always);
     ImGui::Begin("debug_control", nullptr,
         ImGuiWindowFlags_AlwaysAutoResize
         | ImGuiWindowFlags_NoMove
@@ -59,9 +58,6 @@ void drawDebugMenuBar(const ImVec2 viewport_pos)
             ImGui::MouseCursorToHand();
             ImGui::SameLine();
             ImGui::Checkbox("debug", &_show_debug_window);
-            ImGui::MouseCursorToHand();
-            ImGui::SameLine();
-            ImGui::Checkbox("alt_child_bg", &_use_alternative_child_bg);
             ImGui::MouseCursorToHand();
         }
     }
@@ -522,11 +518,6 @@ void drawDebugWindows(const int window_w, const int window_h, const State curren
         drawDebugWindow(&_show_debug_window, window_w, window_h, current_state);
 
     ImGui::PopFont();
-}
-
-bool isChildBgAlt() noexcept
-{
-    return _use_alternative_child_bg;
 }
 
 } // Debug
