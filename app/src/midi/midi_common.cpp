@@ -1,5 +1,5 @@
 ﻿#include "common.hpp"
-#include "midi/connector_common.hpp"
+#include "midi/midi_common.hpp"
 
 namespace StreichfettSse
 {

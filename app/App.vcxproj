@@ -123,7 +123,7 @@
     <ClCompile Include="src\midi\callback.cpp" />
     <ClCompile Include="src\midi\connector.cpp" />
     <ClCompile Include="src\midi\callback_debug.cpp" />
-    <ClCompile Include="src\midi\connector_common.cpp" />
+    <ClCompile Include="src\midi\midi_common.cpp" />
     <ClCompile Include="src\midi\connector_debug.cpp" />
     <ClCompile Include="src\midi\message_handler.cpp" />
     <ClCompile Include="src\midi\message_task.cpp" />
@@ -149,7 +149,7 @@
     <ClInclude Include="src\midi\connector.hpp" />
     <ClInclude Include="src\midi\callback.hpp" />
     <ClInclude Include="src\midi\callback_debug.hpp" />
-    <ClInclude Include="src\midi\connector_common.hpp" />
+    <ClInclude Include="src\midi\midi_common.hpp" />
     <ClInclude Include="src\midi\connector_debug.hpp" />
     <ClInclude Include="src\midi\message_handler.hpp" />
     <ClInclude Include="src\midi\message_task.hpp" />
