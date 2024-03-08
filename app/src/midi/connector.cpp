@@ -344,11 +344,6 @@ void sendOneTaskMessage()
     }
 }
 
-bool isWaitingStoreDelay() noexcept
-{
-    return _is_waiting_store_delay;
-}
-
 bool isSynthConnected() noexcept
 {
     return _is_synth_connected;

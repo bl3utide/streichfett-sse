@@ -98,7 +98,6 @@ void sendSoundDump(const bool is_edit_buffer = false);
 void sendProgChange();
 void sendAllSoundOff();
 void sendOneTaskMessage();
-bool isWaitingStoreDelay() noexcept;
 bool isSynthConnected() noexcept;
 void setSynthConnected(const bool connected) noexcept;
 
