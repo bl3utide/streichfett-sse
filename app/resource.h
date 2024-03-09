@@ -1,1 +1,1 @@
-#define ID_ICON                         101
+﻿#define ID_ICON 101
