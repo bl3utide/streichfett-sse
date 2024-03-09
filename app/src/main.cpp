@@ -21,7 +21,7 @@ const std::string APP_VERSION = DEF_APP_VERSION;
 const std::string APP_COPYRIGHT = format("Copyright (C) %d %s", DEF_APP_DEV_YR, DEF_APP_DEV_BY);
 const std::string APP_TITLE = DEF_APP_TITLE;
 #ifdef _DEBUG
-const std::string DEBUG_FILE_NAME = format("%s.debug.log", APP_NAME);
+const std::string DEBUG_FILE_NAME = format("%s.debug.log", APP_NAME.c_str());
 #endif
 
 void initialize()
