@@ -110,12 +110,12 @@ public:
             return "(n/a)";
     }
 
-    unsigned char toDv() const
+    Byte toDv() const
     {
         if (_has_converter)
-            return static_cast<unsigned char>(_to_dv_func(_editor_value));
+            return static_cast<Byte>(_to_dv_func(_editor_value));
         else
-            return static_cast<unsigned char>(_editor_value);
+            return static_cast<Byte>(_editor_value);
     }
 
     int max() const { return _max; }
@@ -150,4 +150,4 @@ private:
     bool haveEvArr() const { return _editor_value_arr != nullptr; }
 };
 
-}
+} // StreichfettSse

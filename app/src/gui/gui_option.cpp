@@ -6,6 +6,7 @@
 #include "gui/gui_font.hpp"
 #include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
+#include "midi/message_handler.hpp"
 #include "model/global.hpp"
 
 namespace StreichfettSse

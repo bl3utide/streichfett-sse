@@ -12,5 +12,8 @@ A sound editor for Waldorf Streichfett
 
 ## Changelog
 
+### v1.1
+- Add version info
+
 ### v1.0
 - Initial release

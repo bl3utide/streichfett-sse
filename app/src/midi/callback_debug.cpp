@@ -1,8 +1,8 @@
 ﻿#include "common.hpp"
 #ifdef _DEBUG
+#include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/callback_debug.hpp"
-#include "midi/connector_common.hpp"
 #include "midi/connector_debug.hpp"
 #include "midi/message_handler.hpp"
 
@@ -13,7 +13,7 @@ namespace Connector
 namespace Debug
 {
 
-void receiveTestSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
+void receiveTestSysexCallback(double delta_time, ByteVec* message, void* user_data)
 {
     SendTestType* type_ptr = static_cast<SendTestType*>(user_data);
     int type_index = static_cast<int>(*type_ptr);

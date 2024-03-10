@@ -5,9 +5,10 @@
 #include "state.hpp"
 #include "data/internal_patch.hpp"
 #include "data/internal_setting.hpp"
+#include "midi/midi_common.hpp"
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
-#include "midi/connector_common.hpp"
+#include "midi/message_handler.hpp"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
 #endif
@@ -20,7 +21,7 @@ namespace Connector
 /*******************************************************************************
     Received confirm response callback
 *******************************************************************************/
-void receiveConfirmSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
+void receiveConfirmSysexCallback(double delta_time, ByteVec* message, void* user_data)
 {
     if (message->empty())
     {
@@ -56,7 +57,7 @@ void receiveConfirmSysexCallback(double delta_time, MessageHandler::Bytes* messa
     Received global dump response callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveGlobalDumpSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
+void receiveGlobalDumpSysexCallback(double delta_time, ByteVec* message, void* user_data)
 {
     if (message->empty())
     {
@@ -73,7 +74,7 @@ void receiveGlobalDumpSysexCallback(double delta_time, MessageHandler::Bytes* me
             // throwable function
             MessageHandler::checkDump(*message, dump_type);
 
-            MessageHandler::Bytes global_data =
+            ByteVec global_data =
                 MessageHandler::getDataBytesFromDump(*message, dump_type);
             GlobalModel::Global* setting = InternalSetting::getGlobalData();
 
@@ -106,7 +107,7 @@ void receiveGlobalDumpSysexCallback(double delta_time, MessageHandler::Bytes* me
     Received sound dump response callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveSoundDumpSysexCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
+void receiveSoundDumpSysexCallback(double delta_time, ByteVec* message, void* user_data)
 {
     if (message->empty())
     {
@@ -123,7 +124,7 @@ void receiveSoundDumpSysexCallback(double delta_time, MessageHandler::Bytes* mes
             // throwable function
             MessageHandler::checkDump(*message, dump_type);
 
-            MessageHandler::Bytes sound_data =
+            ByteVec sound_data =
                 MessageHandler::getDataBytesFromDump(*message, dump_type);
             SoundModel::Patch* original = InternalPatch::getOriginalPatch();
             SoundModel::Patch* current = InternalPatch::getCurrentPatch();
@@ -175,7 +176,7 @@ Uint32 timeoutCallback(Uint32 interval, void* param)
     Received message from key-device callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveKeyDeviceMessageCallback(double delta_time, MessageHandler::Bytes* message, void* user_data)
+void receiveKeyDeviceMessageCallback(double delta_time, ByteVec* message, void* user_data)
 {
     if (isSynthConnected() &&
         (MessageHandler::isNoteOff(*message) || MessageHandler::isNoteOn(*message)))
@@ -183,11 +184,11 @@ void receiveKeyDeviceMessageCallback(double delta_time, MessageHandler::Bytes* m
         if (Connector::force_adjust_midi_channel)
         {
             const int ch = InternalSetting::getDeviceMidiChannel();
-            MessageHandler::Bytes channel_adj_message;
+            ByteVec channel_adj_message;
             if (MessageHandler::isNoteOff(*message))
             {
                 channel_adj_message = {
-                    static_cast<unsigned char>(0x80 + ch),
+                    static_cast<Byte>(0x80 + ch),
                     message->at(1),
                     message->at(2)
                 };
@@ -195,7 +196,7 @@ void receiveKeyDeviceMessageCallback(double delta_time, MessageHandler::Bytes* m
             else
             {
                 channel_adj_message = {
-                    static_cast<unsigned char>(0x90 + ch),
+                    static_cast<Byte>(0x90 + ch),
                     message->at(1),
                     message->at(2)
                 };

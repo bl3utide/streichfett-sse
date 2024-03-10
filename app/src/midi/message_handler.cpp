@@ -14,29 +14,29 @@ namespace MessageHandler
 InquiryDump inquiry_dump;
 
 // private
-const char MESSAGE_INQUIRY = 0x06;
-const char MESSAGE_INQUIRY_REQUEST = 0x01;
-const char MESSAGE_INQUIRY_RESPONSE = 0x02;
-const char MESSAGE_SOUND_REQUEST = 0x00;                        // DSI: Streichfett
-const char MESSAGE_GLOBAL_REQUEST = 0x01;                       // DSI: Streichfett
-const char MESSAGE_SOUND_DUMP = 0x10;                           // DSI: Streichfett
-const char MESSAGE_GLOBAL_DUMP = 0x11;                          // DSI: Streichfett
-const char DEVICE_MANUFACTURER_ID = 0x3E;       // Waldorf
-const char DEVICE_FAMILY_CODE = 0x19;           // Streichfett  // DSI: Streichfett
-const char SOUND_NUMBER_EDIT_BUFFER = 0x7F;                     // DSI: Streichfett
+const Byte MESSAGE_INQUIRY = 0x06;
+const Byte MESSAGE_INQUIRY_REQUEST = 0x01;
+const Byte MESSAGE_INQUIRY_RESPONSE = 0x02;
+const Byte MESSAGE_SOUND_REQUEST = 0x00;                        // DSI: Streichfett
+const Byte MESSAGE_GLOBAL_REQUEST = 0x01;                       // DSI: Streichfett
+const Byte MESSAGE_SOUND_DUMP = 0x10;                           // DSI: Streichfett
+const Byte MESSAGE_GLOBAL_DUMP = 0x11;                          // DSI: Streichfett
+const Byte DEVICE_MANUFACTURER_ID = 0x3E;       // Waldorf
+const Byte DEVICE_FAMILY_CODE = 0x19;           // Streichfett  // DSI: Streichfett
+const Byte SOUND_NUMBER_EDIT_BUFFER = 0x7F;                     // DSI: Streichfett
 const int SOUND_DATA_START_INDEX = 6;                           // DSI: Streichfett
 const int SOUND_DATA_END_INDEX = 29;                            // DSI: Streichfett
 const int GLOBAL_DATA_START_INDEX = 6;                          // DSI: Streichfett
 const int GLOBAL_DATA_END_INDEX = 13;                           // DSI: Streichfett
 
-bool isSysex(const Bytes& mb) noexcept
+bool isSysex(const ByteVec& mb) noexcept
 {
     return mb.front() == 0xF0 && mb.back() == 0xF7;
 }
 
-Bytes getInquiryRequestMessage()
+ByteVec getInquiryRequestMessage()
 {
-    Bytes req;
+    ByteVec req;
     req.clear();
     req.push_back(0xF0);                    // Universal SysEx Header (2 bytes)
     req.push_back(0x7E);
@@ -48,24 +48,24 @@ Bytes getInquiryRequestMessage()
 }
 
 // DSI: Streichfett
-Bytes getSoundRequestMessage(const int sound)
+ByteVec getSoundRequestMessage(const int sound)
 {
-    Bytes req;
+    ByteVec req;
     req.clear();
     req.push_back(0xF0);
     req.push_back(DEVICE_MANUFACTURER_ID);
     req.push_back(DEVICE_FAMILY_CODE);
     req.push_back(0x7F);    // Device ID: omni
     req.push_back(MESSAGE_SOUND_REQUEST);
-    req.push_back(static_cast<unsigned char>(sound));
+    req.push_back(static_cast<Byte>(sound));
     req.push_back(0xF7);
     return req;
 }
 
 // DSI: Streichfett
-Bytes getGlobalRequestMessage()
+ByteVec getGlobalRequestMessage()
 {
-    Bytes req;
+    ByteVec req;
     req.clear();
     req.push_back(0xF0);
     req.push_back(DEVICE_MANUFACTURER_ID);
@@ -77,43 +77,43 @@ Bytes getGlobalRequestMessage()
     return req;
 }
 
-Bytes getProgChangeMessage(const int value)
+ByteVec getProgChangeMessage(const int value)
 {
     const int ch = InternalSetting::getDeviceMidiChannel();
-    char order_byte = 0xC0 + static_cast<unsigned char>(ch);
+    Byte order_byte = 0xC0 + static_cast<Byte>(ch);
 
-    Bytes pc;
+    ByteVec pc;
     pc.clear();
     pc.push_back(order_byte);
-    pc.push_back(static_cast<unsigned char>(value));
+    pc.push_back(static_cast<Byte>(value));
     return pc;
 }
 
 // DSI: Streichfett
-Bytes getAllSoundOffMessage()
+ByteVec getAllSoundOffMessage()
 {
     const int ch = InternalSetting::getDeviceMidiChannel();
-    char order_byte = 0xB0 + static_cast<unsigned char>(ch);
+    Byte order_byte = 0xB0 + static_cast<Byte>(ch);
 
-    Bytes aso;
+    ByteVec aso;
     aso.clear();
     aso.push_back(order_byte);
-    aso.push_back(static_cast<unsigned char>(0x78));
+    aso.push_back(static_cast<Byte>(0x78));
     return aso;
 }
 
-bool isNoteOff(const Bytes& mb)
+bool isNoteOff(const ByteVec& mb)
 {
     return 0x80 <= mb[0] && mb[0] <= 0x8F;
 }
 
-bool isNoteOn(const Bytes& mb)
+bool isNoteOn(const ByteVec& mb)
 {
     return 0x90 <= mb[0] && mb[0] <= 0x9F;
 }
 
 // DSI: Streichfett
-bool checkInquiryDump(const Bytes& dump)
+bool checkInquiryDump(const ByteVec& dump)
 {
     if (!isSysex(dump)) return false;
 
@@ -137,7 +137,7 @@ bool checkInquiryDump(const Bytes& dump)
 }
 
 // DSI: Streichfett
-void checkDump(const Bytes& dump, const DumpType type)
+void checkDump(const ByteVec& dump, const DumpType type)
 {
     if (!isSysex(dump))
         throw std::exception("checkDump failed");
@@ -162,9 +162,9 @@ void checkDump(const Bytes& dump, const DumpType type)
     }
 }
 
-Bytes getDataBytesFromDump(const Bytes& dump, const DumpType type)
+ByteVec getDataBytesFromDump(const ByteVec& dump, const DumpType type)
 {
-    Bytes data;
+    ByteVec data;
     if (type == DumpType::Sound)
     {
         for (int i = SOUND_DATA_START_INDEX; i <= SOUND_DATA_END_INDEX; ++i)
@@ -180,22 +180,22 @@ Bytes getDataBytesFromDump(const Bytes& dump, const DumpType type)
 }
 
 // DSI: Streichfett
-Bytes getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* const patch)
+ByteVec getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* const patch)
 {
-    Bytes sound_data = InternalPatch::getDataBytes(patch);
+    ByteVec sound_data = InternalPatch::getDataBytes(patch);
     int device_id = InternalSetting::getDeviceId();
 
-    Bytes req;
+    ByteVec req;
     req.clear();
     req.push_back(0xF0);
     req.push_back(DEVICE_MANUFACTURER_ID);
     req.push_back(DEVICE_FAMILY_CODE);
-    req.push_back(static_cast<unsigned char>(device_id));
+    req.push_back(static_cast<Byte>(device_id));
     req.push_back(MESSAGE_SOUND_DUMP);
     if (sound == -1)
-        req.push_back(static_cast<unsigned char>(SOUND_NUMBER_EDIT_BUFFER));
+        req.push_back(static_cast<Byte>(SOUND_NUMBER_EDIT_BUFFER));
     else
-        req.push_back(static_cast<unsigned char>(sound));
+        req.push_back(static_cast<Byte>(sound));
     for (int i = 0; i < sound_data.size(); ++i)
         req.push_back(sound_data[i]);
 
@@ -203,31 +203,31 @@ Bytes getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* con
     int sum = 0;
     for (int i = 1; i < req.size(); ++i)
         sum += req[i];
-    req.push_back(static_cast<unsigned char>(sum & 0x7F));
+    req.push_back(static_cast<Byte>(sum & 0x7F));
     req.push_back(0xF7);
 
     return req;
 }
 
 // DSI: Streichfett
-//Bytes getSoundParameterChangeMessage(const int index, const int value)    // TODO delete toDvFunc
-Bytes getSoundParameterChangeMessage(const int index, const unsigned char value)
+//ByteVec getSoundParameterChangeMessage(const int index, const int value)    // TODO delete toDvFunc
+ByteVec getSoundParameterChangeMessage(const int index, const Byte value)
 {
     // NOTE: For Streichfett, change the parameters with CC
 
     const int ch = InternalSetting::getDeviceMidiChannel();
 
-    Bytes req;
+    ByteVec req;
     req.clear();
-    req.push_back(0xB0 + static_cast<unsigned char>(ch));
-    req.push_back(static_cast<unsigned char>(index));
-    //req.push_back(static_cast<unsigned char>(value)); // TODO delete toDvFunc
+    req.push_back(0xB0 + static_cast<Byte>(ch));
+    req.push_back(static_cast<Byte>(index));
+    //req.push_back(static_cast<Byte>(value)); // TODO delete toDvFunc
     req.push_back(value);
     return req;
 }
 
 #ifdef _DEBUG
-std::string getMessageDesc(const Bytes& data)
+std::string getMessageDesc(const ByteVec& data)
 {
     std::stringstream ss;
 

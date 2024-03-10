@@ -1,7 +1,5 @@
 ﻿#include "common.hpp"
 #include "data/internal_patch.hpp"
-#include "model/global.hpp"
-#include "model/sound.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
 #endif
@@ -60,7 +58,7 @@ SoundModel::Patch* getCurrentPatch() noexcept
 }
 
 // DSI: Streichfett
-void setPatchFromBytes(SoundModel::Patch* patch, const MessageHandler::Bytes& data)
+void setPatchFromBytes(SoundModel::Patch* patch, const ByteVec& data)
 {
     using namespace SoundModel;
 
@@ -101,9 +99,9 @@ void setPatchFromBytes(SoundModel::Patch* patch, const MessageHandler::Bytes& da
 }
 
 // DSI: Streichfett
-MessageHandler::Bytes getDataBytes(const SoundModel::Patch* const patch)
+ByteVec getDataBytes(const SoundModel::Patch* const patch)
 {
-    MessageHandler::Bytes data;
+    ByteVec data;
 
     // convert Editor values to Device values
     data.clear();

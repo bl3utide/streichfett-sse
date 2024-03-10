@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "midi/message_handler.hpp"
 #include "model/global.hpp"
 
 namespace StreichfettSse
@@ -8,11 +7,11 @@ namespace StreichfettSse
 namespace InternalSetting
 {
 
-void initData();
-GlobalModel::Global* getGlobalData();
-void setSettingFromBytes(GlobalModel::Global* global, const MessageHandler::Bytes& data);
-int getDeviceMidiChannel();
-int getDeviceId();
+void initData() noexcept;
+GlobalModel::Global* getGlobalData() noexcept;
+void setSettingFromBytes(GlobalModel::Global* global, const ByteVec& data);
+int getDeviceMidiChannel() noexcept;
+int getDeviceId() noexcept;
 
 } // InternalSetting
 } // StreichfettSse

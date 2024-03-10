@@ -1,6 +1,5 @@
 ﻿#include "common.hpp"
-#include "midi/message_handler.hpp"
-#include "model/global.hpp"
+#include "data/internal_setting.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
 #endif
@@ -23,7 +22,7 @@ GlobalModel::Global* getGlobalData() noexcept
 }
 
 // DSI: Streichfett
-void setSettingFromBytes(GlobalModel::Global* global, const MessageHandler::Bytes& data)
+void setSettingFromBytes(GlobalModel::Global* global, const ByteVec& data)
 {
     using namespace GlobalModel;
 
