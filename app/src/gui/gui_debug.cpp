@@ -2,6 +2,9 @@
 #ifdef _DEBUG
 #include "error.hpp"
 #include "operation.hpp"
+#include "config/config.hpp"
+#include "config/cv.hpp"
+#include "config/section.hpp"
 #include "data/internal_patch.hpp"
 #include "data/internal_setting.hpp"
 #include "gui/gui.hpp"
@@ -126,6 +129,52 @@ void drawDebugTabItemGeneral()
         ImGui::Separator(); //--------------------------------------------------
 
         ImGui::Text("%-24s: %d(max %d)", "task size", MessageTask::taskSize(), MessageTask::largestTaskSizeEver());
+
+        ImGui::EndTabItem();
+    }
+}
+
+void drawDebugTabItemConfig()
+{
+    if (ImGui::BeginTabItem("Config"))
+    {
+        ImGui::BeginChild("config_value_list", ImVec2(600, 300));
+        {
+            auto drawParamsRow = [](const Config::Key key)
+            {
+                const Config::Cv cv = Config::getCv(key);
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+                ImGui::Text("%s", cv.section_name().c_str());
+                ImGui::TableNextColumn();
+                ImGui::Text("%s", cv.key_name().c_str());
+                ImGui::TableNextColumn();
+                ImGui::Text("%s", cv.type_str().c_str());
+                ImGui::TableNextColumn();
+                ImGui::Text("%s", cv.cv().c_str());
+            };
+
+            ImGui::Text("Loaded config values");
+
+            if (ImGui::BeginTable("config_values", 4, ImGuiTableFlags_Borders
+                | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit))
+            {
+                ImGui::TableSetupColumn("Section", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+                ImGui::TableSetupColumn("Key", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+                ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
+
+                ImGui::TableHeadersRow();
+
+                for (int key_i = 0; key_i < static_cast<int>(Config::Key::_COUNT_); ++key_i)
+                {
+                    drawParamsRow(static_cast<Config::Key>(key_i));
+                }
+
+                ImGui::EndTable();
+            }
+        }
+        ImGui::EndChild();
 
         ImGui::EndTabItem();
     }
@@ -420,7 +469,7 @@ void drawDebugTabItemLogger()
             for (auto iter = debug_log.begin(); iter != debug_log.end(); ++iter)
             {
                 bool is_selected = _selected_debug_log_index == iter->log_id;
-                if (ImGui::Selectable(format("%05d %s", iter->log_id, iter->text.c_str()).c_str(), is_selected))
+                if (ImGui::Selectable(StringUtil::format("%05d %s", iter->log_id, iter->text.c_str()).c_str(), is_selected))
                 {
                     _selected_debug_log = *iter;
                     _selected_debug_log_index = iter->log_id;
@@ -485,6 +534,7 @@ void drawDebugWindow(bool* open, const int window_w, const int window_h,
         if (ImGui::BeginTabBar("DebugTab", ImGuiTabBarFlags_None))
         {
             drawDebugTabItemGeneral();
+            drawDebugTabItemConfig();
             drawDebugTabItemParams();
             drawDebugTabItemDeviceSetting();
             drawDebugTabItemSendTest(current_state);

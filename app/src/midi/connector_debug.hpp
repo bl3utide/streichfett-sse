@@ -69,7 +69,7 @@ struct ProcessedMidiMessage
         data.clear();
         data = d;
 
-        list_title = format("%s %s %s",
+        list_title = StringUtil::format("%s %s %s",
             transmitted ? "T" : "R",
             timestamp.c_str(),
             description.c_str());

@@ -88,6 +88,8 @@ extern int store_delay_duration;
 
 void initialize();
 void finalize() noexcept;
+void applyConfig();
+void updateConfig() noexcept;
 void resetAllConnections();
 void checkOpenPorts();
 void keyOpenPort();

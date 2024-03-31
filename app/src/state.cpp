@@ -12,6 +12,7 @@ namespace StreichfettSse
 const char* STATE_STR[static_cast<int>(State::_COUNT_)] =
 {
     "InitInternalData",
+    "ApplyConfig",
     "Idle",
     "RequestInquiry",
     "WaitingConfirm",
@@ -23,6 +24,7 @@ const char* STATE_STR[static_cast<int>(State::_COUNT_)] =
     "EnterSoundMode",
     "EnterOptionMode",
     "WaitingSendDelay",
+    "PrepareToExit",
     "None"
 };
 #endif

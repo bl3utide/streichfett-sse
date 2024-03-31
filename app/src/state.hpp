@@ -6,6 +6,7 @@ namespace StreichfettSse
 enum class State : int
 {
     InitInternalData,
+    ApplyConfig,
     Idle,
     RequestInquiry,
     WaitingConfirm,
@@ -17,6 +18,7 @@ enum class State : int
     EnterSoundMode,
     EnterOptionMode,
     WaitingSendDelay,
+    PrepareToExit,
     None,
     _COUNT_
 };
