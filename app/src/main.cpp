@@ -86,6 +86,7 @@ void loop()
                 case State::ApplyConfig:
                     Config::load(CONFIG_FILE_NAME);
                     Connector::applyConfig();
+                    setNextState(State::Idle);
                     break;
                 case State::Idle:
                     Connector::sendOneTaskMessage();

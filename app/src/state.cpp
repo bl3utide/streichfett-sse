@@ -45,7 +45,8 @@ State getNextState() noexcept
 
 void setNextState(State state) noexcept
 {
-    _next_state = state;
+    if (_next_state == State::None)
+        _next_state = state;
 #ifdef _DEBUG
     LOGD << "setNextState: [" << static_cast<int>(_next_state) << "]"
         << STATE_STR[static_cast<int>(_next_state)];
