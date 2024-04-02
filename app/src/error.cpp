@@ -14,8 +14,11 @@ bool showing_error_message = false;
 
 void setAppError(const std::string& message) noexcept
 {
-    error_message = message;
-    has_error = true;
+    if (!has_error)
+    {
+        error_message = message;
+        has_error = true;
+    }
 }
 
 } // StreichfettSse

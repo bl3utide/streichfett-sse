@@ -3,6 +3,7 @@
 #include "error.hpp"
 #include "operation.hpp"
 #include "state.hpp"
+#include "config/config.hpp"
 #include "data/internal_patch.hpp"
 #include "data/internal_setting.hpp"
 #include "midi/midi_common.hpp"
@@ -97,6 +98,71 @@ void finalize() noexcept
     key_conn.finalize();
 }
 
+void applyConfig()
+{
+    // Synth Input Device
+    const std::string cv_synth_input_device_name = Config::getConfigValue<std::string>(Config::Key::SynthInputDevice);
+    const auto synth_in_res = std::find(in_name_list.cbegin(), in_name_list.cend(), cv_synth_input_device_name);
+    if (synth_in_res != in_name_list.cend())
+    {   // found
+        const int index = static_cast<int>(std::distance(in_name_list.cbegin(), synth_in_res));
+        synth_conn.input_port_index = index;
+        synth_conn.input_port_name = in_name_list[index];
+        checkOpenPorts();
+    }
+
+    // Synth Output Device
+    const std::string cv_synth_output_device_name = Config::getConfigValue<std::string>(Config::Key::SynthOutputDevice);
+    const auto synth_out_res = std::find(out_name_list.cbegin(), out_name_list.cend(), cv_synth_output_device_name);
+    if (synth_out_res != out_name_list.cend())
+    {   // found
+        const int index = static_cast<int>(std::distance(out_name_list.cbegin(), synth_out_res));
+        synth_conn.output_port_index = index;
+        synth_conn.output_port_name = out_name_list[index];
+        checkOpenPorts();
+    }
+
+    // Keyboard Input Device
+    const std::string cv_keyboard_input_device_name = Config::getConfigValue<std::string>(Config::Key::KeyboardInputDevice);
+    const auto key_in_res = std::find(in_name_list.cbegin(), in_name_list.cend(), cv_keyboard_input_device_name);
+    if (key_in_res != in_name_list.cend())
+    {   // found
+        const int synth_in_index = static_cast<int>(std::distance(in_name_list.cbegin(), synth_in_res));
+        const int key_in_index = static_cast<int>(std::distance(in_name_list.cbegin(), key_in_res));
+        if (synth_in_index != key_in_index)
+        {
+            key_conn.input_port_index = key_in_index;
+            key_conn.input_port_name = in_name_list[key_in_index];
+            keyOpenPort();
+        }
+    }
+
+    // Force Adjust MIDI Channel
+    force_adjust_midi_channel = Config::getConfigValue<bool>(Config::Key::ForceAdjustMidiCh);
+
+    // SysEx Delay
+    store_delay_duration = Config::getConfigValue<int>(Config::Key::SysExDelay);
+}
+
+void updateConfig() noexcept
+{
+    const std::string synth_in_device_name = isSynthConnected()
+        ? synth_conn.input_port_name
+        : "";
+    const std::string synth_out_device_name = isSynthConnected()
+        ? synth_conn.output_port_name
+        : "";
+    // TODO key-in doesn't have the flag of connected. therefore this expression
+    const std::string key_in_device_name = key_conn.input_port_index != -1
+        ? key_conn.input_port_name
+        : "";
+    Config::setConfigValue(Config::Key::SynthInputDevice, synth_in_device_name);
+    Config::setConfigValue(Config::Key::SynthOutputDevice, synth_out_device_name);
+    Config::setConfigValue(Config::Key::KeyboardInputDevice, key_in_device_name);
+    Config::setConfigValue(Config::Key::ForceAdjustMidiCh, force_adjust_midi_channel);
+    Config::setConfigValue(Config::Key::SysExDelay, store_delay_duration);
+}
+
 void resetAllConnections()
 {
     synth_conn.closePorts();
@@ -122,7 +188,7 @@ void checkOpenPorts()
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
-        setAppError(format("MIDI error: %s", error.getMessage().c_str()));
+        setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
         setNextState(State::Idle);
         setSynthConnected(false);
         return;
@@ -142,7 +208,7 @@ void keyOpenPort()
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
-        setAppError(format("MIDI error: %s", error.getMessage().c_str()));
+        setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
         return;
     }
 

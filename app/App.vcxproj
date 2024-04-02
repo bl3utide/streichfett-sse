@@ -108,6 +108,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\config\config.cpp" />
+    <ClCompile Include="src\config\cv.cpp" />
+    <ClCompile Include="src\config\reader.cpp" />
+    <ClCompile Include="src\config\section.cpp" />
+    <ClCompile Include="src\config\writer.cpp" />
     <ClCompile Include="src\data\internal_patch.cpp" />
     <ClCompile Include="src\data\internal_setting.cpp" />
     <ClCompile Include="src\error.cpp" />
@@ -135,6 +140,11 @@
     <ClInclude Include="src\annotation.hpp" />
     <ClInclude Include="src\compressed\arrayed_font.hpp" />
     <ClInclude Include="src\compressed\arrayed_texture.hpp" />
+    <ClInclude Include="src\config\config.hpp" />
+    <ClInclude Include="src\config\cv.hpp" />
+    <ClInclude Include="src\config\reader.hpp" />
+    <ClInclude Include="src\config\section.hpp" />
+    <ClInclude Include="src\config\writer.hpp" />
     <ClInclude Include="src\data\internal_patch.hpp" />
     <ClInclude Include="src\data\internal_setting.hpp" />
     <ClInclude Include="src\error.hpp" />
