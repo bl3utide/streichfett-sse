@@ -101,7 +101,7 @@ void finalize() noexcept
 void applyConfig()
 {
     // Synth Input Device
-    const std::string cv_synth_input_device_name = Config::getConfigValue<std::string>(Config::Key::SynthInputDevice);
+    const std::string& cv_synth_input_device_name = Config::getConfigValue<std::string>(Config::Key::SynthInputDevice);
     const auto synth_in_res = std::find(in_name_list.cbegin(), in_name_list.cend(), cv_synth_input_device_name);
     if (synth_in_res != in_name_list.cend())
     {   // found
@@ -110,7 +110,7 @@ void applyConfig()
     }
 
     // Synth Output Device
-    const std::string cv_synth_output_device_name = Config::getConfigValue<std::string>(Config::Key::SynthOutputDevice);
+    const std::string& cv_synth_output_device_name = Config::getConfigValue<std::string>(Config::Key::SynthOutputDevice);
     const auto synth_out_res = std::find(out_name_list.cbegin(), out_name_list.cend(), cv_synth_output_device_name);
     if (synth_out_res != out_name_list.cend())
     {   // found
@@ -119,7 +119,7 @@ void applyConfig()
     }
 
     // Keyboard Input Device
-    const std::string cv_keyboard_input_device_name = Config::getConfigValue<std::string>(Config::Key::KeyboardInputDevice);
+    const std::string& cv_keyboard_input_device_name = Config::getConfigValue<std::string>(Config::Key::KeyboardInputDevice);
     const auto key_in_res = std::find(in_name_list.cbegin(), in_name_list.cend(), cv_keyboard_input_device_name);
     if (key_in_res != in_name_list.cend())
     {   // found
