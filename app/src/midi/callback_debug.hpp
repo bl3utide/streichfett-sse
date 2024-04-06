@@ -7,10 +7,13 @@ namespace Connector
 {
 namespace Debug
 {
+namespace Callback
+{
 
-void receiveTestSysexCallback(double delta_time, ByteVec* message, void* user_data);
-Uint32 timeoutTestCallback(Uint32 interval, void* param);
+void receiveTestSysex(double delta_time, ByteVec* message, void* user_data);
+Uint32 timeoutTest(Uint32 interval, void* param);
 
+} // Callback
 } // Debug
 } // Connector
 } // StreichfettSse

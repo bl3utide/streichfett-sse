@@ -17,11 +17,13 @@ namespace StreichfettSse
 {
 namespace Connector
 {
+namespace Callback
+{
 
 /*******************************************************************************
     Received confirm response callback
 *******************************************************************************/
-void receiveConfirmSysexCallback(double delta_time, ByteVec* message, void* user_data)
+void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
 {
     if (message->empty())
     {
@@ -57,7 +59,7 @@ void receiveConfirmSysexCallback(double delta_time, ByteVec* message, void* user
     Received global dump response callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveGlobalDumpSysexCallback(double delta_time, ByteVec* message, void* user_data)
+void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data)
 {
     if (message->empty())
     {
@@ -107,7 +109,7 @@ void receiveGlobalDumpSysexCallback(double delta_time, ByteVec* message, void* u
     Received sound dump response callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveSoundDumpSysexCallback(double delta_time, ByteVec* message, void* user_data)
+void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
 {
     if (message->empty())
     {
@@ -159,7 +161,7 @@ void receiveSoundDumpSysexCallback(double delta_time, ByteVec* message, void* us
 /*******************************************************************************
     Timeout response callback (General purpose)
 *******************************************************************************/
-Uint32 timeoutCallback(Uint32 interval, void* param)
+Uint32 timeout(Uint32 interval, void* param)
 {
     std::string err_message = *static_cast<std::string*>(param);
 
@@ -176,7 +178,7 @@ Uint32 timeoutCallback(Uint32 interval, void* param)
     Received message from key-device callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveKeyDeviceMessageCallback(double delta_time, ByteVec* message, void* user_data)
+void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_data)
 {
     if (isSynthConnected() &&
         (MessageHandler::isNoteOff(*message) || MessageHandler::isNoteOn(*message)))
@@ -214,7 +216,7 @@ void receiveKeyDeviceMessageCallback(double delta_time, ByteVec* message, void* 
     Store delay callback
 *******************************************************************************/
 // DSI: Streichfett
-Uint32 storeDelayCallback(Uint32 interval, void* param)
+Uint32 storeDelay(Uint32 interval, void* param)
 {
     InternalPatch::SoundAddress* sound_address_ptr
         = static_cast<InternalPatch::SoundAddress*>(param);
@@ -245,7 +247,7 @@ Uint32 storeDelayCallback(Uint32 interval, void* param)
     return interval;
 }
 
-Uint32 sendDelayCallback(Uint32 interval, void* param)
+Uint32 sendDelay(Uint32 interval, void* param)
 {
     State* next_state_ptr = static_cast<State*>(param);
 
@@ -259,5 +261,6 @@ Uint32 sendDelayCallback(Uint32 interval, void* param)
     return interval;
 }
 
+} // Callback
 } // Connector
 } // StreichfettSse

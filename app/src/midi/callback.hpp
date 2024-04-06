@@ -4,14 +4,17 @@ namespace StreichfettSse
 {
 namespace Connector
 {
+namespace Callback
+{
 
-void receiveConfirmSysexCallback(double delta_time, ByteVec* message, void* user_data);
-void receiveGlobalDumpSysexCallback(double delta_time, ByteVec* message, void* user_data);
-void receiveSoundDumpSysexCallback(double delta_time, ByteVec* message, void* user_data);
-Uint32 timeoutCallback(Uint32 interval, void* param);
-void receiveKeyDeviceMessageCallback(double delta_time, ByteVec* message, void* user_data);
-Uint32 storeDelayCallback(Uint32 interval, void* param);
-Uint32 sendDelayCallback(Uint32 interval, void* param);
+void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data);
+void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data);
+void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data);
+Uint32 timeout(Uint32 interval, void* param);
+void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_data);
+Uint32 storeDelay(Uint32 interval, void* param);
+Uint32 sendDelay(Uint32 interval, void* param);
 
+} // Callback
 } // Connector
 } // StreichfettSse

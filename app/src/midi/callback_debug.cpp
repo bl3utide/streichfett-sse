@@ -12,8 +12,10 @@ namespace Connector
 {
 namespace Debug
 {
+namespace Callback
+{
 
-void receiveTestSysexCallback(double delta_time, ByteVec* message, void* user_data)
+void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
 {
     SendTestType* type_ptr = static_cast<SendTestType*>(user_data);
     int type_index = static_cast<int>(*type_ptr);
@@ -72,7 +74,7 @@ void receiveTestSysexCallback(double delta_time, ByteVec* message, void* user_da
     addProcessedHistory(false, synth_input.getPortName(), *message);
 }
 
-Uint32 timeoutTestCallback(Uint32 interval, void* param)
+Uint32 timeoutTest(Uint32 interval, void* param)
 {
     SendTestType* type_ptr = static_cast<SendTestType*>(param);
     int type_index = static_cast<int>(*type_ptr);
@@ -88,6 +90,7 @@ Uint32 timeoutTestCallback(Uint32 interval, void* param)
     return interval;
 }
 
+} // Callback
 } // Debug
 } // Connector
 } // StreichfettSse

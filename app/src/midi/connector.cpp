@@ -79,7 +79,7 @@ void fetchDeviceList()
 void sendDelay(const State next_state, const int delay_millsec)
 {
     State* next_state_ptr = new State(next_state);
-    _waiting_timer = SDL_AddTimer(delay_millsec, sendDelayCallback, next_state_ptr);
+    _waiting_timer = SDL_AddTimer(delay_millsec, Callback::sendDelay, next_state_ptr);
 
     setNextState(State::WaitingSendDelay);
 }
@@ -218,7 +218,7 @@ void openKeyInputPort(const int port_index, const std::string& port_name)
     }
 
     // receive message in callback function
-    key_input.setCallback(receiveKeyDeviceMessageCallback);
+    key_input.setCallback(Callback::receiveKeyDeviceMessage);
     key_input.ignoreTypes(false, false, false);
 }
 
@@ -232,13 +232,13 @@ void requestInquiry()
     synth_output.sendMessage(&confirm_req_sysex);
 
     // then receive result message in callback function
-    synth_input.setCallback(receiveConfirmSysexCallback);
+    synth_input.setCallback(Callback::receiveConfirmSysex);
     synth_input.ignoreTypes(false, false, false);
 
     std::string* err_message_ptr = &ERROR_MESSAGE_TIMEOUT_CONFIRM;
 
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, timeoutCallback, err_message_ptr);
+    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::timeout, err_message_ptr);
 
     setNextState(State::WaitingConfirm);
 #ifdef _DEBUG
@@ -266,13 +266,13 @@ void requestGlobalData()
         return;
     }
 
-    synth_input.setCallback(receiveGlobalDumpSysexCallback);
+    synth_input.setCallback(Callback::receiveGlobalDumpSysex);
     synth_input.ignoreTypes(false, false, false);
 
     std::string* err_message_ptr = &ERROR_MESSAGE_TIMEOUT_GLOBAL_DUMP;
 
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, timeoutCallback, err_message_ptr);
+    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::timeout, err_message_ptr);
 
     setNextState(State::WaitingGlobal);
 #ifdef _DEBUG
@@ -303,13 +303,13 @@ void requestSoundData()
         return;
     }
 
-    synth_input.setCallback(receiveSoundDumpSysexCallback);
+    synth_input.setCallback(Callback::receiveSoundDumpSysex);
     synth_input.ignoreTypes(false, false, false);
 
     std::string* err_message_ptr = &ERROR_MESSAGE_TIMEOUT_SOUND_DUMP;
 
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, timeoutCallback, err_message_ptr);
+    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::timeout, err_message_ptr);
 
     setNextState(State::WaitingSound);
 #ifdef _DEBUG
@@ -347,7 +347,7 @@ void sendSoundDump(const bool is_edit_buffer)
     InternalPatch::SoundAddress* sound_address_ptr = new InternalPatch::SoundAddress(sound);
 
     // set timer for delay after sending sound dump
-    _waiting_timer = SDL_AddTimer(store_delay_duration, storeDelayCallback, sound_address_ptr);
+    _waiting_timer = SDL_AddTimer(store_delay_duration, Callback::storeDelay, sound_address_ptr);
 
 #ifdef _DEBUG
     Debug::addProcessedHistory(true, synth_output.getPortName(), sound_dump);
