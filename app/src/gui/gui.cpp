@@ -334,7 +334,7 @@ void initialize(const std::string& title, const std::string& version, const std:
 
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigViewportsNoAutoMerge = false;
-    io.ConfigViewportsNoDecoration = false;
+    io.ConfigViewportsNoDecoration = true;
     io.ConfigViewportsNoDefaultParent = false;
     io.ConfigViewportsNoTaskBarIcon = true;
 
