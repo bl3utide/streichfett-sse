@@ -5,6 +5,7 @@ namespace StreichfettSse
 {
 namespace Connector
 {
+
 Connection::Connection()
 {
     resetPortInfo();
