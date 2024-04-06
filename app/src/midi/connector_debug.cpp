@@ -77,7 +77,7 @@ void sendTest(const SendTestType type)
 
     try
     {
-        synth_conn.output->sendMessage(&request);
+        synth_output.sendMessage(&request);
     }
     catch (RtMidiError& error)
     {
@@ -88,13 +88,13 @@ void sendTest(const SendTestType type)
 
     SendTestType* type_ptr = new SendTestType(type);
 
-    synth_conn.input->setCallback(receiveTestSysexCallback, type_ptr);
-    synth_conn.input->ignoreTypes(false, false, false);
+    synth_input.setCallback(receiveTestSysexCallback, type_ptr);
+    synth_input.ignoreTypes(false, false, false);
 
     // set timer for connection timeout
     _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, timeoutTestCallback, type_ptr);
 
-    addProcessedHistory(true, synth_conn.output_port_name, request);
+    addProcessedHistory(true, synth_output.getPortName(), request);
 }
 
 bool isAnyTestSending() noexcept

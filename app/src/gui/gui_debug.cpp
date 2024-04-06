@@ -105,17 +105,26 @@ void drawDebugTabItemGeneral()
         ImGui::Text("%-24s: [%d]%s", "request order",
             op, OPERATION_STR[static_cast<int>(op)]);
         ImGui::Text("%-24s: %s", "is_synth_connected", Connector::isSynthConnected() ? "Yes" : "No");
-        ImGui::Text("%-24s: %-4s (%d)%s / %-4s (%d)%s", "synth conn in/out",
-            Connector::synth_conn.input->isPortOpen() ? "open" : "-",
-            Connector::synth_conn.input_port_index,
-            Connector::synth_conn.input_port_name.c_str(),
-            Connector::synth_conn.output->isPortOpen() ? "open" : "-",
-            Connector::synth_conn.output_port_index,
-            Connector::synth_conn.output_port_name.c_str());
-        ImGui::Text("%-24s: %-4s (%d)%s", "key conn in",
-            Connector::key_conn.input->isPortOpen() ? "open" : "-",
-            Connector::key_conn.input_port_index,
-            Connector::key_conn.input_port_name.c_str());
+        ImGui::Text("%-24s: %-4s [%2d]%s", "synth input port",
+            Connector::synth_input.isPortOpen() ? "open" : "-",
+            Connector::synth_input.getPortIndex(),
+            Connector::synth_input.getPortName().c_str());
+        ImGui::Text("%-24s: %-4s [%2d]%s", "synth output port",
+            Connector::synth_output.isPortOpen() ? "open" : "-",
+            Connector::synth_output.getPortIndex(),
+            Connector::synth_output.getPortName().c_str());
+        ImGui::Text("%-24s: %-4s [%2d]%s", "keyboard input port",
+            Connector::key_input.isPortOpen() ? "open" : "-",
+            Connector::key_input.getPortIndex(),
+            Connector::key_input.getPortName().c_str());
+        ImGui::Text("%-24s", "last connected port index");
+        ImGui::Text(" %-23s: %d", "synth input", Connector::synth_input.getLastConnectedPortIndex());
+        ImGui::Text(" %-23s: %d", "synth output", Connector::synth_output.getLastConnectedPortIndex());
+        ImGui::Text(" %-23s: %d", "keyboard input", Connector::key_input.getLastConnectedPortIndex());
+        ImGui::Text("%-24s", "last failed port index");
+        ImGui::Text(" %-23s: %d", "synth input", Connector::synth_input.getLastFailedPortIndex());
+        ImGui::Text(" %-23s: %d", "synth output", Connector::synth_output.getLastFailedPortIndex());
+        ImGui::Text(" %-23s: %d", "keyboard input", Connector::key_input.getLastFailedPortIndex());
         if (MessageHandler::inquiry_dump.received)
         {
             ImGui::Text("%-24s: %d", "inquired device id", MessageHandler::inquiry_dump.device_id);

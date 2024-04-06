@@ -22,8 +22,9 @@ namespace Connector
 {
 
 // public
-MidiConnection synth_conn;
-MidiConnection key_conn;
+InputConnection synth_input;
+OutputConnection synth_output;
+InputConnection key_input;
 std::vector<std::string> in_name_list;
 std::vector<std::string> out_name_list;
 bool force_adjust_midi_channel = true;
@@ -40,12 +41,11 @@ void fetchDeviceList()
 {
     // MIDI IN Port
     in_name_list.clear();
-    unsigned int inPortNum = synth_conn.input->getPortCount();
-    for (unsigned int i = 0; i < inPortNum; ++i)
+    for (unsigned int i = 0; i < synth_input.getPortCount(); ++i)
     {
         try
         {
-            in_name_list.push_back(synth_conn.input->getPortName(i));
+            in_name_list.push_back(synth_input.getPortName(i));
             in_name_list[i] = in_name_list[i].substr(0, in_name_list[i].find_last_of(" "));
         }
         catch (RtMidiError& error)
@@ -59,12 +59,11 @@ void fetchDeviceList()
 
     // MIDI OUT Port
     out_name_list.clear();
-    unsigned int outPortNum = synth_conn.output->getPortCount();
-    for (unsigned int i = 0; i < outPortNum; ++i)
+    for (unsigned int i = 0; i < synth_output.getPortCount(); ++i)
     {
         try
         {
-            out_name_list.push_back(synth_conn.output->getPortName(i));
+            out_name_list.push_back(synth_output.getPortName(i));
             out_name_list[i] = out_name_list[i].substr(0, out_name_list[i].find_last_of(" "));
         }
         catch (RtMidiError& error)
@@ -85,17 +84,18 @@ void sendDelay(const State next_state, const int delay_millsec)
     setNextState(State::WaitingSendDelay);
 }
 
-
 void initialize()
 {
-    synth_conn.initialize();
-    key_conn.initialize();
+    synth_input.initialize();
+    synth_output.initialize();
+    key_input.initialize();
 }
 
 void finalize() noexcept
 {
-    synth_conn.finalize();
-    key_conn.finalize();
+    synth_input.finalize();
+    synth_output.finalize();
+    key_input.finalize();
 }
 
 void applyConfig()
@@ -106,9 +106,7 @@ void applyConfig()
     if (synth_in_res != in_name_list.cend())
     {   // found
         const int index = static_cast<int>(std::distance(in_name_list.cbegin(), synth_in_res));
-        synth_conn.input_port_index = index;
-        synth_conn.input_port_name = in_name_list[index];
-        checkOpenPorts();
+        openSynthInputPort(index, in_name_list[index]);
     }
 
     // Synth Output Device
@@ -117,9 +115,7 @@ void applyConfig()
     if (synth_out_res != out_name_list.cend())
     {   // found
         const int index = static_cast<int>(std::distance(out_name_list.cbegin(), synth_out_res));
-        synth_conn.output_port_index = index;
-        synth_conn.output_port_name = out_name_list[index];
-        checkOpenPorts();
+        openSynthOutputPort(index, out_name_list[index]);
     }
 
     // Keyboard Input Device
@@ -131,9 +127,7 @@ void applyConfig()
         const int key_in_index = static_cast<int>(std::distance(in_name_list.cbegin(), key_in_res));
         if (synth_in_index != key_in_index)
         {
-            key_conn.input_port_index = key_in_index;
-            key_conn.input_port_name = in_name_list[key_in_index];
-            keyOpenPort();
+            openKeyInputPort(key_in_index, in_name_list[key_in_index]);
         }
     }
 
@@ -146,42 +140,27 @@ void applyConfig()
 
 void updateConfig() noexcept
 {
-    const std::string synth_in_device_name = isSynthConnected()
-        ? synth_conn.input_port_name
-        : "";
-    const std::string synth_out_device_name = isSynthConnected()
-        ? synth_conn.output_port_name
-        : "";
-    // TODO key-in doesn't have the flag of connected. therefore this expression
-    const std::string key_in_device_name = key_conn.input_port_index != -1
-        ? key_conn.input_port_name
-        : "";
-    Config::setConfigValue(Config::Key::SynthInputDevice, synth_in_device_name);
-    Config::setConfigValue(Config::Key::SynthOutputDevice, synth_out_device_name);
-    Config::setConfigValue(Config::Key::KeyboardInputDevice, key_in_device_name);
+    Config::setConfigValue(Config::Key::SynthInputDevice, synth_input.getPortName());
+    Config::setConfigValue(Config::Key::SynthOutputDevice, synth_output.getPortName());
+    Config::setConfigValue(Config::Key::KeyboardInputDevice, key_input.getPortName());
     Config::setConfigValue(Config::Key::ForceAdjustMidiCh, force_adjust_midi_channel);
     Config::setConfigValue(Config::Key::SysExDelay, store_delay_duration);
 }
 
 void resetAllConnections()
 {
-    synth_conn.closePorts();
-    synth_conn.resetPortInfo();
-    key_conn.closePorts();
-    key_conn.resetPortInfo();
+    synth_input.close();
+    synth_output.close();
+    key_input.close();
     fetchDeviceList();
     setSynthConnected(false);
 }
 
-void checkOpenPorts()
+void openSynthInputPort(const int port_index, const std::string& port_name)
 {
-    if (synth_conn.input_port_index == -1 || synth_conn.output_port_index == -1)
-        return;
-
     try
     {
-        synth_conn.openPorts();
-        setNextState(State::RequestInquiry);
+        synth_input.open(port_index, port_name);
     }
     catch (RtMidiError& error)
     {
@@ -189,19 +168,45 @@ void checkOpenPorts()
         LOGD << error.getMessage();
 #endif
         setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
-        setNextState(State::Idle);
         setSynthConnected(false);
         return;
     }
+
+    if (synth_output.isPortOpen())
+    {
+        setSynthConnected(true);
+        setNextState(State::RequestInquiry);
+    }
 }
 
-void keyOpenPort()
+void openSynthOutputPort(const int port_index, const std::string& port_name)
 {
-    key_conn.input->cancelCallback();
-
     try
     {
-        key_conn.openInPort();
+        synth_output.open(port_index, port_name);
+    }
+    catch (RtMidiError& error)
+    {
+#ifdef _DEBUG
+        LOGD << error.getMessage();
+#endif
+        setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
+        setSynthConnected(false);
+        return;
+    }
+
+    if (synth_input.isPortOpen())
+    {
+        setSynthConnected(true);
+        setNextState(State::RequestInquiry);
+    }
+}
+
+void openKeyInputPort(const int port_index, const std::string& port_name)
+{
+    try
+    {
+        key_input.open(port_index, port_name);
     }
     catch (RtMidiError& error)
     {
@@ -213,8 +218,8 @@ void keyOpenPort()
     }
 
     // receive message in callback function
-    key_conn.input->setCallback(receiveKeyDeviceMessageCallback);
-    key_conn.input->ignoreTypes(false, false, false);
+    key_input.setCallback(receiveKeyDeviceMessageCallback);
+    key_input.ignoreTypes(false, false, false);
 }
 
 void requestInquiry()
@@ -224,11 +229,11 @@ void requestInquiry()
     // send sysex message to device via midi out device
     ByteVec confirm_req_sysex =
         MessageHandler::getInquiryRequestMessage();
-    synth_conn.output->sendMessage(&confirm_req_sysex);
+    synth_output.sendMessage(&confirm_req_sysex);
 
     // then receive result message in callback function
-    synth_conn.input->setCallback(receiveConfirmSysexCallback);
-    synth_conn.input->ignoreTypes(false, false, false);
+    synth_input.setCallback(receiveConfirmSysexCallback);
+    synth_input.ignoreTypes(false, false, false);
 
     std::string* err_message_ptr = &ERROR_MESSAGE_TIMEOUT_CONFIRM;
 
@@ -237,7 +242,7 @@ void requestInquiry()
 
     setNextState(State::WaitingConfirm);
 #ifdef _DEBUG
-    Debug::addProcessedHistory(true, synth_conn.output_port_name, confirm_req_sysex);
+    Debug::addProcessedHistory(true, synth_output.getPortName(), confirm_req_sysex);
 #endif
 }
 
@@ -248,7 +253,7 @@ void requestGlobalData()
 
     try
     {
-        synth_conn.output->sendMessage(&global_req_sysex);
+        synth_output.sendMessage(&global_req_sysex);
     }
     catch (RtMidiError& error)
     {
@@ -261,8 +266,8 @@ void requestGlobalData()
         return;
     }
 
-    synth_conn.input->setCallback(receiveGlobalDumpSysexCallback);
-    synth_conn.input->ignoreTypes(false, false, false);
+    synth_input.setCallback(receiveGlobalDumpSysexCallback);
+    synth_input.ignoreTypes(false, false, false);
 
     std::string* err_message_ptr = &ERROR_MESSAGE_TIMEOUT_GLOBAL_DUMP;
 
@@ -271,7 +276,7 @@ void requestGlobalData()
 
     setNextState(State::WaitingGlobal);
 #ifdef _DEBUG
-    Debug::addProcessedHistory(true, synth_conn.output_port_name, global_req_sysex);
+    Debug::addProcessedHistory(true, synth_output.getPortName(), global_req_sysex);
 #endif
 }
 
@@ -285,7 +290,7 @@ void requestSoundData()
 
     try
     {
-        synth_conn.output->sendMessage(&sound_req_sysex);
+        synth_output.sendMessage(&sound_req_sysex);
     }
     catch (RtMidiError& error)
     {
@@ -298,8 +303,8 @@ void requestSoundData()
         return;
     }
 
-    synth_conn.input->setCallback(receiveSoundDumpSysexCallback);
-    synth_conn.input->ignoreTypes(false, false, false);
+    synth_input.setCallback(receiveSoundDumpSysexCallback);
+    synth_input.ignoreTypes(false, false, false);
 
     std::string* err_message_ptr = &ERROR_MESSAGE_TIMEOUT_SOUND_DUMP;
 
@@ -308,7 +313,7 @@ void requestSoundData()
 
     setNextState(State::WaitingSound);
 #ifdef _DEBUG
-    Debug::addProcessedHistory(true, synth_conn.output_port_name, sound_req_sysex);
+    Debug::addProcessedHistory(true, synth_output.getPortName(), sound_req_sysex);
 #endif
 }
 
@@ -325,7 +330,7 @@ void sendSoundDump(const bool is_edit_buffer)
 
     try
     {
-        synth_conn.output->sendMessage(&sound_dump);
+        synth_output.sendMessage(&sound_dump);
         _is_waiting_store_delay = true;
     }
     catch (RtMidiError& error)
@@ -345,7 +350,7 @@ void sendSoundDump(const bool is_edit_buffer)
     _waiting_timer = SDL_AddTimer(store_delay_duration, storeDelayCallback, sound_address_ptr);
 
 #ifdef _DEBUG
-    Debug::addProcessedHistory(true, synth_conn.output_port_name, sound_dump);
+    Debug::addProcessedHistory(true, synth_output.getPortName(), sound_dump);
 #endif
 }
 
@@ -359,7 +364,7 @@ void sendProgChange()
 
     try
     {
-        synth_conn.output->sendMessage(&prog_change);
+        synth_output.sendMessage(&prog_change);
         sendDelay(State::RequestSound, 150);
     }
     catch (RtMidiError& error)
@@ -373,7 +378,7 @@ void sendProgChange()
         return;
     }
 #ifdef _DEBUG
-    Debug::addProcessedHistory(true, synth_conn.output_port_name, prog_change);
+    Debug::addProcessedHistory(true, synth_output.getPortName(), prog_change);
 #endif
 }
 
@@ -383,7 +388,7 @@ void sendAllSoundOff()
 
     try
     {
-        synth_conn.output->sendMessage(&all_sound_off);
+        synth_output.sendMessage(&all_sound_off);
     }
     catch (RtMidiError& error)
     {
@@ -394,7 +399,7 @@ void sendAllSoundOff()
         return;
     }
 #ifdef _DEBUG
-    Debug::addProcessedHistory(true, synth_conn.output_port_name, all_sound_off);
+    Debug::addProcessedHistory(true, synth_output.getPortName(), all_sound_off);
 #endif
 }
 
@@ -403,9 +408,9 @@ void sendOneTaskMessage()
     if (MessageTask::taskSize() > 0)
     {
         ByteVec message = MessageTask::lastTask();
-        synth_conn.output->sendMessage(&message);
+        synth_output.sendMessage(&message);
 #ifdef _DEBUG
-        Debug::addProcessedHistory(true, synth_conn.output_port_name, message);
+        Debug::addProcessedHistory(true, synth_output.getPortName(), message);
 #endif
     }
 }
@@ -418,7 +423,10 @@ bool isSynthConnected() noexcept
 void setSynthConnected(const bool connected) noexcept
 {
     if (connected)
+    {
         _is_synth_connected = true;
+        Annotation::clearText();
+    }
     else
     {
         _is_synth_connected = false;

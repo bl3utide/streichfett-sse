@@ -90,13 +90,13 @@ void drawOptionGroupConnections()
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushItemWidth(220.0f);
-        if (ImGui::BeginCombo("##SYNTH IN", Connector::synth_conn.input_port_name.c_str()))
+        if (ImGui::BeginCombo("##SYNTH IN", Connector::synth_input.getPortName().c_str()))
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
             for (int n = 0; n < Connector::in_name_list.size(); ++n)
             {
-                bool is_selected = n == Connector::synth_conn.input_port_index;
-                if (n == Connector::key_conn.input_port_index)
+                bool is_selected = n == Connector::synth_input.getPortIndex();
+                if (n == Connector::key_input.getPortIndex())
                 {
                     ImGui::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
                 }
@@ -104,9 +104,7 @@ void drawOptionGroupConnections()
                 {
                     if (ImGui::Selectable(Connector::in_name_list[n].c_str(), is_selected))
                     {
-                        Connector::synth_conn.input_port_index = n;
-                        Connector::synth_conn.input_port_name = Connector::in_name_list[n];
-                        Connector::checkOpenPorts();
+                        Connector::openSynthInputPort(n, Connector::in_name_list[n]);
                     }
                     ImGui::MouseCursorToHand();
                     if (is_selected) ImGui::SetItemDefaultFocus();
@@ -132,17 +130,15 @@ void drawOptionGroupConnections()
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushItemWidth(220.0f);
-        if (ImGui::BeginCombo("##SYNTH OUT", Connector::synth_conn.output_port_name.c_str()))
+        if (ImGui::BeginCombo("##SYNTH OUT", Connector::synth_output.getPortName().c_str()))
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
             for (int n = 0; n < Connector::out_name_list.size(); ++n)
             {
-                bool is_selected = n == Connector::synth_conn.output_port_index;
+                bool is_selected = n == Connector::synth_output.getPortIndex();
                 if (ImGui::Selectable(Connector::out_name_list[n].c_str(), is_selected))
                 {
-                    Connector::synth_conn.output_port_index = n;
-                    Connector::synth_conn.output_port_name = Connector::out_name_list[n];
-                    Connector::checkOpenPorts();
+                    Connector::openSynthOutputPort(n, Connector::out_name_list[n]);
                 }
                 ImGui::MouseCursorToHand();
                 if (is_selected) ImGui::SetItemDefaultFocus();
@@ -160,13 +156,13 @@ void drawOptionGroupConnections()
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushItemWidth(220.0f);
-        if (ImGui::BeginCombo("##KEY IN", Connector::key_conn.input_port_name.c_str()))
+        if (ImGui::BeginCombo("##KEY IN", Connector::key_input.getPortName().c_str()))
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
             for (int n = 0; n < Connector::in_name_list.size(); ++n)
             {
-                bool is_selected = n == Connector::key_conn.input_port_index;
-                if (n == Connector::synth_conn.input_port_index)
+                bool is_selected = n == Connector::key_input.getPortIndex();
+                if (n == Connector::synth_input.getPortIndex())
                 {
                     ImGui::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
                 }
@@ -174,9 +170,7 @@ void drawOptionGroupConnections()
                 {
                     if (ImGui::Selectable(Connector::in_name_list[n].c_str(), is_selected))
                     {
-                        Connector::key_conn.input_port_index = n;
-                        Connector::key_conn.input_port_name = Connector::in_name_list[n];
-                        Connector::keyOpenPort();
+                        Connector::openKeyInputPort(n, Connector::in_name_list[n]);
                     }
                     ImGui::MouseCursorToHand();
                     if (is_selected) ImGui::SetItemDefaultFocus();

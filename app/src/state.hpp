@@ -29,7 +29,7 @@ extern const char* STATE_STR[static_cast<int>(State::_COUNT_)];
 
 State getState() noexcept;
 State getNextState() noexcept;
-void setNextState(State state) noexcept;
+void setNextState(State state, const bool force_mod = false) noexcept;
 void transitionState() noexcept;
 
 } // StreichfettSse

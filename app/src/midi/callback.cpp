@@ -33,23 +33,23 @@ void receiveConfirmSysexCallback(double delta_time, ByteVec* message, void* user
     {
         if (MessageHandler::checkInquiryDump(*message))
         {
-            Annotation::clearText();
-            setNextState(State::RequestGlobal);
-            setSynthConnected(true);
+            //Annotation::clearText();  // TODO delete setSynthConnected(true)の時にやるので不要
+            setNextState(State::RequestGlobal, true);
+            //setSynthConnected(true);  // TODO delete この時点での判定は行わないことにした
         }
         else
         {
             setAppError("You tried to connect to an incorrect device.");
-            setNextState(State::Idle);
+            setNextState(State::Idle, true);
             setSynthConnected(false);
         }
     }
 
-    synth_conn.input->cancelCallback();
+    synth_input.cancelCallback();
     SDL_RemoveTimer(_waiting_timer);
 
 #ifdef _DEBUG
-    Debug::addProcessedHistory(false, synth_conn.input_port_name, *message);
+    Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
 #endif
 }
 
@@ -83,23 +83,23 @@ void receiveGlobalDumpSysexCallback(double delta_time, ByteVec* message, void* u
 
             Operation op = getOperation();
             if (op == Operation::Sound)
-                setNextState(State::SendBankProgChange);
+                setNextState(State::SendBankProgChange, true);
             else if (op == Operation::Option)
-                setNextState(State::Idle);
+                setNextState(State::Idle, true);
         }
         catch (std::exception&)
         {
             setAppError("Incorrect Global Dump Message");
-            setNextState(State::Idle);
+            setNextState(State::Idle, true);
             setSynthConnected(false);
         }
     }
 
-    synth_conn.input->cancelCallback();
+    synth_input.cancelCallback();
     SDL_RemoveTimer(_waiting_timer);
 
 #ifdef _DEBUG
-    Debug::addProcessedHistory(false, synth_conn.input_port_name, *message);
+    Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
 #endif
 }
 
@@ -140,7 +140,7 @@ void receiveSoundDumpSysexCallback(double delta_time, ByteVec* message, void* us
             sprintf(buf, "Sound %c%d loaded.", bb, bs);
             Annotation::setText(buf, Annotation::Type::General);
 
-            setNextState(State::Idle);
+            setNextState(State::Idle, true);
         }
         catch (std::exception&)
         {
@@ -148,11 +148,11 @@ void receiveSoundDumpSysexCallback(double delta_time, ByteVec* message, void* us
         }
     }
 
-    synth_conn.input->cancelCallback();
+    synth_input.cancelCallback();
     SDL_RemoveTimer(_waiting_timer);
 
 #ifdef _DEBUG
-    Debug::addProcessedHistory(false, synth_conn.input_port_name, *message);
+    Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
 #endif
 }
 
@@ -163,10 +163,10 @@ Uint32 timeoutCallback(Uint32 interval, void* param)
 {
     std::string err_message = *static_cast<std::string*>(param);
 
-    synth_conn.input->cancelCallback();
+    synth_input.cancelCallback();
     SDL_RemoveTimer(_waiting_timer);
     setAppError(err_message);
-    setNextState(State::Idle);
+    setNextState(State::Idle, true);
     setSynthConnected(false);
 
     return interval;
@@ -201,11 +201,11 @@ void receiveKeyDeviceMessageCallback(double delta_time, ByteVec* message, void* 
                     message->at(2)
                 };
             }
-            synth_conn.output->sendMessage(&channel_adj_message);
+            synth_output.sendMessage(&channel_adj_message);
         }
         else
         {
-            synth_conn.output->sendMessage(message);
+            synth_output.sendMessage(message);
         }
     }
 }
@@ -249,7 +249,7 @@ Uint32 sendDelayCallback(Uint32 interval, void* param)
 {
     State* next_state_ptr = static_cast<State*>(param);
 
-    setNextState(*next_state_ptr);
+    setNextState(*next_state_ptr, true);
 
     SDL_RemoveTimer(_waiting_timer);
 
