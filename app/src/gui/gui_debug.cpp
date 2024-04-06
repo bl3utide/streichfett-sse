@@ -469,7 +469,7 @@ void drawDebugTabItemLogger()
 {
     if (ImGui::BeginTabItem("Logger"))
     {
-        ImGui::Text("%d logs", Logger::logs.size());
+        ImGui::Text("%d logs", Logger::logs.front().log_id + 1);
 
         ImGui::BeginChild("logger_list", ImVec2(800, 430), false, 0);
         {
