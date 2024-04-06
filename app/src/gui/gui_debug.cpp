@@ -338,7 +338,7 @@ void drawDebugTabItemTransReceiveLog()
 
     if (ImGui::BeginTabItem("Transmitted/Received Log"))
     {
-        ImGui::BeginChild("processed_list", ImVec2(600, 500), false);
+        ImGui::BeginChild("processed_list", ImVec2(800, 500), false);
         {
             int selected_index = 0;
             std::list<cd::ProcessedMidiMessage> ph_copy = cd::processed_history;
