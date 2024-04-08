@@ -116,6 +116,7 @@
     <ClCompile Include="src\data\internal_patch.cpp" />
     <ClCompile Include="src\data\internal_setting.cpp" />
     <ClCompile Include="src\error.cpp" />
+    <ClCompile Include="src\except.cpp" />
     <ClCompile Include="src\gui\gui_font.cpp" />
     <ClCompile Include="src\gui\gui.cpp" />
     <ClCompile Include="src\gui\gui_debug.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="src\data\internal_patch.hpp" />
     <ClInclude Include="src\data\internal_setting.hpp" />
     <ClInclude Include="src\error.hpp" />
+    <ClInclude Include="src\except.hpp" />
     <ClInclude Include="src\gui\gui_font.hpp" />
     <ClInclude Include="src\gui\gui.hpp" />
     <ClInclude Include="src\gui\gui_color.hpp" />
