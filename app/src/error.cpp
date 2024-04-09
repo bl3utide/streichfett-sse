@@ -12,6 +12,16 @@ bool has_error = false;
 std::string error_message;
 bool showing_error_message = false;
 
+ContinuableException::ContinuableException(const char* message)
+    : exception(message)
+{
+}
+
+UncontinuableException::UncontinuableException(const char * message)
+    : runtime_error(message)
+{
+}
+
 void setAppError(const std::string& message) noexcept
 {
     if (!has_error)
