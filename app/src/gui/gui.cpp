@@ -433,5 +433,10 @@ void drawGui()
     postDraw();
 }
 
+void showMessageBox(Uint32 flags, const char* title, const char* message) noexcept
+{
+    SDL_ShowSimpleMessageBox(flags, title, message, _window);
+}
+
 } // Gui
 } // StreichfettSse

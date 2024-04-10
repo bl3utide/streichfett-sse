@@ -177,14 +177,13 @@ int main(int, char**)
 #ifdef _DEBUG
         LOGD << e.what();
 #endif
-        printf("%s", e.what());
+        LOGE << e.what();
+        StreichfettSse::Gui::showMessageBox(SDL_MESSAGEBOX_ERROR, "Error", e.what());
         StreichfettSse::finalize();
         exit(EXIT_FAILURE);
     }
 
     StreichfettSse::loop();
-
-    // TODO try-catch
     StreichfettSse::finalize();
 
 #ifdef _DEBUG

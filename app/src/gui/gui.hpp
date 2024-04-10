@@ -18,6 +18,7 @@ enum class Page : int
 void initialize(const std::string& title, const std::string& version, const std::string& copyright);
 void finalize() noexcept;
 void drawGui();
+void showMessageBox(Uint32 flags, const char* title, const char* message) noexcept;
 
 // sub modules
 void drawEditPanel(SoundModel::Patch* const cp, SoundModel::Patch* const op);
