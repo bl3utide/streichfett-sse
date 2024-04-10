@@ -20,11 +20,9 @@
 #include <imgui_impl_sdl.h>
 #include <imgui_impl_opengl2.h>
 
-#ifdef _DEBUG
 #include <plog/Log.h>
 #include <plog/Initializers/RollingFileInitializer.h>
 #include <plog/Appenders/IAppender.h>
-#endif
 
 #include <mini/ini.h>
 

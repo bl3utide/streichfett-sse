@@ -1,7 +1,7 @@
 ﻿#include "common.hpp"
-#ifdef _DEBUG
 #include "logger.hpp"
 
+#ifdef _DEBUG
 namespace StreichfettSse
 {
 namespace Logger
