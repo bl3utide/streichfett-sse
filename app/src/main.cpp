@@ -173,7 +173,7 @@ int main(int, char**)
     LOGD << "<beginning of application>";
 #endif
     plog::init<plog::ErrorLogFormatter, LogId::Error>(plog::error, StreichfettSse::ERROR_FILE_NAME.c_str());
-#define LOGE LOGE_(1)
+#define LERROR LOGE_(1)
     try
     {
         StreichfettSse::initialize();
@@ -183,7 +183,7 @@ int main(int, char**)
 #ifdef _DEBUG
         LOGD << e.what();
 #endif
-        LOGE << e.what();
+        LERROR << e.what();
         StreichfettSse::Gui::showMessageBox(SDL_MESSAGEBOX_ERROR, "Error", e.what());
         StreichfettSse::finalize();
         exit(EXIT_FAILURE);
