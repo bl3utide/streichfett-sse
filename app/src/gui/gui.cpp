@@ -6,7 +6,6 @@
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
-#include "gui/gui_util.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #ifdef _DEBUG
@@ -114,14 +113,14 @@ void drawErrorModal()
             | ImGuiWindowFlags_NoMove
             | ImGuiWindowFlags_NoTitleBar))
         {
-            ImGui::PushFont((int)Font::OptionItemBold);
+            GuiUtil::PushFont((int)Font::OptionItemBold);
             ImGui::Text("Application error");
             ImGui::PopFont();
             ImGui::Separator();
 
             ImGui::Dummy(ImVec2(400.0f, 10.0f));
 
-            ImGui::PushFont((int)Font::OptionItem);
+            GuiUtil::PushFont((int)Font::OptionItem);
             ImGui::TextWrapped(error_message.c_str());
 
             ImGui::Dummy(ImVec2(400.0f, 10.0f));
@@ -133,7 +132,7 @@ void drawErrorModal()
                 showing_error_message = false;
                 ImGui::CloseCurrentPopup();
             }
-            ImGui::MouseCursorToHand();
+            GuiUtil::MouseCursorToHand();
             ImGui::PopStyleVar();
             ImGui::PopFont();
 
@@ -159,7 +158,7 @@ void drawAboutModal()
         auto modal_window_pos = ImGui::GetCursorScreenPos();
 
         ImGui::Indent(50.0f);
-        ImGui::PushFont((int)Font::Text);
+        GuiUtil::PushFont((int)Font::Text);
         ImGui::Dummy(ImVec2(0.0f, 50.0f));
 
         if (ImGui::BeginTable("about_table", 2))
@@ -199,7 +198,7 @@ void drawAboutModal()
 
 void drawHeader(const int window_width)
 {
-    ImGui::PushFont((int)Font::Title);
+    GuiUtil::PushFont((int)Font::Title);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TITLE_TEXT);
     ImGui::Text(_app_title.c_str());
     ImGui::PopStyleColor();
@@ -207,7 +206,7 @@ void drawHeader(const int window_width)
 
     ImGui::SameLine(0.0f, 12.0f);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
-    ImGui::PushFont((int)Font::Version);
+    GuiUtil::PushFont((int)Font::Version);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_VERSION_TEXT);
     ImGui::Text(_app_version.c_str());
     ImGui::PopStyleColor();
@@ -216,7 +215,7 @@ void drawHeader(const int window_width)
 
     ImGui::SameLine(window_width - 60.0f, 0.0f);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.0f);
-    ImGui::PushFont((int)Font::TextBold);
+    GuiUtil::PushFont((int)Font::TextBold);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8.0f, 3.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
     if (ImGui::Button("?"))
@@ -225,7 +224,7 @@ void drawHeader(const int window_width)
     }
     ImGui::PopStyleVar(2);
     ImGui::PopFont();
-    ImGui::MouseCursorToHand();
+    GuiUtil::MouseCursorToHand();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 1.0f);
 
     drawAboutModal();
@@ -236,7 +235,7 @@ void drawPageSelector()
 {
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-    ImGui::PushFont((int)Font::TextBold);
+    GuiUtil::PushFont((int)Font::TextBold);
     ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
     for (int page_i = 0; page_i < static_cast<int>(Page::_COUNT_); ++page_i)
     {
@@ -252,7 +251,7 @@ void drawPageSelector()
             else if (_page == Page::Option)
                 setNextState(State::EnterOptionMode);
         }
-        if (!is_current_page) ImGui::MouseCursorToHand();
+        if (!is_current_page) GuiUtil::MouseCursorToHand();
         ImGui::PopStyleColor();
 
         ImVec2 p0 = ImGui::GetItemRectMin();
@@ -417,7 +416,7 @@ void drawGui()
         ImGui::SetNextWindowPos(ImVec2(vp_pos.x + (window_width - UI_MAIN_CONTENT_WIDTH) * 0.5f, vp_pos.y + y));
         ImGui::BeginChild("annotation", ImVec2(UI_MAIN_CONTENT_WIDTH, 30.0f), true, ImGuiWindowFlags_NoScrollbar);
         {
-            ImGui::PushFont((int)Font::TextBold);
+            GuiUtil::PushFont((int)Font::TextBold);
             ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_ANNOTATION[static_cast<int>(Annotation::getType())]);
             ImGui::Text(Annotation::getText().c_str());
             ImGui::PopStyleColor();

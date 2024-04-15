@@ -10,7 +10,6 @@
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
-#include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
 #include "midi/message_handler.hpp"
@@ -34,7 +33,7 @@ Logger::Log _selected_debug_log;
 
 void drawDebugMenuBar(const ImVec2 viewport_pos)
 {
-    ImGui::PushFont((int)FontDebug::Text);
+    GuiUtil::PushFont((int)FontDebug::Text);
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.35f, 0.35f, 0.35f, 0.65f));
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(ImVec2(center.x - 80.0f, viewport_pos.y), ImGuiCond_Always);
@@ -52,16 +51,16 @@ void drawDebugMenuBar(const ImVec2 viewport_pos)
         {
             if (ImGui::Button(">")) _show_debug_menu_bar = true;
         }
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
         ImGui::PopStyleVar();
 
         if (_show_debug_menu_bar)
         {
             ImGui::Checkbox("demo", &_show_demo_window);
-            ImGui::MouseCursorToHand();
+            GuiUtil::MouseCursorToHand();
             ImGui::SameLine();
             ImGui::Checkbox("debug", &_show_debug_window);
-            ImGui::MouseCursorToHand();
+            GuiUtil::MouseCursorToHand();
         }
     }
     ImGui::End();
@@ -282,17 +281,17 @@ void drawDebugTabItemSendTest(const State current_state)
                 case static_cast<int>(cd::SendTestType::Inquiry):
                     if (ImGui::Button("MIDI Identity Inquiry"))
                         cd::sendTest(cd::SendTestType::Inquiry);
-                    ImGui::MouseCursorToHand();
+                    GuiUtil::MouseCursorToHand();
                     break;
                 case static_cast<int>(cd::SendTestType::GlobalDump):
                     if (ImGui::Button("Request Global Dump"))
                         cd::sendTest(cd::SendTestType::GlobalDump);
-                    ImGui::MouseCursorToHand();
+                    GuiUtil::MouseCursorToHand();
                     break;
                 case static_cast<int>(cd::SendTestType::SoundDump):
                     if (ImGui::Button("Request Sound Dump"))
                         cd::sendTest(cd::SendTestType::SoundDump);
-                    ImGui::MouseCursorToHand();
+                    GuiUtil::MouseCursorToHand();
                     break;
             }
             ImGui::SameLine(180.0f);
@@ -305,17 +304,17 @@ void drawDebugTabItemSendTest(const State current_state)
                     ImGui::Text("Waiting receiving");
                     break;
                 case cd::SendTestResult::Ok:
-                    ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_OK, "OK");
+                    GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_OK, "OK");
                     break;
                 case cd::SendTestResult::Failed:
-                    ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "NG");
+                    GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "NG");
                     ImGui::SameLine();
                     if (cd::send_test_failed_cause[i] == cd::SendTestFailedCause::RequestTimeout)
-                        ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Timeout)");
+                        GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Timeout)");
                     else if (cd::send_test_failed_cause[i] == cd::SendTestFailedCause::EmptyResponse)
-                        ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Empty Response)");
+                        GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Empty Response)");
                     else if (cd::send_test_failed_cause[i] == cd::SendTestFailedCause::IncorrectMessage)
-                        ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Incorrect Message)");
+                        GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Incorrect Message)");
                     break;
                 default:
                     ImGui::Text("");
@@ -359,7 +358,7 @@ void drawDebugTabItemTransReceiveLog()
                             iter->data);
                     _show_processed_message_window = true;
                 }
-                ImGui::MouseCursorToHand();
+                GuiUtil::MouseCursorToHand();
                 ImGui::PopStyleColor();
                 ++selected_index;
             }
@@ -378,11 +377,11 @@ void drawProcessedWindow()
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize |
         ImGuiWindowFlags_NoTitleBar);
     {
-        ImGui::PushFont((int)FontDebug::ProcHead);
+        GuiUtil::PushFont((int)FontDebug::ProcHead);
         if (message->transmitted)
-            ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_TRANSMIT, "%s", "Transmitted");
+            GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_TRANSMIT, "%s", "Transmitted");
         else
-            ImGui::TextColoredU32(DEBUG_UI_COLOR_TEXT_RECEIVE, "%s", "Received");
+            GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_RECEIVE, "%s", "Received");
         ImGui::PopFont();
 
         ImGui::SameLine(300.0f);
@@ -402,7 +401,7 @@ void drawProcessedWindow()
             ImGui::LogText(cb.str().c_str());
             ImGui::LogFinish();
         }
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
 
         ImGui::Text(message->timestamp.c_str());
         ImGui::Text("%-12s: %s %s", "Device",
@@ -414,7 +413,7 @@ void drawProcessedWindow()
 
         auto hex_space = 30.0f;
 
-        ImGui::PushFont((int)FontDebug::ProcHex);
+        GuiUtil::PushFont((int)FontDebug::ProcHex);
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.12f, 0.12f, 0.12f, 1.0f));
         ImGui::Dummy(ImVec2(0.0f, 0.0f));
         ImGui::SameLine(100);
@@ -483,7 +482,7 @@ void drawDebugTabItemLogger()
                     _selected_debug_log = *iter;
                     _selected_debug_log_index = iter->log_id;
                 }
-                ImGui::MouseCursorToHand();
+                GuiUtil::MouseCursorToHand();
             }
 
             ImGui::PopStyleVar();
@@ -565,7 +564,7 @@ void drawDebugWindow(bool* open, const int window_w, const int window_h,
 
 void drawDebugWindows(const int window_w, const int window_h, const State current_state)
 {
-    ImGui::PushFont((int)FontDebug::Text);
+    GuiUtil::PushFont((int)FontDebug::Text);
 
     if (_show_demo_window)
     {

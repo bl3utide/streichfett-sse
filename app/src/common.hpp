@@ -28,6 +28,7 @@
 
 #include <RtMidi.h>
 
+#include "util/gui_util.hpp"
 #include "util/string_util.hpp"
 
 // TODO define in external module

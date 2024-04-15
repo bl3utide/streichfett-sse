@@ -1,21 +1,20 @@
 ﻿#include "common.hpp"
-#include "gui/gui.hpp"
-#include "gui/gui_util.hpp"
+#include "util/gui_util.hpp"
 
-namespace ImGui
+namespace GuiUtil
 {
 
 void MouseCursorToHand() noexcept
 {
-    if (IsItemHovered())
-        SetMouseCursor(ImGuiMouseCursor_Hand);
+    if (ImGui::IsItemHovered())
+        ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
 }
 
 void TextColoredU32(const ImU32& col, const char* fmt, ...) noexcept
 {
     va_list args;
     va_start(args, fmt);
-    TextColoredV(ColorConvertU32ToFloat4(col), fmt, args);
+    ImGui::TextColoredV(ImGui::ColorConvertU32ToFloat4(col), fmt, args);
     va_end(args);
 }
 
@@ -142,7 +141,7 @@ void EndGroupPanel()
 
 void PushFont(int font_id) noexcept
 {
-    PushFont(ImGui::GetIO().Fonts->Fonts[font_id]);
+    ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[font_id]);
 }
 
 bool IsCustomKeyPressed(ImGuiCustomKey key, bool repeat) noexcept
@@ -150,19 +149,19 @@ bool IsCustomKeyPressed(ImGuiCustomKey key, bool repeat) noexcept
     switch (key)
     {
         case ImGuiCustomKey::Up:
-            if (IsKeyPressed(ImGuiKey_UpArrow, repeat) || IsKeyPressed(ImGuiKey_W, repeat))
+            if (ImGui::IsKeyPressed(ImGuiKey_UpArrow, repeat) || ImGui::IsKeyPressed(ImGuiKey_W, repeat))
                 return true;
             break;
         case ImGuiCustomKey::Left:
-            if (IsKeyPressed(ImGuiKey_LeftArrow, repeat) || IsKeyPressed(ImGuiKey_A, repeat))
+            if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow, repeat) || ImGui::IsKeyPressed(ImGuiKey_A, repeat))
                 return true;
             break;
         case ImGuiCustomKey::Down:
-            if (IsKeyPressed(ImGuiKey_DownArrow, repeat) || IsKeyPressed(ImGuiKey_S, repeat))
+            if (ImGui::IsKeyPressed(ImGuiKey_DownArrow, repeat) || ImGui::IsKeyPressed(ImGuiKey_S, repeat))
                 return true;
             break;
         case ImGuiCustomKey::Right:
-            if (IsKeyPressed(ImGuiKey_RightArrow, repeat) || IsKeyPressed(ImGuiKey_D, repeat))
+            if (ImGui::IsKeyPressed(ImGuiKey_RightArrow, repeat) || ImGui::IsKeyPressed(ImGuiKey_D, repeat))
                 return true;
             break;
         default:
@@ -171,4 +170,4 @@ bool IsCustomKeyPressed(ImGuiCustomKey key, bool repeat) noexcept
     return false;
 }
 
-} // ImGui
+} // GuiUtil

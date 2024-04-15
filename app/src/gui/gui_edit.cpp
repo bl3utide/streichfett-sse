@@ -4,7 +4,6 @@
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
-#include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
 #include "midi/message_task.hpp"
 #include "model/sound.hpp"
@@ -94,11 +93,11 @@ void drawParamValueContextMenu(const char* label,
 {
     if (ImGui::BeginPopupContextItem())
     {
-        ImGui::PushFont((int)Font::TextBold);
+        GuiUtil::PushFont((int)Font::TextBold);
         ImGui::Text(label);
         ImGui::PopFont();
 
-        ImGui::PushFont((int)Font::Text);
+        GuiUtil::PushFont((int)Font::Text);
         if (ImGui::Selectable("Revert to the original value"))
         {
             *v = *original_v;
@@ -111,7 +110,7 @@ void drawParamValueContextMenu(const char* label,
             InternalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
         }
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
         if (ImGui::Selectable("Reset to the initial value"))
         {
             v->setDefault();
@@ -124,7 +123,7 @@ void drawParamValueContextMenu(const char* label,
             InternalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
         }
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
 
         ImGui::PopFont();
         ImGui::EndPopup();
@@ -140,7 +139,7 @@ void drawSlider(const char* label, int label_index, float label_width, float con
     const char* display_format = v->hasArr() ? v->evs() : "%d";
     bool changed_from_org = v->ev() != original_v->ev();
     if (changed_from_org) ImGui::PushStyleColor(ImGuiCol_Border, UI_COLOR_PARAM_CHANGED);
-    if (ImGuiLeftLabel(ImGui::NiSliderInt, label_index, label, hide_label,
+    if (GuiUtil::ImGuiLeftLabel(ImGui::NiSliderInt, label_index, label, hide_label,
         label_width, control_width, changed_from_org, UI_COLOR_PARAM_CHANGED,
         v, display_format))
     {
@@ -153,7 +152,7 @@ void drawSlider(const char* label, int label_index, float label_width, float con
         InternalPatch::current_patch_changed = true;
     }
     if (changed_from_org) ImGui::PopStyleColor();
-    ImGui::MouseCursorToHand();
+    GuiUtil::MouseCursorToHand();
     //setWheelControl(v, param_index, vfn); // TODO delete toDvFunc
     setWheelControl(v, param_index);
 
@@ -167,7 +166,7 @@ void drawCombo(const char* label, int label_index, float label_width, float cont
 {
     bool changed_from_org = v->ev() != original_v->ev();
     if (changed_from_org) ImGui::PushStyleColor(ImGuiCol_Border, UI_COLOR_PARAM_CHANGED);
-    if (ImGuiLeftLabel(ImGui::BeginCombo, label_index, label, hide_label,
+    if (GuiUtil::ImGuiLeftLabel(ImGui::BeginCombo, label_index, label, hide_label,
         label_width, control_width, changed_from_org, UI_COLOR_PARAM_CHANGED,
         v->evs(), (int)ImGuiComboFlags_None))
     {
@@ -184,7 +183,7 @@ void drawCombo(const char* label, int label_index, float label_width, float cont
                 Annotation::clearText();
                 InternalPatch::current_patch_changed = true;
             }
-            ImGui::MouseCursorToHand();
+            GuiUtil::MouseCursorToHand();
             ImGui::PopStyleColor();
             if (is_selected) ImGui::SetItemDefaultFocus();
         }
@@ -192,7 +191,7 @@ void drawCombo(const char* label, int label_index, float label_width, float cont
         ImGui::EndCombo();
     }
     if (changed_from_org) ImGui::PopStyleColor();
-    ImGui::MouseCursorToHand();
+    GuiUtil::MouseCursorToHand();
 
     drawParamValueContextMenu(label, v, original_v, param_index);
 }
@@ -203,7 +202,7 @@ void drawPatchSelector()
     ImGui::Indent(10.0f);
 
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_PATCH_INFO);
-    ImGui::PushFont((int)Font::PatchInfo);
+    GuiUtil::PushFont((int)Font::PatchInfo);
     InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     for (int patch_i = 0; patch_i < 12; ++patch_i)
@@ -240,7 +239,7 @@ void drawPatchSelector()
                 break;
         }
         draw_list->AddRectFilled(p0, p1, sel_bg);
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
 
         if (patch_i == sound_addr->sound)
         {
@@ -263,7 +262,7 @@ void drawPatchOperators(SoundModel::Patch* const cp)
 
     ImGui::Indent(4.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, 2.0f));
-    ImGui::PushFont((int)Font::Text);
+    GuiUtil::PushFont((int)Font::Text);
 
     if (!current_patch_changed) ImGui::BeginDisabled();
     else
@@ -276,7 +275,7 @@ void drawPatchOperators(SoundModel::Patch* const cp)
     {
         Connector::sendSoundDump();
     }
-    ImGui::MouseCursorToHand();
+    GuiUtil::MouseCursorToHand();
     if (!current_patch_changed) ImGui::EndDisabled();
     else ImGui::PopStyleColor(3);
 
@@ -286,10 +285,10 @@ void drawPatchOperators(SoundModel::Patch* const cp)
     {
         ImGui::OpenPopup("patch_operators");
     }
-    ImGui::MouseCursorToHand();
+    GuiUtil::MouseCursorToHand();
     if (ImGui::BeginPopup("patch_operators"))
     {
-        ImGui::PushFont((int)Font::TextBold);
+        GuiUtil::PushFont((int)Font::TextBold);
         ImGui::Text("Operation to Edit Buffer");
         ImGui::PopFont();
         if (ImGui::Selectable("Initialize All Parameters"))
@@ -299,7 +298,7 @@ void drawPatchOperators(SoundModel::Patch* const cp)
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
         }
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
         ImGui::EndPopup();
     }
 
@@ -309,7 +308,7 @@ void drawPatchOperators(SoundModel::Patch* const cp)
         Connector::sendAllSoundOff();
         Annotation::clearText();
     }
-    ImGui::MouseCursorToHand();
+    GuiUtil::MouseCursorToHand();
 
     ImGui::PopFont();
     ImGui::PopStyleVar();
@@ -321,15 +320,15 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
 {
     using namespace SoundModel;
 
-    ImGui::PushFont((int)Font::TextBold);
+    GuiUtil::PushFont((int)Font::TextBold);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
 
-    ImGui::BeginGroupPanel("Common", ImVec2(100.0f, 100.0f));
+    GuiUtil::BeginGroupPanel("Common", ImVec2(100.0f, 100.0f));
     {
         auto label_width = COMMON_LABEL_WIDTH;
         auto control_width = COMMON_CONTROL_WIDTH;
 
-        ImGui::PushFont((int)Font::Text);
+        GuiUtil::PushFont((int)Font::Text);
 
         /* TODO delete toDvFunc
         drawSlider("Balance", 0, label_width, control_width,
@@ -341,14 +340,14 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
 
         ImGui::PopFont();
     }
-    ImGui::EndGroupPanel();
+    GuiUtil::EndGroupPanel();
 
-    ImGui::BeginGroupPanel("Strings", ImVec2(100.0f, 100.0f));
+    GuiUtil::BeginGroupPanel("Strings", ImVec2(100.0f, 100.0f));
     {
         auto label_width = STRINGS_LABEL_WIDTH;
         auto control_width = STRINGS_CONTROL_WIDTH;
 
-        ImGui::PushFont((int)Font::Text);
+        GuiUtil::PushFont((int)Font::Text);
 
         drawSlider("Registration", 0, label_width, control_width,
             &cp->registration, &op->registration, PARAM_CC.at(ParamIndex::Registration));
@@ -370,16 +369,16 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
 
         ImGui::PopFont();
     }
-    ImGui::EndGroupPanel();
+    GuiUtil::EndGroupPanel();
 
     ImGui::SameLine();
 
-    ImGui::BeginGroupPanel("Solo", ImVec2(100.0f, 100.0f));
+    GuiUtil::BeginGroupPanel("Solo", ImVec2(100.0f, 100.0f));
     {
         auto label_width = SOLO_LABEL_WIDTH;
         auto control_width = SOLO_CONTROL_WIDTH;
 
-        ImGui::PushFont((int)Font::Text);
+        GuiUtil::PushFont((int)Font::Text);
 
         drawSlider("Tone", 0, label_width, control_width,
             &cp->tone, &op->tone, PARAM_CC.at(ParamIndex::Tone));
@@ -407,14 +406,14 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
 
         ImGui::PopFont();
     }
-    ImGui::EndGroupPanel();
+    GuiUtil::EndGroupPanel();
 
-    ImGui::BeginGroupPanel("Effect", ImVec2(100.0f, 100.0f));
+    GuiUtil::BeginGroupPanel("Effect", ImVec2(100.0f, 100.0f));
     {
         auto label_width = EFFECT_LABEL_WIDTH;
         auto control_width = EFFECT_CONTROL_WIDTH;
 
-        ImGui::PushFont((int)Font::Text);
+        GuiUtil::PushFont((int)Font::Text);
 
         drawSlider("Animate", 0, label_width, control_width,
             &cp->animate, &op->animate, PARAM_CC.at(ParamIndex::Animate));
@@ -427,7 +426,7 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
 
         ImGui::PopFont();
     }
-    ImGui::EndGroupPanel();
+    GuiUtil::EndGroupPanel();
 
     ImGui::PopStyleVar();
     ImGui::PopFont();

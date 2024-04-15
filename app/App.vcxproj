@@ -121,7 +121,7 @@
     <ClCompile Include="src\gui\gui_debug.cpp" />
     <ClCompile Include="src\gui\gui_edit.cpp" />
     <ClCompile Include="src\gui\gui_option.cpp" />
-    <ClCompile Include="src\gui\gui_util.cpp" />
+    <ClCompile Include="src\util\gui_util.cpp" />
     <ClCompile Include="src\image.cpp" />
     <ClCompile Include="src\logger.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -152,7 +152,7 @@
     <ClInclude Include="src\gui\gui_font.hpp" />
     <ClInclude Include="src\gui\gui.hpp" />
     <ClInclude Include="src\gui\gui_color.hpp" />
-    <ClInclude Include="src\gui\gui_util.hpp" />
+    <ClInclude Include="src\util\gui_util.hpp" />
     <ClInclude Include="src\image.hpp" />
     <ClInclude Include="src\logger.hpp" />
     <ClInclude Include="src\main.hpp" />

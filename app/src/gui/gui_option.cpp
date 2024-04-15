@@ -4,7 +4,6 @@
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
-#include "gui/gui_util.hpp"
 #include "midi/connector.hpp"
 #include "midi/message_handler.hpp"
 #include "model/global.hpp"
@@ -22,7 +21,7 @@ const char* TEXT_INFO_NONE = "----";
 
 void drawOptionItem(const char* text)
 {
-    ImGui::PushFont((int)Font::OptionItemBold);
+    GuiUtil::PushFont((int)Font::OptionItemBold);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ITEM_PADDING_Y);    // text v-align
     ImGui::Text(text);
@@ -34,7 +33,7 @@ void drawOptionItem(const char* text)
 
 void beginOptionItemValue()
 {
-    ImGui::PushFont((int)Font::OptionItem);
+    GuiUtil::PushFont((int)Font::OptionItem);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ITEM_PADDING_Y);    // text v-align
     ImGui::PushItemWidth(320.0f);
@@ -83,10 +82,10 @@ void drawOptionItemValue(const T& v, const bool displayable = false)
 
 void drawOptionGroupConnections()
 {
-    ImGui::BeginGroupPanel("Connections", ImVec2(440.0f, 200.0f));
+    GuiUtil::BeginGroupPanel("Connections", ImVec2(440.0f, 200.0f));
     {
         drawOptionItem("Synth Input Device");
-        ImGui::PushFont((int)Font::OptionItem);
+        GuiUtil::PushFont((int)Font::OptionItem);
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushItemWidth(220.0f);
@@ -98,7 +97,7 @@ void drawOptionGroupConnections()
                 bool is_selected = n == Connector::synth_input.getPortIndex();
                 if (n == Connector::key_input.getPortIndex())
                 {
-                    ImGui::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
+                    GuiUtil::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
                 }
                 else
                 {
@@ -106,14 +105,14 @@ void drawOptionGroupConnections()
                     {
                         Connector::openSynthInputPort(n, Connector::in_name_list[n]);
                     }
-                    ImGui::MouseCursorToHand();
+                    GuiUtil::MouseCursorToHand();
                     if (is_selected) ImGui::SetItemDefaultFocus();
                 }
             }
             ImGui::PopStyleVar();
             ImGui::EndCombo();
         }
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
         ImGui::PopItemWidth();
         ImGui::SameLine();
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
@@ -121,12 +120,12 @@ void drawOptionGroupConnections()
         {
             Connector::resetAllConnections();
         }
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
         ImGui::PopStyleVar(3);
         ImGui::PopFont();
 
         drawOptionItem("Synth Output Device");
-        ImGui::PushFont((int)Font::OptionItem);
+        GuiUtil::PushFont((int)Font::OptionItem);
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushItemWidth(220.0f);
@@ -140,19 +139,19 @@ void drawOptionGroupConnections()
                 {
                     Connector::openSynthOutputPort(n, Connector::out_name_list[n]);
                 }
-                ImGui::MouseCursorToHand();
+                GuiUtil::MouseCursorToHand();
                 if (is_selected) ImGui::SetItemDefaultFocus();
             }
             ImGui::PopStyleVar();
             ImGui::EndCombo();
         }
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
         ImGui::PopItemWidth();
         ImGui::PopStyleVar(2);
         ImGui::PopFont();
 
         drawOptionItem("Keyboard Input Device");
-        ImGui::PushFont((int)Font::OptionItem);
+        GuiUtil::PushFont((int)Font::OptionItem);
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushItemWidth(220.0f);
@@ -164,7 +163,7 @@ void drawOptionGroupConnections()
                 bool is_selected = n == Connector::key_input.getPortIndex();
                 if (n == Connector::synth_input.getPortIndex())
                 {
-                    ImGui::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
+                    GuiUtil::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
                 }
                 else
                 {
@@ -172,45 +171,45 @@ void drawOptionGroupConnections()
                     {
                         Connector::openKeyInputPort(n, Connector::in_name_list[n]);
                     }
-                    ImGui::MouseCursorToHand();
+                    GuiUtil::MouseCursorToHand();
                     if (is_selected) ImGui::SetItemDefaultFocus();
                 }
             }
             ImGui::PopStyleVar();
             ImGui::EndCombo();
         }
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
         ImGui::PopItemWidth();
         ImGui::PopStyleVar(2);
         ImGui::PopFont();
 
         drawOptionItem("Force Adjust Kb MIDI Channel");
-        ImGui::PushFont((int)Font::OptionItem);
+        GuiUtil::PushFont((int)Font::OptionItem);
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::Checkbox("##FORCE MIDI CH", &Connector::force_adjust_midi_channel);
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
         ImGui::PopStyleVar(2);
         ImGui::PopFont();
 
         drawOptionItem("SysEx Delay");
-        ImGui::PushFont((int)Font::OptionItem);
+        GuiUtil::PushFont((int)Font::OptionItem);
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushItemWidth(160.0f);
         ImGui::SliderInt("##SysEx Delay", &Connector::store_delay_duration, 200, 500);
         ImGui::PopItemWidth();
-        ImGui::MouseCursorToHand();
+        GuiUtil::MouseCursorToHand();
         ImGui::PopStyleVar(2);
         ImGui::PopFont();
     }
-    ImGui::EndGroupPanel();
+    GuiUtil::EndGroupPanel();
 }
 
 // DSI: Streichfett
 void drawOptionGroupDeviceSettingInfo()
 {
-    ImGui::BeginGroupPanel("Device Setting Info", ImVec2(320.0f, 200.0f));
+    GuiUtil::BeginGroupPanel("Device Setting Info", ImVec2(320.0f, 200.0f));
     {
         bool displayable_synth_info = Connector::isSynthConnected();
 
@@ -257,12 +256,12 @@ void drawOptionGroupDeviceSettingInfo()
             */
         drawOptionItemValue(global->pitch_bend_range, displayable_synth_info);
     }
-    ImGui::EndGroupPanel();
+    GuiUtil::EndGroupPanel();
 }
 
 void drawOptionPanel()
 {
-    ImGui::PushFont((int)Font::Section);
+    GuiUtil::PushFont((int)Font::Section);
     drawOptionGroupConnections();
     drawOptionGroupDeviceSettingInfo();
     ImGui::PopFont();
