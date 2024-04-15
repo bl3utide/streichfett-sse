@@ -468,7 +468,10 @@ void drawDebugTabItemLogger()
 {
     if (ImGui::BeginTabItem("Logger"))
     {
-        ImGui::Text("%d logs", Logger::logs.front().log_id + 1);
+        if (Logger::logs.size() > 0)
+            ImGui::Text("%d logs", Logger::logs.front().log_id + 1);
+        else
+            ImGui::Text("no logs");
 
         ImGui::BeginChild("logger_list", ImVec2(800, 430), false, 0);
         {
