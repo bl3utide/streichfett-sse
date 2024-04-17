@@ -1,12 +1,10 @@
 ﻿#include "common.hpp"
-#include "annotation.hpp"
 #include "data/internal_patch.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
 #include "midi/connector.hpp"
 #include "midi/message_task.hpp"
-#include "model/sound.hpp"
 //#include "model/sound_value_util.hpp"     // TODO delete toDvFunc
 
 namespace ImGui

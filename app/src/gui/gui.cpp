@@ -7,7 +7,6 @@
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/connector.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
 #include "midi/connector_debug.hpp"
