@@ -468,15 +468,15 @@ void drawDebugTabItemLogger()
 {
     if (ImGui::BeginTabItem("Logger"))
     {
-        if (Logger::logs.size() > 0)
-            ImGui::Text("%d logs", Logger::logs.front().log_id + 1);
+        if (Logger::debug_logs.size() > 0)
+            ImGui::Text("%d logs", Logger::debug_logs.front().log_id + 1);
         else
             ImGui::Text("no logs");
 
         ImGui::BeginChild("logger_list", ImVec2(800, 430), false, 0);
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8.0f, 0.0f));
-            auto debug_log = Logger::logs;
+            auto debug_log = Logger::debug_logs;
             for (auto iter = debug_log.begin(); iter != debug_log.end(); ++iter)
             {
                 bool is_selected = _selected_debug_log_index == iter->log_id;
