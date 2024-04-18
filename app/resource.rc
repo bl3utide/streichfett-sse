@@ -80,7 +80,7 @@ BEGIN
             VALUE "CompanyName", "bl3utide"
             VALUE "FileDescription", "Sound Editor for Waldorf Streichfett"
             VALUE "FileVersion", "1.2.0.0"
-            VALUE "InternalName", "StreichfettSse.exe"
+            VALUE "InternalName", "StreichfettSse"
             VALUE "LegalCopyright", "Copyright (C) 2024 bl3utide"
             VALUE "OriginalFilename", "StreichfettSse.exe"
             VALUE "ProductName", "Streichfett SSE"
