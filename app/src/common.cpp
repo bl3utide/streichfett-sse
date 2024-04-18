@@ -3,6 +3,6 @@
 namespace StreichfettSse
 {
 
-extern const std::string APP_NAME;
+const std::string APP_NAME = StringUtil::getExeVersionInfo(StringUtil::FileVersion::InternalName);
 
 } // StreichfettSse

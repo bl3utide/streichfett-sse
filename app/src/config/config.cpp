@@ -13,7 +13,7 @@ namespace Config
 {
 
 // private
-const std::string CONFIG_FILE_NAME = StringUtil::format("%s.ini", APP_NAME.c_str());
+std::string _config_file_name;
 std::unordered_map<Key, Cv> _cv_by_key;
 
 const Cv& getCv(const Key key) noexcept
@@ -24,7 +24,7 @@ const Cv& getCv(const Key key) noexcept
 void load() noexcept
 {
     mINI::INIStructure read_is;
-    mINI::INIFile file = mINI::INIFile(CONFIG_FILE_NAME);
+    mINI::INIFile file = mINI::INIFile(_config_file_name);
 
     if (file.read(read_is))
     {
@@ -49,7 +49,7 @@ void load() noexcept
 void save() noexcept
 {
     mINI::INIStructure write_is;
-    mINI::INIFile file = mINI::INIFile(CONFIG_FILE_NAME);
+    mINI::INIFile file = mINI::INIFile(_config_file_name);
 
     for (int key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
     {
@@ -150,6 +150,8 @@ void setConfigValue(const Key key, const bool value)
 
 void initialize()
 {
+    _config_file_name = StringUtil::format("%s.ini", APP_NAME.c_str());
+
     // [Device]
     _cv_by_key.insert({ Key::SynthInputDevice,   Cv(Section::Device, Key::SynthInputDevice, std::string()) });
     _cv_by_key.insert({ Key::SynthOutputDevice,  Cv(Section::Device, Key::SynthOutputDevice, std::string()) });

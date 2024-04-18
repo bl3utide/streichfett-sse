@@ -13,9 +13,9 @@ const size_t MAX_DISPLAY_DEBUG_LOGS = 100;
 
 // private
 int DisplayFormattedDebugLog::_next_log_id = 0;
-const std::string DEBUG_FILE_NAME = StringUtil::format("%s.debug.log", APP_NAME.c_str());
+std::string _debug_file_name;
 #endif
-const std::string ERROR_FILE_NAME = StringUtil::format("%s.error.log", APP_NAME.c_str());
+std::string _error_file_name;
 
 void initialize() noexcept
 {
@@ -25,11 +25,13 @@ void initialize() noexcept
     };
 
 #ifdef _DEBUG
+    _debug_file_name = StringUtil::format("%s.debug.log", APP_NAME.c_str());
     static plog::DebugLogAppender<plog::DebugLogFormatter> debugLogAppender;
-    plog::init<plog::DebugLogFormatter>(plog::debug, DEBUG_FILE_NAME.c_str()).addAppender(&debugLogAppender);
+    plog::init<plog::DebugLogFormatter>(plog::debug, _debug_file_name.c_str()).addAppender(&debugLogAppender);
     LOGD << "<beginning of application>";
 #endif
-    plog::init<plog::ErrorLogFormatter, LogId::Error>(plog::error, ERROR_FILE_NAME.c_str());
+    _error_file_name = StringUtil::format("%s.error.log", APP_NAME.c_str());
+    plog::init<plog::ErrorLogFormatter, LogId::Error>(plog::error, _error_file_name.c_str());
 }
 
 } // Logger

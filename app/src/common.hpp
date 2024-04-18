@@ -34,13 +34,7 @@
 namespace StreichfettSse
 {
 
-#define DEF_APP_NAME        "StreichfettSse"
-#define DEF_APP_VERSION     "1.2"
-#define DEF_APP_DEV_BY      "bl3utide"
-#define DEF_APP_DEV_YR      2024
-#define DEF_APP_TITLE       "Streichfett SSE"
-
-const std::string APP_NAME = DEF_APP_NAME;
+extern const std::string APP_NAME;
 using Byte = unsigned char;
 using ByteVec = std::vector<Byte>;
 
