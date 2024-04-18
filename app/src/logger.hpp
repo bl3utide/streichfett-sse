@@ -6,6 +6,11 @@ namespace Logger
 {
 
 #ifdef _DEBUG
+#define LDEBUG LOGD
+#endif
+#define LERROR LOGE_(1)
+
+#ifdef _DEBUG
 class DisplayFormattedDebugLog
 {
 public:
@@ -41,8 +46,8 @@ private:
     static int _next_log_id;
 };
 
-extern std::list<DisplayFormattedDebugLog> logs;
-extern const size_t MAX_DISPLAY_LOGS;
+extern std::list<DisplayFormattedDebugLog> debug_logs;
+extern const size_t MAX_DISPLAY_DEBUG_LOGS;
 #endif
 
 void initialize() noexcept;
@@ -62,9 +67,9 @@ public:
     {
         namespace AppLogger = StreichfettSse::Logger;
         std::string str = Formatter::format(record);
-        AppLogger::logs.emplace_front(AppLogger::DisplayFormattedDebugLog(str));
-        if (AppLogger::logs.size() > AppLogger::MAX_DISPLAY_LOGS)
-            AppLogger::logs.resize(AppLogger::MAX_DISPLAY_LOGS);
+        AppLogger::debug_logs.emplace_front(AppLogger::DisplayFormattedDebugLog(str));
+        if (AppLogger::debug_logs.size() > AppLogger::MAX_DISPLAY_DEBUG_LOGS)
+            AppLogger::debug_logs.resize(AppLogger::MAX_DISPLAY_DEBUG_LOGS);
     }
 };
 
