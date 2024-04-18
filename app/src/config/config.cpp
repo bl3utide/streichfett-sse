@@ -13,6 +13,7 @@ namespace Config
 {
 
 // private
+const std::string CONFIG_FILE_NAME = StringUtil::format("%s.ini", APP_NAME.c_str());
 std::unordered_map<Key, Cv> _cv_by_key;
 
 const Cv& getCv(const Key key) noexcept
@@ -20,10 +21,10 @@ const Cv& getCv(const Key key) noexcept
     return _cv_by_key.at(key);
 }
 
-void load(const std::string& ini_file_name) noexcept
+void load() noexcept
 {
     mINI::INIStructure read_is;
-    mINI::INIFile file = mINI::INIFile(ini_file_name);
+    mINI::INIFile file = mINI::INIFile(CONFIG_FILE_NAME);
 
     if (file.read(read_is))
     {
@@ -45,10 +46,10 @@ void load(const std::string& ini_file_name) noexcept
 #endif
 }
 
-void save(const std::string& ini_file_name) noexcept
+void save() noexcept
 {
     mINI::INIStructure write_is;
-    mINI::INIFile file = mINI::INIFile(ini_file_name);
+    mINI::INIFile file = mINI::INIFile(CONFIG_FILE_NAME);
 
     for (int key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
     {

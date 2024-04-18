@@ -31,9 +31,19 @@
 #include "util/gui_util.hpp"
 #include "util/string_util.hpp"
 
-// TODO define in external module
 namespace StreichfettSse
 {
+
+#define DEF_APP_NAME        "StreichfettSse"
+#define DEF_APP_VERSION     "1.2"
+#define DEF_APP_DEV_BY      "bl3utide"
+#define DEF_APP_DEV_YR      2024
+#define DEF_APP_TITLE       "Streichfett SSE"
+#define LDEBUG LOGD
+#define LERROR LOGE_(1)
+
+const std::string APP_NAME = DEF_APP_NAME;
 using Byte = unsigned char;
 using ByteVec = std::vector<Byte>;
+
 } // StreichfettSse

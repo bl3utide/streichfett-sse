@@ -18,8 +18,8 @@ template<> void setConfigValue(const Key key, std::string value);
 template<> void setConfigValue(const Key key, int value);
 template<> void setConfigValue(const Key key, bool value);
 
-void load(const std::string& ini_file_name) noexcept;
-void save(const std::string& ini_file_name) noexcept;
+void load() noexcept;
+void save() noexcept;
 void initialize();
 
 } // Config

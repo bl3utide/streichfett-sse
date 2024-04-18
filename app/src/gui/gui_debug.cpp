@@ -29,7 +29,7 @@ bool _show_demo_window = false;
 bool _show_debug_window = true;
 bool _show_processed_message_window = false;
 int _selected_debug_log_index = -1;
-Logger::Log _selected_debug_log;
+Logger::DisplayFormattedDebugLog _selected_debug_log;
 
 void drawDebugMenuBar(const ImVec2 viewport_pos)
 {

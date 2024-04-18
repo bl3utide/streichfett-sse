@@ -1,17 +1,14 @@
-﻿/*
-    Streichfett SSE
-    Copyright (C) 2024 bl3utide <bl3utide@gmail.com>
-    1.2.0
-*/
-#pragma once
+﻿// TODO delete this hpp file
 
-namespace StreichfettSse
-{
-
-#define DEF_APP_NAME        "StreichfettSse"
-#define DEF_APP_VERSION     "1.2"
-#define DEF_APP_DEV_BY      "bl3utide"
-#define DEF_APP_DEV_YR      2024
-#define DEF_APP_TITLE       "Streichfett SSE"
-
-} // StreichfettSse
+//#pragma once
+//
+//namespace StreichfettSse
+//{
+//
+////#define DEF_APP_NAME        "StreichfettSse"
+////#define DEF_APP_VERSION     "1.2"
+////#define DEF_APP_DEV_BY      "bl3utide"
+////#define DEF_APP_DEV_YR      2024
+////#define DEF_APP_TITLE       "Streichfett SSE"
+//
+//} // StreichfettSse
