@@ -6,11 +6,8 @@
 #include "common.hpp"
 #include "error.hpp"
 #include "image.hpp"
-#include "operation.hpp"
 #include "state.hpp"
 #include "config/config.hpp"
-#include "data/internal_patch.hpp"
-#include "data/internal_setting.hpp"
 #include "gui/gui.hpp"
 #include "midi/connector.hpp"
 #include "logger.hpp"
@@ -69,51 +66,7 @@ void loop()
 
         try
         {
-            switch (getState())
-            {
-                case State::InitInternalData:
-                    InternalPatch::initData();
-                    InternalSetting::initData();
-                    Connector::resetAllConnections();
-                    setNextState(State::ApplyConfig);
-                    break;
-                case State::ApplyConfig:
-                    Config::load();
-                    Connector::applyConfig();
-                    setNextState(State::Idle);
-                    break;
-                case State::Idle:
-                    Connector::sendOneTaskMessage();
-                    break;
-                case State::RequestInquiry:
-                    Connector::requestInquiry();
-                    break;
-                case State::RequestGlobal:
-                    Connector::requestGlobalData();
-                    break;
-                case State::SendBankProgChange:
-                    Connector::sendProgChange();
-                    break;
-                case State::RequestSound:
-                    Connector::requestSoundData();
-                    break;
-                case State::EnterSoundMode:
-                    setOperation(Operation::Sound);
-                    if (Connector::isSynthConnected()) setNextState(State::RequestGlobal);
-                    else setNextState(State::Idle);
-                    break;
-                case State::EnterOptionMode:
-                    setOperation(Operation::Option);
-                    if (Connector::isSynthConnected()) setNextState(State::RequestGlobal);
-                    else setNextState(State::Idle);
-                    break;
-                case State::PrepareToExit:
-                    Connector::updateConfig();
-                    running = false;
-                    break;
-                default:
-                    break;
-            }
+            running = processForCurrentState();
         }
         catch (RtMidiError& error)
         {

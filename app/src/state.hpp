@@ -27,6 +27,7 @@ enum class State : int
 extern const char* STATE_STR[static_cast<int>(State::_COUNT_)];
 #endif
 
+bool processForCurrentState();
 State getState() noexcept;
 State getNextState() noexcept;
 void setNextState(State state, const bool force_mod = false) noexcept;
