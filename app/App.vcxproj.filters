@@ -116,9 +116,6 @@
     <ClInclude Include="src\logger.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\main.hpp">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\string_util.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
