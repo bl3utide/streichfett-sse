@@ -60,8 +60,7 @@ public:
     {
         namespace AppLogger = StreichfettSse::Logger;
         std::string str = Formatter::format(record);
-        AppLogger::Log log = AppLogger::Log(str);
-        AppLogger::logs.push_front(log);
+        AppLogger::logs.emplace_front(AppLogger::Log(str));
         if (AppLogger::logs.size() > AppLogger::MAX_DISPLAY_LOGS)
             AppLogger::logs.resize(AppLogger::MAX_DISPLAY_LOGS);
     }
