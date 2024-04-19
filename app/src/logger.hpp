@@ -72,7 +72,7 @@ public:
         std::string str = Formatter::format(record);
 
         std::unique_lock lock(AppLogger::dlog_mutex);
-        AppLogger::dlog.push_back(AppLogger::DisplayFormattedDebugLog(str));
+        AppLogger::dlog.emplace_back(AppLogger::DisplayFormattedDebugLog(str));
 
         if (AppLogger::dlog.size() > AppLogger::MAX_SIZE_DISPLAY_DLOG)
         {

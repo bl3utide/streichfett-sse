@@ -39,7 +39,7 @@ void addProcessedHistory(const bool transmitted, const std::string& device_name,
     auto description = MessageHandler::getMessageDesc(data);
 
     std::unique_lock lock(history_mutex);
-    history.push_back(ProcessedMidiMessage(timestamp, transmitted, device_name, description, data));
+    history.emplace_back(ProcessedMidiMessage(timestamp, transmitted, device_name, description, data));
 
     if (history.size() > MAX_SIZE_DISPLAY_HISTORY)
     {
