@@ -75,9 +75,10 @@ struct ProcessedMidiMessage
             description.c_str());
     }
 };
-extern std::list<ProcessedMidiMessage> processed_history;
+extern std::vector<ProcessedMidiMessage> history;
 extern int history_selected_index;
-extern ProcessedMidiMessage selected_processed_message;
+extern ProcessedMidiMessage history_selected;
+extern std::mutex history_mutex;
 
 void addProcessedHistory(const bool transmitted, const std::string& device_name, const ByteVec& data);
 void sendTest(const SendTestType type);

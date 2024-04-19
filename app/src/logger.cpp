@@ -8,8 +8,11 @@ namespace Logger
 
 #ifdef _DEBUG
 // public
-std::list<DisplayFormattedDebugLog> debug_logs;
-const size_t MAX_DISPLAY_DEBUG_LOGS = 100;
+std::vector<DisplayFormattedDebugLog> dlog;
+int dlog_selected_index = -1;
+DisplayFormattedDebugLog dlog_selected;
+const size_t MAX_SIZE_DISPLAY_DLOG = 1000;
+std::mutex dlog_mutex;
 
 // private
 int DisplayFormattedDebugLog::_next_log_id = 0;

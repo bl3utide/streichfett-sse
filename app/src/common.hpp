@@ -10,6 +10,7 @@
 #include <regex>
 #include <chrono>
 #include <ctime>
+#include <mutex>
 
 #include <SDL.h>
 #include <SDL_opengl.h>

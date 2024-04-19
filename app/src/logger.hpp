@@ -46,8 +46,11 @@ private:
     static int _next_log_id;
 };
 
-extern std::list<DisplayFormattedDebugLog> debug_logs;
-extern const size_t MAX_DISPLAY_DEBUG_LOGS;
+extern std::vector<DisplayFormattedDebugLog> dlog;
+extern int dlog_selected_index;
+extern DisplayFormattedDebugLog dlog_selected;
+extern const size_t MAX_SIZE_DISPLAY_DLOG;
+extern std::mutex dlog_mutex;
 #endif
 
 void initialize() noexcept;
@@ -67,9 +70,15 @@ public:
     {
         namespace AppLogger = StreichfettSse::Logger;
         std::string str = Formatter::format(record);
-        AppLogger::debug_logs.emplace_front(AppLogger::DisplayFormattedDebugLog(str));
-        if (AppLogger::debug_logs.size() > AppLogger::MAX_DISPLAY_DEBUG_LOGS)
-            AppLogger::debug_logs.resize(AppLogger::MAX_DISPLAY_DEBUG_LOGS);
+
+        std::unique_lock lock(AppLogger::dlog_mutex);
+        AppLogger::dlog.push_back(AppLogger::DisplayFormattedDebugLog(str));
+
+        if (AppLogger::dlog.size() > AppLogger::MAX_SIZE_DISPLAY_DLOG)
+        {
+            AppLogger::dlog.erase(AppLogger::dlog.begin());
+            --AppLogger::dlog_selected_index;
+        }
     }
 };
 

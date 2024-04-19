@@ -17,13 +17,14 @@ namespace Debug
 // public
 SendTestResult send_test[static_cast<int>(SendTestType::_COUNT_)];
 SendTestFailedCause send_test_failed_cause[static_cast<int>(SendTestType::_COUNT_)];
-std::list<ProcessedMidiMessage> processed_history;
+std::vector<ProcessedMidiMessage> history;
 int history_selected_index = -1;
-ProcessedMidiMessage selected_processed_message;
+ProcessedMidiMessage history_selected;
+std::mutex history_mutex;
 
 // private
 const int TIMEOUT_DURATION = 5000;
-size_t _processed_history_max_size = 100;
+const size_t MAX_SIZE_DISPLAY_HISTORY = 200;
 
 void addProcessedHistory(const bool transmitted, const std::string& device_name, const ByteVec& data)
 {
@@ -37,14 +38,14 @@ void addProcessedHistory(const bool transmitted, const std::string& device_name,
 
     auto description = MessageHandler::getMessageDesc(data);
 
-    processed_history.push_front(ProcessedMidiMessage(timestamp, transmitted, device_name, description, data));
+    std::unique_lock lock(history_mutex);
+    history.push_back(ProcessedMidiMessage(timestamp, transmitted, device_name, description, data));
 
-    if (processed_history.size() > _processed_history_max_size)
+    if (history.size() > MAX_SIZE_DISPLAY_HISTORY)
     {
-        processed_history.resize(_processed_history_max_size);
+        history.erase(history.begin());
+        --history_selected_index;
     }
-
-    if (history_selected_index != -1) ++history_selected_index;
 }
 
 // DSI: Streichfett
