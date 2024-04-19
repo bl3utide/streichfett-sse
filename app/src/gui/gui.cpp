@@ -243,12 +243,15 @@ void drawPageSelector()
         ImGui::PushStyleColor(ImGuiCol_Text, is_current_page ? UI_COLOR_TEXT_PAGE_ACTIVE : UI_COLOR_TEXT_PAGE_INACTIVE);
         if (ImGui::Selectable(PAGE_STR[page_i], is_current_page, 0, ImVec2(80, 20)))
         {
-            _page = static_cast<Page>(page_i);
+            if (!is_current_page)
+            {
+                _page = static_cast<Page>(page_i);
 
-            if (_page == Page::Edit)
-                setNextState(State::EnterSoundMode);
-            else if (_page == Page::Option)
-                setNextState(State::EnterOptionMode);
+                if (_page == Page::Edit)
+                    setNextState(State::EnterSoundMode);
+                else if (_page == Page::Option)
+                    setNextState(State::EnterOptionMode);
+            }
         }
         if (!is_current_page) GuiUtil::MouseCursorToHand();
         ImGui::PopStyleColor();
