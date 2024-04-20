@@ -43,7 +43,7 @@ void addProcessedHistory(const bool transmitted, const std::string& device_name,
 
     if (history.size() > MAX_SIZE_DISPLAY_HISTORY)
     {
-        history.erase(history.begin());
+        history.erase(history.cbegin());
         --history_selected_index;
     }
 }
