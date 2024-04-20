@@ -36,7 +36,7 @@ void initialize()
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
-        throw error;
+        throw;
     }
 }
 
