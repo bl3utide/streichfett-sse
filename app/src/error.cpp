@@ -1,8 +1,5 @@
 ﻿#include "common.hpp"
 #include "error.hpp"
-#ifdef _DEBUG
-#include "logger.hpp"
-#endif
 
 namespace StreichfettSse
 {
@@ -12,21 +9,85 @@ bool has_error = false;
 std::string error_message;
 bool showing_error_message = false;
 
-const std::unordered_map<ContinuableException::Cause, std::string> ContinuableException::_message
+// private
+const std::string MESSAGE_FMT
+{ "%s\nERROR CODE 0x%04X" };
+const std::string MESSAGE_FMT_UNDEFINED
+{ "<Unexplained Error>\nERROR CODE 0x%04X" };
+
+const std::unordered_map<ErrorWhen, std::string> MESSAGE
 {
+    { ERROR_WHEN_INIT,      "Failed to initialize" },
 };
 
-ContinuableException::ContinuableException(const Cause cause)
-    : exception(_message.at(cause).c_str())
+AnyCauseException::AnyCauseException(const char* message, const ErrorCause cause)
+    : std::exception(message), _cause(cause)
 {
 }
 
-const std::unordered_map<UncontinuableException::Cause, std::string> UncontinuableException::_message
+const ErrorCause AnyCauseException::getCause() const noexcept
 {
-};
+    return _cause;
+}
 
-UncontinuableException::UncontinuableException(const Cause cause)
-    : runtime_error(_message.at(cause).c_str())
+BaseException::BaseException(const AnyCauseException& ace, const ErrorWhen when)
+    : std::exception(ace.what()), _when(when), _cause(ace.getCause())
+{
+    setErrorMessage();
+}
+
+BaseException::BaseException(const char* message, const ErrorWhen when, const ErrorCause cause)
+    : std::exception(message), _when(when), _cause(cause)
+{
+    setErrorMessage();
+}
+
+void BaseException::setErrorMessage() noexcept
+{
+    if (MESSAGE.find(_when) != MESSAGE.end())
+    {
+        _error_message =
+            StringUtil::format(MESSAGE_FMT, MESSAGE.at(_when).c_str(), getErrorCode());
+    }
+    else
+    {
+        _error_message =
+            StringUtil::format(MESSAGE_FMT_UNDEFINED, getErrorCode());
+    }
+}
+
+const std::uint16_t BaseException::getErrorCode() const noexcept
+{
+    return static_cast<std::uint16_t>(_when) << 8 | _cause;
+}
+
+const std::string& BaseException::getErrorMessage() const noexcept
+{
+    return _error_message;
+}
+
+ContinuableException::ContinuableException(const AnyCauseException& ace, const ErrorWhen when, const State next_state)
+    : BaseException(ace, when),  _next_state(next_state)
+{
+}
+
+ContinuableException::ContinuableException(const char* message, const ErrorWhen when, const ErrorCause cause, const State next_state)
+    : BaseException(message, when, cause), _next_state(next_state)
+{
+}
+
+const State ContinuableException::getNextState() const noexcept
+{
+    return _next_state;
+}
+
+UncontinuableException::UncontinuableException(const AnyCauseException& ace, const ErrorWhen when)
+    : BaseException(ace, when)
+{
+}
+
+UncontinuableException::UncontinuableException(const char* message, const ErrorWhen when, const ErrorCause cause)
+    : BaseException(message, when, cause)
 {
 }
 
