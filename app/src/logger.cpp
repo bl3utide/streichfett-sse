@@ -37,5 +37,23 @@ void initialize() noexcept
     plog::init<plog::ErrorLogFormatter, LogId::Error>(plog::error, _error_file_name.c_str());
 }
 
+void error(const UncontinuableException& uce, const bool no_debug) noexcept
+{
+    if (!no_debug)
+    {
+        debug(uce.what());
+    }
+
+    LERROR << uce.getErrorMessage();
+    LERROR << "<< " << uce.what();
+}
+
+void debug(const std::string& message) noexcept
+{
+#ifdef _DEBUG
+    LDEBUG << message;
+#endif
+}
+
 } // Logger
 } // StreichfettSse

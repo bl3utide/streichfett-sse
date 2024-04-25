@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "error.hpp"
 
 namespace StreichfettSse
 {
@@ -54,6 +55,8 @@ extern std::mutex dlog_mutex;
 #endif
 
 void initialize() noexcept;
+void error(const UncontinuableException& uce, bool no_debug = false) noexcept;
+void debug(const std::string& message) noexcept;
 
 } // Logger
 } // StreichfettSse
