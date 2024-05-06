@@ -15,10 +15,14 @@ enum class Page : int
     _COUNT_,
 };
 
+extern std::vector<std::function<void()>> reservedFuncs;
+
 void initialize();
 void finalize() noexcept;
 void drawGui();
 void showMessageBox(Uint32 flags, const char* title, const char* message) noexcept;
+void doReservedFuncs();
+void clearReservedFuncs() noexcept;
 
 // sub modules
 void drawEditPanel(SoundModel::Patch* const cp, SoundModel::Patch* const op);

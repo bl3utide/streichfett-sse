@@ -113,23 +113,15 @@ int main(int, char**)
     try
     {
         StreichfettSse::initialize();
+        StreichfettSse::loop();
     }
-    catch (std::exception& e)
+    catch (std::runtime_error&)
     {
-#ifdef _DEBUG
-        LOGD << e.what();
-#endif
-        LERROR << e.what();
-        StreichfettSse::Gui::showMessageBox(SDL_MESSAGEBOX_ERROR, "Error", e.what());
         StreichfettSse::finalize();
         exit(EXIT_FAILURE);
     }
 
-    StreichfettSse::loop();
     StreichfettSse::finalize();
 
-#ifdef _DEBUG
-    LOGD << "<end of application>";
-#endif
     return 0;
 }
