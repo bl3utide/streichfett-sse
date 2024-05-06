@@ -55,8 +55,8 @@ extern std::mutex dlog_mutex;
 #endif
 
 void initialize() noexcept;
-void error(const UncontinuableException& uce, bool no_debug = false) noexcept;
-void debug(const std::string& message) noexcept;
+void error(const UncontinuableException& uce) noexcept;
+void debug(const char* message) noexcept;
 
 } // Logger
 } // StreichfettSse

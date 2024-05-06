@@ -37,18 +37,18 @@ void initialize() noexcept
     plog::init<plog::ErrorLogFormatter, LogId::Error>(plog::error, _error_file_name.c_str());
 }
 
-void error(const UncontinuableException& uce, const bool no_debug) noexcept
+void error(const UncontinuableException& uce) noexcept
 {
-    if (!no_debug)
-    {
-        debug(uce.what());
-    }
+#ifdef _DEBUG
+    LDEBUG << uce.getErrorMessage().c_str();
+    LDEBUG << "<< " << uce.what();
+#endif
 
-    LERROR << uce.getErrorMessage();
+    LERROR << uce.getErrorMessage().c_str();
     LERROR << "<< " << uce.what();
 }
 
-void debug(const std::string& message) noexcept
+void debug(const char* message) noexcept
 {
 #ifdef _DEBUG
     LDEBUG << message;
