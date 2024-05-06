@@ -86,19 +86,33 @@ void loop()
             setAppError(StringUtil::format("General error: %s", error.what()));
         }
 
+        // check if state changes in the next loop
         if (getNextState() == State::None)
         {
+            Gui::drawGui();
             try
             {
-                Gui::drawGui();
+                Gui::doReservedFuncs();
+            }
+            catch (ContinuableException& ce)
+            {
+                Logger::debug(ce.what());
+                setAppError(ce.getErrorMessage().c_str());
+                setNextState(ce.getNextState());
             }
             catch (std::exception& error)
             {
-#ifdef _DEBUG
-                LOGD << error.what();
-#endif
-                setAppError(StringUtil::format("Gui error: %s", error.what()));
+                UncontinuableException uce(error.what(), ERROR_WHEN_RESFUNC_ANY);
+                Logger::error(uce);
+                Gui::showMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error by unexpected cause");
+                throw std::runtime_error("");
+//#ifdef _DEBUG
+//                LOGD << error.what();
+//#endif
+
+                //setAppError(StringUtil::format("Gui error: %s", error.what()));
             }
+            Gui::clearReservedFuncs();
         }
         else
         {
