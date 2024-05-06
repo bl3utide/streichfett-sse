@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <cstdint>
 #include <stdexcept>
 #include <vector>
 #include <map>
