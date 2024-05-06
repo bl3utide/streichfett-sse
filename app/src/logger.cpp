@@ -31,7 +31,6 @@ void initialize() noexcept
     _debug_file_name = StringUtil::format("%s.debug.log", APP_NAME.c_str());
     static plog::DebugLogAppender<plog::DebugLogFormatter> debugLogAppender;
     plog::init<plog::DebugLogFormatter>(plog::debug, _debug_file_name.c_str()).addAppender(&debugLogAppender);
-    LOGD << "<beginning of application>";
 #endif
     _error_file_name = StringUtil::format("%s.error.log", APP_NAME.c_str());
     plog::init<plog::ErrorLogFormatter, LogId::Error>(plog::error, _error_file_name.c_str());
