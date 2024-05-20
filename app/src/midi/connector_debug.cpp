@@ -1,5 +1,6 @@
 ﻿#include "common.hpp"
 #ifdef _DEBUG
+#include "logger.hpp"
 #include "data/internal_patch.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/callback_debug.hpp"
@@ -82,7 +83,7 @@ void sendTest(const SendTestType type)
     }
     catch (RtMidiError& error)
     {
-        LOGD << error.getMessage();
+        Logger::debug(error.getMessage().c_str());
         send_test[static_cast<int>(type)] = SendTestResult::Failed;
         return;
     }

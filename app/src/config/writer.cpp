@@ -1,4 +1,5 @@
 ﻿#include "common.hpp"
+#include "logger.hpp"
 #include "config/writer.hpp"
 
 namespace StreichfettSse
@@ -11,9 +12,10 @@ namespace Writer
 void cvToIni(Cv& cv, mINI::INIStructure& is) noexcept
 {
     is[cv.section_name()][cv.key_name()] = cv.cv();
-#ifdef _DEBUG
-    LOGD << "Writed config value [" << cv.section_name() << "]" << cv.key_name() << ": " << cv.cv();
-#endif
+    Logger::debug(StringUtil::format("Writed config value [%s]%s: %s",
+        cv.section_name().c_str(),
+        cv.key_name().c_str(),
+        cv.cv().c_str()).c_str());
 }
 
 } // Writer

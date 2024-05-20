@@ -1,11 +1,9 @@
 ﻿#include "common.hpp"
+#include "logger.hpp"
 #include "config/config.hpp"
 #include "config/cv.hpp"
 #include "config/reader.hpp"
 #include "config/writer.hpp"
-#ifdef _DEBUG
-#include "logger.hpp"
-#endif
 
 namespace StreichfettSse
 {
@@ -28,9 +26,7 @@ void load() noexcept
 
     if (file.read(read_is))
     {
-#ifdef _DEBUG
-        LOGD << "Load config from existing ini file";
-#endif
+        Logger::debug("Load config from existing ini file");
         // ini-file already exists
         for (int key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
         {
@@ -38,12 +34,10 @@ void load() noexcept
             Reader::iniValueToCv(read_is, _cv_by_key.at(key));
         }
     }
-#ifdef _DEBUG
     else
     {
-        LOGD << "Ini file does not exists";
+        Logger::debug("Ini file does not exists");
     }
-#endif
 }
 
 void save() noexcept
@@ -59,9 +53,7 @@ void save() noexcept
 
     if (!file.write(write_is, true))
     {
-#ifdef _DEBUG
-        LOGD << "Failed to write config file";
-#endif
+        Logger::debug("Failed to write config file");
     }
 }
 

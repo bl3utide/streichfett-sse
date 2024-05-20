@@ -108,7 +108,7 @@ void setNextState(State state, const bool force_mod) noexcept
     {
         _next_state = state;
 #ifdef _DEBUG
-        LOGD << "setNextState: [" << static_cast<int>(_next_state) << "]"
+        LDEBUG << "setNextState: [" << static_cast<int>(_next_state) << "]"
             << STATE_STR[static_cast<int>(_next_state)]
             << " (current: " << STATE_STR[static_cast<int>(_state)] << ")";
 #endif
@@ -116,10 +116,10 @@ void setNextState(State state, const bool force_mod) noexcept
     else
     {
 #ifdef _DEBUG
-        LOGD << "*** called multiple times in one loop ***";
-        LOGD << " -> current_state: " << STATE_STR[static_cast<int>(_state)];
-        LOGD << " -> next_state:    " << STATE_STR[static_cast<int>(_next_state)];
-        LOGD << " -> arg:           " << STATE_STR[static_cast<int>(state)];
+        LDEBUG << "*** called multiple times in one loop ***";
+        LDEBUG << " -> current_state: " << STATE_STR[static_cast<int>(_state)];
+        LDEBUG << " -> next_state:    " << STATE_STR[static_cast<int>(_next_state)];
+        LDEBUG << " -> arg:           " << STATE_STR[static_cast<int>(state)];
 #endif
     }
 }
@@ -129,7 +129,7 @@ void transitionState() noexcept
     _state = _next_state;
     _next_state = State::None;
 #ifdef _DEBUG
-    LOGD << "State changed to [" << static_cast<int>(_state) << "]"
+    LDEBUG << "State changed to [" << static_cast<int>(_state) << "]"
         << STATE_STR[static_cast<int>(_state)];
 #endif
 }

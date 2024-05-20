@@ -1,4 +1,5 @@
 ﻿#include "common.hpp"
+#include "logger.hpp"
 #include "config/reader.hpp"
 
 namespace StreichfettSse
@@ -32,16 +33,18 @@ void iniValueToCv(mINI::INIStructure& is, Cv& cv) noexcept
         {   // Cv::Type::String
             cv.set(src_val);
         }
-#ifdef _DEBUG
-        LOGD << "Loaded config value [" << cv.section_name() << "]" << cv.key_name() << ": " << cv.cv();
-#endif
+        Logger::debug(StringUtil::format("Loaded config value [%s]%s: %s",
+            cv.section_name().c_str(),
+            cv.key_name().c_str(),
+            cv.cv().c_str()).c_str());
     }
     else
     {
         cv.setDefault();
-#ifdef _DEBUG
-        LOGD << "Loaded DEFAULT config value [" << cv.section_name() << "]" << cv.key_name() << ": " << cv.cv();
-#endif
+        Logger::debug(StringUtil::format("Loaded DEFAULT config value [%s]%s: %s",
+            cv.section_name().c_str(),
+            cv.key_name().c_str(),
+            cv.cv().c_str()).c_str());
     }
 }
 
