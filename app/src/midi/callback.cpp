@@ -44,7 +44,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
         {
             const auto byte_str = MessageHandler::getByteVecString(*message);
             Logger::debug("checkInquiryDump failed");
-            Logger::debug(StringUtil::format(" >> %s", byte_str.c_str()).c_str());
+            Logger::debug(StringUtil::format(" >> %s", byte_str.c_str()));
             setAppError("You tried to connect to an incorrect device.");
             setNextState(State::Idle, true);
             setSynthConnected(false);
@@ -220,7 +220,7 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
         }
         catch (RtMidiError& error)
         {
-            Logger::debug(StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str());
+            Logger::debug(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
             setAppError("MIDI error when sending message from key to output");
         }
     }

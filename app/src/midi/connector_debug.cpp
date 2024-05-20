@@ -83,7 +83,7 @@ void sendTest(const SendTestType type)
     }
     catch (RtMidiError& error)
     {
-        Logger::debug(error.getMessage().c_str());
+        Logger::debug(error.getMessage());
         send_test[static_cast<int>(type)] = SendTestResult::Failed;
         return;
     }

@@ -15,7 +15,7 @@ void cvToIni(Cv& cv, mINI::INIStructure& is) noexcept
     Logger::debug(StringUtil::format("Writed config value [%s]%s: %s",
         cv.section_name().c_str(),
         cv.key_name().c_str(),
-        cv.cv().c_str()).c_str());
+        cv.cv().c_str()));
 }
 
 } // Writer

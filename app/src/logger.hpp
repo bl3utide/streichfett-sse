@@ -58,6 +58,7 @@ void initialize() noexcept;
 void error(const UncontinuableException& uce) noexcept;
 void debug(const ContinuableException& ce) noexcept;
 void debug(const char* message) noexcept;
+void debug(const std::string& message) noexcept;
 
 } // Logger
 } // StreichfettSse
