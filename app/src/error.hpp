@@ -13,14 +13,34 @@ using ErrorCause = std::uint8_t;
 
 // ERROR DEFINITIONS
 constexpr ErrorWhen     ERROR_WHEN_INIT         = 0x00;
-constexpr ErrorWhen     ERROR_WHEN_PROCESS_ANY  = 0xF0;
-constexpr ErrorWhen     ERROR_WHEN_RESFUNC_ANY  = 0xF1;
-constexpr ErrorWhen     ERROR_WHEN_UNDEFINED    = 0xFF;
 constexpr ErrorCause    ERROR_CAUSE_INIT_SDL    = 0x00;
 constexpr ErrorCause    ERROR_CAUSE_INIT_GUI    = 0x01;
 constexpr ErrorCause    ERROR_CAUSE_INIT_IMAGE  = 0x02;
 constexpr ErrorCause    ERROR_CAUSE_INIT_CONN   = 0x03;
 constexpr ErrorCause    ERROR_CAUSE_INIT_CONFIG = 0x04;
+
+constexpr ErrorWhen     ERROR_WHEN_FETCH_DEV_LIST   = 0x10;
+constexpr ErrorCause    ERROR_CAUSE_GET_INDEV_NAME  = 0x00;
+constexpr ErrorCause    ERROR_CAUSE_GET_OUTDEV_NAME = 0x01;
+
+constexpr ErrorWhen     ERROR_WHEN_OPEN_DEV     = 0x20;
+constexpr ErrorCause    ERROR_CAUSE_OPEN_DEV_SI = 0x00;
+constexpr ErrorCause    ERROR_CAUSE_OPEN_DEV_SO = 0x01;
+constexpr ErrorCause    ERROR_CAUSE_OPEN_DEV_KI = 0x02;
+
+constexpr ErrorWhen     ERROR_WHEN_SEND_MESSAGE = 0x40;
+constexpr ErrorCause    ERROR_CAUSE_REQ_INQUIRY = 0x00;
+constexpr ErrorCause    ERROR_CAUSE_REQ_GLOBAL  = 0x01;
+constexpr ErrorCause    ERROR_CAUSE_REQ_SOUND   = 0x02;
+constexpr ErrorCause    ERROR_CAUSE_SOUND_DUMP  = 0x10;
+constexpr ErrorCause    ERROR_CAUSE_PROG_CHANGE = 0x11;
+constexpr ErrorCause    ERROR_CAUSE_ALL_SND_OFF = 0x12;
+constexpr ErrorCause    ERROR_CAUSE_ONE_TASK    = 0x20;
+
+constexpr ErrorWhen     ERROR_WHEN_STATE_PROCESS    = 0xF0;
+constexpr ErrorWhen     ERROR_WHEN_RESRVED_FUNC     = 0xF1;
+
+constexpr ErrorWhen     ERROR_WHEN_UNDEFINED    = 0xFF;
 constexpr ErrorCause    ERROR_CAUSE_UNDEFINED   = 0xFF;
 
 class AnyCauseException final : public std::exception

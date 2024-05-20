@@ -1,6 +1,7 @@
 ﻿#include "common.hpp"
 #include "annotation.hpp"
 #include "error.hpp"
+#include "logger.hpp"
 #include "operation.hpp"
 #include "state.hpp"
 #include "data/internal_patch.hpp"
@@ -27,9 +28,9 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
 {
     if (message->empty())
     {
-#ifdef _DEBUG
-        LOGD << "Received dump was empty message";
-#endif
+        Logger::debug("received empty confirm dump");
+        setAppError("Incorrect confirm dump");
+        setSynthConnected(false);
     }
     else
     {
@@ -41,6 +42,9 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
         }
         else
         {
+            const auto byte_str = MessageHandler::getByteVecString(*message);
+            Logger::debug("checkInquiryDump failed");
+            Logger::debug(StringUtil::format(" >> %s", byte_str.c_str()).c_str());
             setAppError("You tried to connect to an incorrect device.");
             setNextState(State::Idle, true);
             setSynthConnected(false);
@@ -63,9 +67,9 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
 {
     if (message->empty())
     {
-#ifdef _DEBUG
-        LOGD << "Received dump was empty message";
-#endif
+        Logger::debug("received empty global dump");
+        setAppError("Incorrect global dump");
+        setSynthConnected(false);
     }
     else
     {
@@ -89,9 +93,10 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
             else if (op == Operation::Option)
                 setNextState(State::Idle, true);
         }
-        catch (std::exception&)
+        catch (std::exception& e)
         {
-            setAppError("Incorrect Global Dump Message");
+            Logger::debug(e.what());
+            setAppError("Incorrect global dump message");
             setNextState(State::Idle, true);
             setSynthConnected(false);
         }
@@ -113,9 +118,8 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
 {
     if (message->empty())
     {
-#ifdef _DEBUG
-        LOGD << "Received dump was empty message";
-#endif
+        Logger::debug("received empty sound dump");
+        setAppError("Incorrect sound dump");
     }
     else
     {
@@ -144,9 +148,10 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
 
             setNextState(State::Idle, true);
         }
-        catch (std::exception&)
+        catch (std::exception& e)
         {
-            setAppError("Incorrect Sound Dump Message");
+            Logger::debug(e.what());
+            setAppError("Incorrect sound dump message");
         }
     }
 
@@ -183,13 +188,13 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
     if (isSynthConnected() &&
         (MessageHandler::isNoteOff(*message) || MessageHandler::isNoteOn(*message)))
     {
+        ByteVec send_message;
         if (Connector::force_adjust_midi_channel)
         {
             const int ch = InternalSetting::getDeviceMidiChannel();
-            ByteVec channel_adj_message;
             if (MessageHandler::isNoteOff(*message))
             {
-                channel_adj_message = {
+                send_message = {
                     static_cast<Byte>(0x80 + ch),
                     message->at(1),
                     message->at(2)
@@ -197,17 +202,26 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
             }
             else
             {
-                channel_adj_message = {
+                send_message = {
                     static_cast<Byte>(0x90 + ch),
                     message->at(1),
                     message->at(2)
                 };
             }
-            synth_output.sendMessage(&channel_adj_message);
         }
         else
         {
-            synth_output.sendMessage(message);
+            send_message = *message;
+        }
+
+        try
+        {
+            synth_output.sendMessage(&send_message);
+        }
+        catch (RtMidiError& error)
+        {
+            Logger::debug(StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str());
+            setAppError("MIDI error when sending message from key to output");
         }
     }
 }

@@ -101,6 +101,9 @@ State getNextState() noexcept
 
 void setNextState(State state, const bool force_mod) noexcept
 {
+    if (state == State::None)
+        return;
+
     if (_next_state == State::None || force_mod)
     {
         _next_state = state;

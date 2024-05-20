@@ -35,16 +35,10 @@ void setSettingFromBytes(GlobalModel::Global* global, const ByteVec& data)
         global->pitch_bend_range    = data[(int)ParamIndex::PitchBendRange];
         global->device_id           = data[(int)ParamIndex::DeviceId];
     }
-#ifdef _DEBUG
     catch (std::exception& error)
-#else
-    catch (std::exception&)
-#endif
     {
-#ifdef _DEBUG
-        LOGD << error.what();
-#endif
-        throw std::exception("setSettingFromBytes failed");
+        // The received global data seems to be invalid
+        throw std::exception(StringUtil::format("setSettingFromBytes failed: %s", error.what()).c_str());
     }
 }
 

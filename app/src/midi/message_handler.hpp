@@ -41,6 +41,7 @@ ByteVec getDataBytesFromDump(const ByteVec& dump, const DumpType type);
 ByteVec getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* const patch);      // DSI: Streichfett
 //ByteVec getSoundParameterChangeMessage(const int index, const int value);   // TODO delete toDvFunc
 ByteVec getSoundParameterChangeMessage(const int index, const Byte value);
+std::string getByteVecString(const ByteVec& bytes);
 #ifdef _DEBUG
 std::string getMessageDesc(const ByteVec& data);
 #endif

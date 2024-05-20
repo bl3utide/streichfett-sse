@@ -14,20 +14,21 @@ namespace MessageHandler
 InquiryDump inquiry_dump;
 
 // private
-const Byte MESSAGE_INQUIRY = 0x06;
-const Byte MESSAGE_INQUIRY_REQUEST = 0x01;
-const Byte MESSAGE_INQUIRY_RESPONSE = 0x02;
-const Byte MESSAGE_SOUND_REQUEST = 0x00;                        // DSI: Streichfett
-const Byte MESSAGE_GLOBAL_REQUEST = 0x01;                       // DSI: Streichfett
-const Byte MESSAGE_SOUND_DUMP = 0x10;                           // DSI: Streichfett
-const Byte MESSAGE_GLOBAL_DUMP = 0x11;                          // DSI: Streichfett
-const Byte DEVICE_MANUFACTURER_ID = 0x3E;       // Waldorf
-const Byte DEVICE_FAMILY_CODE = 0x19;           // Streichfett  // DSI: Streichfett
-const Byte SOUND_NUMBER_EDIT_BUFFER = 0x7F;                     // DSI: Streichfett
-const int SOUND_DATA_START_INDEX = 6;                           // DSI: Streichfett
-const int SOUND_DATA_END_INDEX = 29;                            // DSI: Streichfett
-const int GLOBAL_DATA_START_INDEX = 6;                          // DSI: Streichfett
-const int GLOBAL_DATA_END_INDEX = 13;                           // DSI: Streichfett
+const Byte      MESSAGE_INQUIRY = 0x06;
+const Byte      MESSAGE_INQUIRY_REQUEST = 0x01;
+const Byte      MESSAGE_INQUIRY_RESPONSE = 0x02;
+const Byte      MESSAGE_SOUND_REQUEST = 0x00;                       // DSI: Streichfett
+const Byte      MESSAGE_GLOBAL_REQUEST = 0x01;                      // DSI: Streichfett
+const Byte      MESSAGE_SOUND_DUMP = 0x10;                          // DSI: Streichfett
+const Byte      MESSAGE_GLOBAL_DUMP = 0x11;                         // DSI: Streichfett
+const Byte      DEVICE_MANUFACTURER_ID = 0x3E;      // Waldorf
+const Byte      DEVICE_FAMILY_CODE = 0x19;          // Streichfett  // DSI: Streichfett
+const Byte      SOUND_NUMBER_EDIT_BUFFER = 0x7F;                    // DSI: Streichfett
+const size_t    INQUIRY_DUMP_SIZE = 13;                             // DSI: Streichfett
+const int       SOUND_DATA_START_INDEX = 6;                         // DSI: Streichfett
+const int       SOUND_DATA_END_INDEX = 29;                          // DSI: Streichfett
+const int       GLOBAL_DATA_START_INDEX = 6;                        // DSI: Streichfett
+const int       GLOBAL_DATA_END_INDEX = 13;                         // DSI: Streichfett
 
 bool isSysex(const ByteVec& mb) noexcept
 {
@@ -115,6 +116,8 @@ bool isNoteOn(const ByteVec& mb)
 // DSI: Streichfett
 bool checkInquiryDump(const ByteVec& dump)
 {
+    if (dump.size() != INQUIRY_DUMP_SIZE) return false;
+
     if (!isSysex(dump)) return false;
 
     // Universal SysEx Header
@@ -140,25 +143,29 @@ bool checkInquiryDump(const ByteVec& dump)
 void checkDump(const ByteVec& dump, const DumpType type)
 {
     if (!isSysex(dump))
-        throw std::exception("checkDump failed");
+        throw std::exception("checkDump failed (not SysEx)");
 
-    // Waldorf Music Manufacturer ID and Device Family Code
-    if (dump[1] != DEVICE_MANUFACTURER_ID || dump[2] != DEVICE_FAMILY_CODE)
-        throw std::exception("checkDump failed");
+    // Waldorf Music Manufacturer ID
+    if (dump[1] != DEVICE_MANUFACTURER_ID)
+        throw std::exception("checkDump failed (SysEx has incorrect manufacture id)");
+
+    //  Device Family Code
+    if (dump[2] != DEVICE_FAMILY_CODE)
+        throw std::exception("checkDump failed (SysEx has incorrect device family code)");
 
     if (type == DumpType::Sound)
     {
         if (dump[4] != MESSAGE_SOUND_DUMP)
-            throw std::exception("checkDump failed");
+            throw std::exception("checkDump failed (not sound dump SysEx)");
     }
     else if (type == DumpType::Global)
     {
         if (dump[4] != MESSAGE_GLOBAL_DUMP)
-            throw std::exception("checkDump failed");
+            throw std::exception("checkDump failed (not global dump SysEx)");
     }
     else
     {
-        throw std::exception("checkDump failed");
+        throw std::exception("checkDump failed (unknown dump type specified)");
     }
 }
 
@@ -174,6 +181,10 @@ ByteVec getDataBytesFromDump(const ByteVec& dump, const DumpType type)
     {
         for (int i = GLOBAL_DATA_START_INDEX; i <= GLOBAL_DATA_END_INDEX; ++i)
             data.push_back(dump[i]);
+    }
+    else
+    {
+        throw std::exception("getDataByteFromDump failed (unknown dump type specified)");
     }
 
     return data;
@@ -224,6 +235,20 @@ ByteVec getSoundParameterChangeMessage(const int index, const Byte value)
     //req.push_back(static_cast<Byte>(value)); // TODO delete toDvFunc
     req.push_back(value);
     return req;
+}
+
+std::string getByteVecString(const ByteVec& bytes)
+{
+    std::stringstream ss;
+
+    for (const auto& byte : bytes)
+    {
+        ss << "0x" << std::uppercase << std::setw(2) << std::hex << static_cast<int>(byte) << " ";
+    }
+
+    const auto str = ss.str();
+
+    return str.substr(0, str.size() - 1);
 }
 
 #ifdef _DEBUG

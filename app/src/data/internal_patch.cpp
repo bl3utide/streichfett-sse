@@ -85,16 +85,10 @@ void setPatchFromBytes(SoundModel::Patch* patch, const ByteVec& data)
         patch->phaser           = data[(int)ParamIndex::Phaser];
         patch->reverb           = data[(int)ParamIndex::Reverb];
     }
-#ifdef _DEBUG
     catch (std::exception& error)
-#else
-    catch (std::exception&)
-#endif
     {
-#ifdef _DEBUG
-        LOGD << error.what();
-#endif
-        throw std::exception("setPatchFromBytes failed");
+        // The received tone data seems to be invalid
+        throw std::exception(StringUtil::format("setPatchFromBytes failed: %s", error.what()).c_str());
     }
 }
 

@@ -17,7 +17,11 @@ const std::string MESSAGE_FMT_UNDEFINED
 
 const std::unordered_map<ErrorWhen, std::string> MESSAGE
 {
-    { ERROR_WHEN_INIT,      "Failed to initialize" },
+    { ERROR_WHEN_INIT,          "Failed to initialize" },
+    { ERROR_WHEN_OPEN_DEV,      "Failed to open a device" },
+    { ERROR_WHEN_SEND_MESSAGE,  "Failed to send message" },
+    { ERROR_WHEN_STATE_PROCESS, "Failed in process for current state"},
+    { ERROR_WHEN_RESRVED_FUNC,  "Failed in execution reserved function"},
 };
 
 AnyCauseException::AnyCauseException(const char* message, const ErrorCause cause)

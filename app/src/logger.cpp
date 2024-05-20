@@ -47,6 +47,14 @@ void error(const UncontinuableException& uce) noexcept
     LERROR << "<< " << uce.what();
 }
 
+void debug(const ContinuableException& ce) noexcept
+{
+#ifdef _DEBUG
+    LDEBUG << ce.getErrorMessage().c_str();
+    LDEBUG << "<< " << ce.what();
+#endif
+}
+
 void debug(const char* message) noexcept
 {
 #ifdef _DEBUG

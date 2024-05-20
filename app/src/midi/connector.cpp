@@ -1,6 +1,7 @@
 ﻿#include "common.hpp"
 #include "annotation.hpp"
 #include "error.hpp"
+#include "logger.hpp"
 #include "operation.hpp"
 #include "state.hpp"
 #include "config/config.hpp"
@@ -12,7 +13,6 @@
 #include "midi/message_handler.hpp"
 #include "midi/message_task.hpp"
 #ifdef _DEBUG
-#include "logger.hpp"
 #include "midi/connector_debug.hpp"
 #endif
 
@@ -50,10 +50,17 @@ void fetchDeviceList()
         }
         catch (RtMidiError& error)
         {
+            throw ContinuableException(
+                StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+                ERROR_WHEN_FETCH_DEV_LIST,
+                ERROR_CAUSE_GET_INDEV_NAME
+            );
+            /*
 #ifdef _DEBUG
             LOGD << error.getMessage();
 #endif
             throw;
+            */
         }
     }
 
@@ -68,10 +75,17 @@ void fetchDeviceList()
         }
         catch (RtMidiError& error)
         {
+            throw ContinuableException(
+                StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+                ERROR_WHEN_FETCH_DEV_LIST,
+                ERROR_CAUSE_GET_OUTDEV_NAME
+            );
+            /*
 #ifdef _DEBUG
             LOGD << error.getMessage();
 #endif
             throw;
+            */
         }
     }
 }
@@ -106,7 +120,14 @@ void applyConfig()
     if (synth_in_res != in_name_list.cend())
     {   // found
         const int index = static_cast<int>(std::distance(in_name_list.cbegin(), synth_in_res));
-        openSynthInputPort(index, in_name_list[index]);
+        try
+        {
+            openSynthInputPort(index, in_name_list[index]);
+        }
+        catch (ContinuableException& ce)
+        {
+            Logger::debug(ce);
+        }
     }
 
     // Synth Output Device
@@ -115,7 +136,14 @@ void applyConfig()
     if (synth_out_res != out_name_list.cend())
     {   // found
         const int index = static_cast<int>(std::distance(out_name_list.cbegin(), synth_out_res));
-        openSynthOutputPort(index, out_name_list[index]);
+        try
+        {
+            openSynthOutputPort(index, out_name_list[index]);
+        }
+        catch (ContinuableException& ce)
+        {
+            Logger::debug(ce);
+        }
     }
 
     // Keyboard Input Device
@@ -127,7 +155,14 @@ void applyConfig()
         const int key_in_index = static_cast<int>(std::distance(in_name_list.cbegin(), key_in_res));
         if (synth_in_index != key_in_index)
         {
-            openKeyInputPort(key_in_index, in_name_list[key_in_index]);
+            try
+            {
+                openKeyInputPort(key_in_index, in_name_list[key_in_index]);
+            }
+            catch (ContinuableException& ce)
+            {
+                Logger::debug(ce);
+            }
         }
     }
 
@@ -164,12 +199,18 @@ void openSynthInputPort(const int port_index, const std::string& port_name)
     }
     catch (RtMidiError& error)
     {
+        setSynthConnected(false);
+        throw ContinuableException(
+            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            ERROR_WHEN_OPEN_DEV, ERROR_CAUSE_OPEN_DEV_SI);
+        /*
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
         setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
         setSynthConnected(false);
         return;
+        */
     }
 
     if (synth_output.isPortOpen())
@@ -187,12 +228,18 @@ void openSynthOutputPort(const int port_index, const std::string& port_name)
     }
     catch (RtMidiError& error)
     {
+        setSynthConnected(false);
+        throw ContinuableException(
+            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            ERROR_WHEN_OPEN_DEV, ERROR_CAUSE_OPEN_DEV_SO);
+        /*
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
         setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
         setSynthConnected(false);
         return;
+        */
     }
 
     if (synth_input.isPortOpen())
@@ -210,11 +257,16 @@ void openKeyInputPort(const int port_index, const std::string& port_name)
     }
     catch (RtMidiError& error)
     {
+        throw ContinuableException(
+            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            ERROR_WHEN_OPEN_DEV, ERROR_CAUSE_OPEN_DEV_KI);
+        /*
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
         setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
         return;
+        */
     }
 
     // receive message in callback function
@@ -229,7 +281,21 @@ void requestInquiry()
     // send sysex message to device via midi out device
     ByteVec confirm_req_sysex =
         MessageHandler::getInquiryRequestMessage();
-    synth_output.sendMessage(&confirm_req_sysex);
+
+    try
+    {
+        synth_output.sendMessage(&confirm_req_sysex);
+    }
+    catch (RtMidiError& error)
+    {
+        setSynthConnected(false);
+        throw ContinuableException(
+            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            ERROR_WHEN_SEND_MESSAGE,
+            ERROR_CAUSE_REQ_INQUIRY,
+            State::Idle
+        );
+    }
 
     // then receive result message in callback function
     synth_input.setCallback(Callback::receiveConfirmSysex);
@@ -257,6 +323,14 @@ void requestGlobalData()
     }
     catch (RtMidiError& error)
     {
+        setSynthConnected(false);
+        throw ContinuableException(
+            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            ERROR_WHEN_SEND_MESSAGE,
+            ERROR_CAUSE_REQ_GLOBAL,
+            State::Idle
+        );
+        /*
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
@@ -264,6 +338,7 @@ void requestGlobalData()
         setNextState(State::Idle);
         setSynthConnected(false);
         return;
+        */
     }
 
     synth_input.setCallback(Callback::receiveGlobalDumpSysex);
@@ -294,6 +369,14 @@ void requestSoundData()
     }
     catch (RtMidiError& error)
     {
+        setSynthConnected(false);
+        throw ContinuableException(
+            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            ERROR_WHEN_SEND_MESSAGE,
+            ERROR_CAUSE_REQ_SOUND,
+            State::Idle
+        );
+        /*
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
@@ -301,6 +384,7 @@ void requestSoundData()
         setNextState(State::Idle);
         setSynthConnected(false);
         return;
+        */
     }
 
     synth_input.setCallback(Callback::receiveSoundDumpSysex);
@@ -335,6 +419,14 @@ void sendSoundDump(const bool is_edit_buffer)
     }
     catch (RtMidiError& error)
     {
+        setSynthConnected(false);
+        throw ContinuableException(
+            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            ERROR_WHEN_SEND_MESSAGE,
+            ERROR_CAUSE_SOUND_DUMP,
+            State::Idle
+        );
+        /*
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
@@ -342,6 +434,7 @@ void sendSoundDump(const bool is_edit_buffer)
         setNextState(State::Idle);
         setSynthConnected(false);
         return;
+        */
     }
 
     InternalPatch::SoundAddress* sound_address_ptr = new InternalPatch::SoundAddress(sound);
@@ -369,6 +462,14 @@ void sendProgChange()
     }
     catch (RtMidiError& error)
     {
+        setSynthConnected(false);
+        throw ContinuableException(
+            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            ERROR_WHEN_SEND_MESSAGE,
+            ERROR_CAUSE_PROG_CHANGE,
+            State::Idle
+        );
+        /*
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
@@ -376,6 +477,7 @@ void sendProgChange()
         setNextState(State::Idle);
         setSynthConnected(false);
         return;
+        */
     }
 #ifdef _DEBUG
     Debug::addProcessedHistory(true, synth_output.getPortName(), prog_change);
@@ -392,11 +494,18 @@ void sendAllSoundOff()
     }
     catch (RtMidiError& error)
     {
+        throw ContinuableException(
+            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            ERROR_WHEN_SEND_MESSAGE,
+            ERROR_CAUSE_ALL_SND_OFF
+        );
+        /*
 #ifdef _DEBUG
         LOGD << error.getMessage();
 #endif
         setAppError(error.getMessage().c_str());
         return;
+        */
     }
 #ifdef _DEBUG
     Debug::addProcessedHistory(true, synth_output.getPortName(), all_sound_off);
@@ -408,7 +517,20 @@ void sendOneTaskMessage()
     if (MessageTask::taskSize() > 0)
     {
         ByteVec message = MessageTask::lastTask();
-        synth_output.sendMessage(&message);
+
+        try
+        {
+            synth_output.sendMessage(&message);
+        }
+        catch (RtMidiError& error)
+        {
+            throw ContinuableException(
+                StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+                ERROR_WHEN_SEND_MESSAGE,
+                ERROR_CAUSE_ONE_TASK
+            );
+        }
+
 #ifdef _DEBUG
         Debug::addProcessedHistory(true, synth_output.getPortName(), message);
 #endif
