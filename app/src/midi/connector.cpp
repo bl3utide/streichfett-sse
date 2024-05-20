@@ -55,12 +55,6 @@ void fetchDeviceList()
                 ERROR_WHEN_FETCH_DEV_LIST,
                 ERROR_CAUSE_GET_INDEV_NAME
             );
-            /*
-#ifdef _DEBUG
-            LOGD << error.getMessage();
-#endif
-            throw;
-            */
         }
     }
 
@@ -80,12 +74,6 @@ void fetchDeviceList()
                 ERROR_WHEN_FETCH_DEV_LIST,
                 ERROR_CAUSE_GET_OUTDEV_NAME
             );
-            /*
-#ifdef _DEBUG
-            LOGD << error.getMessage();
-#endif
-            throw;
-            */
         }
     }
 }
@@ -203,14 +191,6 @@ void openSynthInputPort(const int port_index, const std::string& port_name)
         throw ContinuableException(
             StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
             ERROR_WHEN_OPEN_DEV, ERROR_CAUSE_OPEN_DEV_SI);
-        /*
-#ifdef _DEBUG
-        LOGD << error.getMessage();
-#endif
-        setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
-        setSynthConnected(false);
-        return;
-        */
     }
 
     if (synth_output.isPortOpen())
@@ -232,14 +212,6 @@ void openSynthOutputPort(const int port_index, const std::string& port_name)
         throw ContinuableException(
             StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
             ERROR_WHEN_OPEN_DEV, ERROR_CAUSE_OPEN_DEV_SO);
-        /*
-#ifdef _DEBUG
-        LOGD << error.getMessage();
-#endif
-        setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
-        setSynthConnected(false);
-        return;
-        */
     }
 
     if (synth_input.isPortOpen())
@@ -260,13 +232,6 @@ void openKeyInputPort(const int port_index, const std::string& port_name)
         throw ContinuableException(
             StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
             ERROR_WHEN_OPEN_DEV, ERROR_CAUSE_OPEN_DEV_KI);
-        /*
-#ifdef _DEBUG
-        LOGD << error.getMessage();
-#endif
-        setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
-        return;
-        */
     }
 
     // receive message in callback function
@@ -330,15 +295,6 @@ void requestGlobalData()
             ERROR_CAUSE_REQ_GLOBAL,
             State::Idle
         );
-        /*
-#ifdef _DEBUG
-        LOGD << error.getMessage();
-#endif
-        setAppError(error.getMessage().c_str());
-        setNextState(State::Idle);
-        setSynthConnected(false);
-        return;
-        */
     }
 
     synth_input.setCallback(Callback::receiveGlobalDumpSysex);
@@ -376,15 +332,6 @@ void requestSoundData()
             ERROR_CAUSE_REQ_SOUND,
             State::Idle
         );
-        /*
-#ifdef _DEBUG
-        LOGD << error.getMessage();
-#endif
-        setAppError(error.getMessage().c_str());
-        setNextState(State::Idle);
-        setSynthConnected(false);
-        return;
-        */
     }
 
     synth_input.setCallback(Callback::receiveSoundDumpSysex);
@@ -426,15 +373,6 @@ void sendSoundDump(const bool is_edit_buffer)
             ERROR_CAUSE_SOUND_DUMP,
             State::Idle
         );
-        /*
-#ifdef _DEBUG
-        LOGD << error.getMessage();
-#endif
-        setAppError(error.getMessage().c_str());
-        setNextState(State::Idle);
-        setSynthConnected(false);
-        return;
-        */
     }
 
     InternalPatch::SoundAddress* sound_address_ptr = new InternalPatch::SoundAddress(sound);
@@ -469,15 +407,6 @@ void sendProgChange()
             ERROR_CAUSE_PROG_CHANGE,
             State::Idle
         );
-        /*
-#ifdef _DEBUG
-        LOGD << error.getMessage();
-#endif
-        setAppError(error.getMessage().c_str());
-        setNextState(State::Idle);
-        setSynthConnected(false);
-        return;
-        */
     }
 #ifdef _DEBUG
     Debug::addProcessedHistory(true, synth_output.getPortName(), prog_change);
@@ -499,13 +428,6 @@ void sendAllSoundOff()
             ERROR_WHEN_SEND_MESSAGE,
             ERROR_CAUSE_ALL_SND_OFF
         );
-        /*
-#ifdef _DEBUG
-        LOGD << error.getMessage();
-#endif
-        setAppError(error.getMessage().c_str());
-        return;
-        */
     }
 #ifdef _DEBUG
     Debug::addProcessedHistory(true, synth_output.getPortName(), all_sound_off);
