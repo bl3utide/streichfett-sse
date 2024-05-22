@@ -11,9 +11,9 @@ bool showing_error_message = false;
 
 // private
 const std::string MESSAGE_FMT
-{ "%s\nERROR CODE 0x%04X" };
+{ "%s (ERROR CODE 0x%04X)" };
 const std::string MESSAGE_FMT_UNDEFINED
-{ "<Unexplained Error>\nERROR CODE 0x%04X" };
+{ "<Unexplained Error> (ERROR CODE 0x%04X)" };
 
 const std::unordered_map<ErrorWhen, std::string> MESSAGE
 {
