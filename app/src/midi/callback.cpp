@@ -52,9 +52,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
             {
                 if (MessageHandler::checkInquiryDump(*message))
                 {
-                    //Annotation::clearText();  // TODO delete setSynthConnected(true)の時にやるので不要
                     setNextState(State::RequestGlobal, true);
-                    //setSynthConnected(true);  // TODO delete この時点での判定は行わないことにした
                 }
                 else
                 {
