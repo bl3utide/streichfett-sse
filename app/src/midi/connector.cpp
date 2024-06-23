@@ -31,10 +31,6 @@ bool force_adjust_midi_channel = true;
 int store_delay_duration = 200;
 
 // private
-const int TIMEOUT_DURATION = 5000;
-std::string ERROR_MESSAGE_TIMEOUT_CONFIRM = "The confirm sysex request has timed out.";
-std::string ERROR_MESSAGE_TIMEOUT_GLOBAL_DUMP = "The global dump request has timed out.";
-std::string ERROR_MESSAGE_TIMEOUT_SOUND_DUMP = "The sound dump request has timed out.";
 bool _is_synth_connected = false;
 
 void fetchDeviceList()
@@ -91,6 +87,8 @@ void initialize()
     synth_input.initialize();
     synth_output.initialize();
     key_input.initialize();
+
+    request_try_count = 0;
 }
 
 void finalize() noexcept
@@ -262,14 +260,16 @@ void requestInquiry()
         );
     }
 
+    ++request_try_count;
+    callback_mutex.is_callback_catched = false;
+    RequestType* req_type_ptr = new RequestType(RequestType::Confirm);
+
     // then receive result message in callback function
-    synth_input.setCallback(Callback::receiveConfirmSysex);
+    synth_input.setCallback(Callback::receiveConfirmSysex, req_type_ptr);
     synth_input.ignoreTypes(false, false, false);
 
-    std::string* err_message_ptr = &ERROR_MESSAGE_TIMEOUT_CONFIRM;
-
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::timeout, err_message_ptr);
+    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
 
     setNextState(State::WaitingConfirm);
 #ifdef _DEBUG
@@ -297,13 +297,15 @@ void requestGlobalData()
         );
     }
 
-    synth_input.setCallback(Callback::receiveGlobalDumpSysex);
+    ++request_try_count;
+    callback_mutex.is_callback_catched = false;
+    RequestType* req_type_ptr = new RequestType(RequestType::GlobalDump);
+
+    synth_input.setCallback(Callback::receiveGlobalDumpSysex, req_type_ptr);
     synth_input.ignoreTypes(false, false, false);
 
-    std::string* err_message_ptr = &ERROR_MESSAGE_TIMEOUT_GLOBAL_DUMP;
-
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::timeout, err_message_ptr);
+    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
 
     setNextState(State::WaitingGlobal);
 #ifdef _DEBUG
@@ -334,13 +336,15 @@ void requestSoundData()
         );
     }
 
-    synth_input.setCallback(Callback::receiveSoundDumpSysex);
+    ++request_try_count;
+    callback_mutex.is_callback_catched = false;
+    RequestType* req_type_ptr = new RequestType(RequestType::SoundDump);
+
+    synth_input.setCallback(Callback::receiveSoundDumpSysex, req_type_ptr);
     synth_input.ignoreTypes(false, false, false);
 
-    std::string* err_message_ptr = &ERROR_MESSAGE_TIMEOUT_SOUND_DUMP;
-
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::timeout, err_message_ptr);
+    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
 
     setNextState(State::WaitingSound);
 #ifdef _DEBUG

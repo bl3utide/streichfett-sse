@@ -26,37 +26,61 @@ namespace Callback
 *******************************************************************************/
 void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
 {
-    if (message->empty())
+    if (callback_mutex.guard.try_lock())
     {
-        Logger::debug("received empty confirm dump");
-        setAppError("Incorrect confirm dump");
-        setSynthConnected(false);
-    }
-    else
-    {
-        if (MessageHandler::checkInquiryDump(*message))
+        if (!callback_mutex.is_callback_catched)
         {
-            //Annotation::clearText();  // TODO delete setSynthConnected(true)の時にやるので不要
-            setNextState(State::RequestGlobal, true);
-            //setSynthConnected(true);  // TODO delete この時点での判定は行わないことにした
+            // succeed
+            RequestType* req_type_ptr = static_cast<RequestType*>(user_data);
+            delete req_type_ptr;
+            req_type_ptr = nullptr;
+
+            callback_mutex.is_callback_catched = true;
+            SDL_RemoveTimer(_waiting_timer);
+            synth_input.cancelCallback();
+
+            request_try_count = 0;
+
+            if (message->empty())
+            {
+                Logger::debug("received empty confirm dump");
+                setAppError("Incorrect confirm dump");
+                setSynthConnected(false);
+            }
+            else
+            {
+                if (MessageHandler::checkInquiryDump(*message))
+                {
+                    //Annotation::clearText();  // TODO delete setSynthConnected(true)の時にやるので不要
+                    setNextState(State::RequestGlobal, true);
+                    //setSynthConnected(true);  // TODO delete この時点での判定は行わないことにした
+                }
+                else
+                {
+                    const auto byte_str = MessageHandler::getByteVecString(*message);
+                    Logger::debug("checkInquiryDump failed");
+                    Logger::debug(StringUtil::format(" >> %s", byte_str.c_str()));
+                    setAppError("You tried to connect to an incorrect device.");
+                    setNextState(State::Idle, true);
+                    setSynthConnected(false);
+                }
+            }
+#ifdef _DEBUG
+            Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
+#endif
         }
         else
         {
-            const auto byte_str = MessageHandler::getByteVecString(*message);
-            Logger::debug("checkInquiryDump failed");
-            Logger::debug(StringUtil::format(" >> %s", byte_str.c_str()));
-            setAppError("You tried to connect to an incorrect device.");
-            setNextState(State::Idle, true);
-            setSynthConnected(false);
+            Logger::debug("receive confirm callback can lock but the other callback already executed");
         }
+
+        callback_mutex.guard.unlock();
     }
-
-    synth_input.cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-
-#ifdef _DEBUG
-    Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
-#endif
+    else
+    {
+        // cannot lock
+        Logger::debug("receive confirm callback can not execute the process because of mutex");
+    }
 }
 
 /*******************************************************************************
@@ -65,49 +89,73 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
 // DSI: Streichfett
 void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data)
 {
-    if (message->empty())
+    if (callback_mutex.guard.try_lock())
     {
-        Logger::debug("received empty global dump");
-        setAppError("Incorrect global dump");
-        setSynthConnected(false);
+        if (!callback_mutex.is_callback_catched)
+        {
+            // succeed
+            RequestType* req_type_ptr = static_cast<RequestType*>(user_data);
+            delete req_type_ptr;
+            req_type_ptr = nullptr;
+
+            callback_mutex.is_callback_catched = true;
+            SDL_RemoveTimer(_waiting_timer);
+            synth_input.cancelCallback();
+
+            request_try_count = 0;
+
+            if (message->empty())
+            {
+                Logger::debug("received empty global dump");
+                setAppError("Incorrect global dump");
+                setSynthConnected(false);
+            }
+            else
+            {
+                MessageHandler::DumpType dump_type = MessageHandler::DumpType::Global;
+
+                try
+                {
+                    // throwable function
+                    MessageHandler::checkDump(*message, dump_type);
+
+                    ByteVec global_data =
+                        MessageHandler::getDataBytesFromDump(*message, dump_type);
+                    GlobalModel::Global* setting = InternalSetting::getGlobalData();
+
+                    // throwable function
+                    InternalSetting::setSettingFromBytes(setting, global_data);
+
+                    Operation op = getOperation();
+                    if (op == Operation::Sound)
+                        setNextState(State::SendBankProgChange, true);
+                    else if (op == Operation::Option)
+                        setNextState(State::Idle, true);
+                }
+                catch (std::exception& e)
+                {
+                    Logger::debug(e.what());
+                    setAppError("Incorrect global dump message");
+                    setNextState(State::Idle, true);
+                    setSynthConnected(false);
+                }
+            }
+#ifdef _DEBUG
+            Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
+#endif
+        }
+        else
+        {
+            Logger::debug("receive global dump callback can lock but the other callback already executed");
+        }
+
+        callback_mutex.guard.unlock();
     }
     else
     {
-        MessageHandler::DumpType dump_type = MessageHandler::DumpType::Global;
-
-        try
-        {
-            // throwable function
-            MessageHandler::checkDump(*message, dump_type);
-
-            ByteVec global_data =
-                MessageHandler::getDataBytesFromDump(*message, dump_type);
-            GlobalModel::Global* setting = InternalSetting::getGlobalData();
-
-            // throwable function
-            InternalSetting::setSettingFromBytes(setting, global_data);
-
-            Operation op = getOperation();
-            if (op == Operation::Sound)
-                setNextState(State::SendBankProgChange, true);
-            else if (op == Operation::Option)
-                setNextState(State::Idle, true);
-        }
-        catch (std::exception& e)
-        {
-            Logger::debug(e.what());
-            setAppError("Incorrect global dump message");
-            setNextState(State::Idle, true);
-            setSynthConnected(false);
-        }
+        // cannot lock
+        Logger::debug("receive global dump callback can not execute the process because of mutex");
     }
-
-    synth_input.cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-
-#ifdef _DEBUG
-    Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
-#endif
 }
 
 /*******************************************************************************
@@ -116,51 +164,75 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
 // DSI: Streichfett
 void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
 {
-    if (message->empty())
+    if (callback_mutex.guard.try_lock())
     {
-        Logger::debug("received empty sound dump");
-        setAppError("Incorrect sound dump");
+        if (!callback_mutex.is_callback_catched)
+        {
+            // succeed
+            RequestType* req_type_ptr = static_cast<RequestType*>(user_data);
+            delete req_type_ptr;
+            req_type_ptr = nullptr;
+
+            callback_mutex.is_callback_catched = true;
+            SDL_RemoveTimer(_waiting_timer);
+            synth_input.cancelCallback();
+
+            request_try_count = 0;
+
+            if (message->empty())
+            {
+                Logger::debug("received empty sound dump");
+                setAppError("Incorrect sound dump");
+            }
+            else
+            {
+                MessageHandler::DumpType dump_type = MessageHandler::DumpType::Sound;
+
+                try
+                {
+                    // throwable function
+                    MessageHandler::checkDump(*message, dump_type);
+
+                    ByteVec sound_data =
+                        MessageHandler::getDataBytesFromDump(*message, dump_type);
+                    SoundModel::Patch* original = InternalPatch::getOriginalPatch();
+                    SoundModel::Patch* current = InternalPatch::getCurrentPatch();
+
+                    // throwable function
+                    InternalPatch::setPatchFromBytes(original, sound_data);
+                    InternalPatch::copyPatchAtoB(original, current);
+
+                    InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
+                    char bb = InternalPatch::getSoundBankChar(sound_addr->sound);
+                    int bs = InternalPatch::getSoundPatchNumber(sound_addr->sound);
+                    char buf[64];
+                    sprintf(buf, "Sound %c%d loaded.", bb, bs);
+                    Annotation::setText(buf, Annotation::Type::General);
+
+                    setNextState(State::Idle, true);
+                }
+                catch (std::exception& e)
+                {
+                    Logger::debug(e.what());
+                    setAppError("Incorrect sound dump message");
+                }
+            }
+#ifdef _DEBUG
+            Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
+#endif
+        }
+        else
+        {
+            Logger::debug("receive sound dump callback can lock but the other callback already executed");
+        }
+
+        callback_mutex.guard.unlock();
     }
     else
     {
-        MessageHandler::DumpType dump_type = MessageHandler::DumpType::Sound;
-
-        try
-        {
-            // throwable function
-            MessageHandler::checkDump(*message, dump_type);
-
-            ByteVec sound_data =
-                MessageHandler::getDataBytesFromDump(*message, dump_type);
-            SoundModel::Patch* original = InternalPatch::getOriginalPatch();
-            SoundModel::Patch* current = InternalPatch::getCurrentPatch();
-
-            // throwable function
-            InternalPatch::setPatchFromBytes(original, sound_data);
-            InternalPatch::copyPatchAtoB(original, current);
-
-            InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
-            char bb = InternalPatch::getSoundBankChar(sound_addr->sound);
-            int bs = InternalPatch::getSoundPatchNumber(sound_addr->sound);
-            char buf[64];
-            sprintf(buf, "Sound %c%d loaded.", bb, bs);
-            Annotation::setText(buf, Annotation::Type::General);
-
-            setNextState(State::Idle, true);
-        }
-        catch (std::exception& e)
-        {
-            Logger::debug(e.what());
-            setAppError("Incorrect sound dump message");
-        }
+        // cannot lock
+        Logger::debug("receive sound dump callback can not execute the process because of mutex");
     }
-
-    synth_input.cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-
-#ifdef _DEBUG
-    Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
-#endif
 }
 
 /*******************************************************************************
@@ -168,13 +240,53 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
 *******************************************************************************/
 Uint32 timeout(Uint32 interval, void* param)
 {
-    std::string err_message = *static_cast<std::string*>(param);
+    //std::string err_message = *static_cast<std::string*>(param);
+    if (callback_mutex.guard.try_lock())
+    {
+        if (!callback_mutex.is_callback_catched)
+        {
+            // succeed
+            RequestType* req_type_ptr = static_cast<RequestType*>(param);
+            RequestType req_type = *req_type_ptr;
+            delete req_type_ptr;
+            req_type_ptr = nullptr;
 
-    synth_input.cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
-    setAppError(err_message);
-    setNextState(State::Idle, true);
-    setSynthConnected(false);
+            callback_mutex.is_callback_catched = true;
+            synth_input.cancelCallback();
+            SDL_RemoveTimer(_waiting_timer);
+
+            if (request_try_count < MAX_REQUEST_TRY)
+            {
+                // retry
+                if (req_type == RequestType::Confirm)
+                    setNextState(State::RequestInquiry);
+                else if (req_type == RequestType::GlobalDump)
+                    setNextState(State::RequestGlobal);
+                else if (req_type == RequestType::SoundDump)
+                    setNextState(State::RequestSound);
+            }
+            else
+            {
+                // failed due because of retry count over
+                setAppError(ERROR_MESSAGE_TIMEOUT[static_cast<int>(req_type)]);
+                setNextState(State::Idle, true);
+                setSynthConnected(false);
+
+                request_try_count = 0;
+            }
+        }
+        else
+        {
+            Logger::debug("timeout callback can lock but the other callback already executed");
+        }
+
+        callback_mutex.guard.unlock();
+    }
+    else
+    {
+        // cannot lock
+        Logger::debug("timeout callback can not execute the process because of mutex");
+    }
 
     return interval;
 }
