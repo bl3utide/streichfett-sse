@@ -45,6 +45,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
             {
                 Logger::debug("received empty confirm dump");
                 setAppError("Incorrect confirm dump");
+                setNextState(State::Idle, true);
                 setSynthConnected(false);
             }
             else
@@ -108,6 +109,7 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
             {
                 Logger::debug("received empty global dump");
                 setAppError("Incorrect global dump");
+                setNextState(State::Idle, true);
                 setSynthConnected(false);
             }
             else
@@ -183,6 +185,7 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
             {
                 Logger::debug("received empty sound dump");
                 setAppError("Incorrect sound dump");
+                setNextState(State::Idle, true);
             }
             else
             {
@@ -215,6 +218,7 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
                 {
                     Logger::debug(e.what());
                     setAppError("Incorrect sound dump message");
+                    setNextState(State::Idle, true);
                 }
             }
 #ifdef _DEBUG
