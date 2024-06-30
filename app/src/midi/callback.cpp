@@ -21,6 +21,34 @@ namespace Connector
 namespace Callback
 {
 
+enum class ErrorMessageType : int
+{
+    Timeout,
+    Empty,
+    Incorrect,
+    _COUNT_,
+};
+
+const std::string ERROR_MESSAGE
+[static_cast<int>(RequestType::_COUNT_)][static_cast<int>(ErrorMessageType::_COUNT_)]
+{
+    {
+        "The confirm sysex request has timed out.",
+        "Received empty confirm dump.",
+        "You tried to connect to an incorrect device."
+    },
+    {
+        "The global dump request has timed out.",
+        "Received empty global dump.",
+        "Incorrect global dump message."
+    },
+    {
+        "The sound dump request has timed out.",
+        "Received empty sound dump.",
+        "Incorrect sound dump message."
+    }
+};
+
 /*******************************************************************************
     Received confirm response callback
 *******************************************************************************/
@@ -44,7 +72,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
             if (message->empty())
             {
                 Logger::debug("received empty confirm dump");
-                setAppError("Incorrect confirm dump");
+                setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::Confirm)][static_cast<int>(ErrorMessageType::Empty)]);
                 setNextState(State::Idle, true);
                 setSynthConnected(false);
             }
@@ -59,7 +87,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
                     const auto byte_str = MessageHandler::getByteVecString(*message);
                     Logger::debug("checkInquiryDump failed");
                     Logger::debug(StringUtil::format(" >> %s", byte_str.c_str()));
-                    setAppError("You tried to connect to an incorrect device.");
+                    setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::Confirm)][static_cast<int>(ErrorMessageType::Incorrect)]);
                     setNextState(State::Idle, true);
                     setSynthConnected(false);
                 }
@@ -106,7 +134,7 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
             if (message->empty())
             {
                 Logger::debug("received empty global dump");
-                setAppError("Incorrect global dump");
+                setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::GlobalDump)][static_cast<int>(ErrorMessageType::Empty)]);
                 setNextState(State::Idle, true);
                 setSynthConnected(false);
             }
@@ -135,7 +163,7 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
                 catch (std::exception& e)
                 {
                     Logger::debug(e.what());
-                    setAppError("Incorrect global dump message");
+                    setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::GlobalDump)][static_cast<int>(ErrorMessageType::Incorrect)]);
                     setNextState(State::Idle, true);
                     setSynthConnected(false);
                 }
@@ -182,7 +210,7 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
             if (message->empty())
             {
                 Logger::debug("received empty sound dump");
-                setAppError("Incorrect sound dump");
+                setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::SoundDump)][static_cast<int>(ErrorMessageType::Empty)]);
                 setNextState(State::Idle, true);
             }
             else
@@ -215,7 +243,7 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
                 catch (std::exception& e)
                 {
                     Logger::debug(e.what());
-                    setAppError("Incorrect sound dump message");
+                    setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::SoundDump)][static_cast<int>(ErrorMessageType::Incorrect)]);
                     setNextState(State::Idle, true);
                 }
             }
@@ -270,7 +298,7 @@ Uint32 timeout(Uint32 interval, void* param)
             else
             {
                 // failed due because of retry count over
-                setAppError(ERROR_MESSAGE_TIMEOUT[static_cast<int>(req_type)]);
+                setAppError(ERROR_MESSAGE[static_cast<int>(req_type)][static_cast<int>(ErrorMessageType::Timeout)]);
                 setNextState(State::Idle, true);
                 setSynthConnected(false);
 
