@@ -254,8 +254,8 @@ Uint32 timeout(Uint32 interval, void* param)
             req_type_ptr = nullptr;
 
             callback_mutex.is_callback_catched = true;
-            synth_input.cancelCallback();
             SDL_RemoveTimer(_waiting_timer);
+            synth_input.cancelCallback();
 
             if (request_try_count < MAX_REQUEST_TRY)
             {
