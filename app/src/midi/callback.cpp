@@ -49,6 +49,28 @@ const std::string ERROR_MESSAGE
     }
 };
 
+void requestSuccessful(const State next_state) noexcept
+{
+    setNextState(next_state, true);
+    request_try_count.reset();
+}
+
+void retryOver(
+    const RequestType req_type, const ErrorMessageType mes_type,
+    const bool set_disconnected = true) noexcept
+{
+    const int rt = static_cast<int>(req_type);
+    const int mt = static_cast<int>(mes_type);
+
+    setAppError(ERROR_MESSAGE[rt][mt]);
+    setNextState(State::Idle, true);
+
+    if (set_disconnected)
+        setSynthConnected(false);
+
+    request_try_count.reset();
+}
+
 /*******************************************************************************
     Received confirm response callback
 *******************************************************************************/
@@ -67,29 +89,49 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
             SDL_RemoveTimer(_waiting_timer);
             synth_input.cancelCallback();
 
-            request_try_count = 0;
-
             if (message->empty())
             {
                 Logger::debug("received empty confirm dump");
-                setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::Confirm)][static_cast<int>(ErrorMessageType::Empty)]);
-                setNextState(State::Idle, true);
-                setSynthConnected(false);
+
+                if (request_try_count.reachedLimit())
+                {
+                    // retry count over
+                    Logger::debug("request count over, the last cause: received empty dump");
+                    retryOver(RequestType::Confirm, ErrorMessageType::Empty);
+                }
+                else
+                {
+                    // retry
+                    Logger::debug("retry -> request inquiry");
+                    setNextState(State::RequestInquiry, true);
+                }
             }
             else
             {
                 if (MessageHandler::checkInquiryDump(*message))
                 {
-                    setNextState(State::RequestGlobal, true);
+                    // received correct dump
+                    Logger::debug("received correct inquiry dump");
+                    requestSuccessful(State::RequestGlobal);
                 }
                 else
                 {
-                    const auto byte_str = MessageHandler::getByteVecString(*message);
                     Logger::debug("checkInquiryDump failed");
+                    const auto byte_str = MessageHandler::getByteVecString(*message);
                     Logger::debug(StringUtil::format(" >> %s", byte_str.c_str()));
-                    setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::Confirm)][static_cast<int>(ErrorMessageType::Incorrect)]);
-                    setNextState(State::Idle, true);
-                    setSynthConnected(false);
+
+                    if (request_try_count.reachedLimit())
+                    {
+                        // retry count over
+                        Logger::debug("request count over, the last cause: received incorrect dump");
+                        retryOver(RequestType::Confirm, ErrorMessageType::Incorrect);
+                    }
+                    else
+                    {
+                        // retry
+                        Logger::debug("retry -> request inquiry");
+                        setNextState(State::RequestInquiry, true);
+                    }
                 }
             }
 #ifdef _DEBUG
@@ -129,14 +171,22 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
             SDL_RemoveTimer(_waiting_timer);
             synth_input.cancelCallback();
 
-            request_try_count = 0;
-
             if (message->empty())
             {
                 Logger::debug("received empty global dump");
-                setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::GlobalDump)][static_cast<int>(ErrorMessageType::Empty)]);
-                setNextState(State::Idle, true);
-                setSynthConnected(false);
+
+                if (request_try_count.reachedLimit())
+                {
+                    // retry count over
+                    Logger::debug("request count over, the last cause: received empty dump");
+                    retryOver(RequestType::GlobalDump, ErrorMessageType::Empty);
+                }
+                else
+                {
+                    // retry
+                    Logger::debug("retry -> request global");
+                    setNextState(State::RequestGlobal, true);
+                }
             }
             else
             {
@@ -154,18 +204,30 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
                     // throwable function
                     InternalSetting::setSettingFromBytes(setting, global_data);
 
+                    // received correct dump
+                    Logger::debug("received correct global dump");
                     Operation op = getOperation();
                     if (op == Operation::Sound)
-                        setNextState(State::SendBankProgChange, true);
+                        requestSuccessful(State::SendBankProgChange);
                     else if (op == Operation::Option)
-                        setNextState(State::Idle, true);
+                        requestSuccessful(State::Idle);
                 }
                 catch (std::exception& e)
                 {
                     Logger::debug(e.what());
-                    setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::GlobalDump)][static_cast<int>(ErrorMessageType::Incorrect)]);
-                    setNextState(State::Idle, true);
-                    setSynthConnected(false);
+
+                    if (request_try_count.reachedLimit())
+                    {
+                        // retry count over
+                        Logger::debug("request count over, the last cause: received incorrect dump");
+                        retryOver(RequestType::GlobalDump, ErrorMessageType::Incorrect);
+                    }
+                    else
+                    {
+                        // retry
+                        Logger::debug("retry -> request global");
+                        setNextState(State::RequestGlobal, true);
+                    }
                 }
             }
 #ifdef _DEBUG
@@ -205,13 +267,22 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
             SDL_RemoveTimer(_waiting_timer);
             synth_input.cancelCallback();
 
-            request_try_count = 0;
-
             if (message->empty())
             {
                 Logger::debug("received empty sound dump");
-                setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::SoundDump)][static_cast<int>(ErrorMessageType::Empty)]);
-                setNextState(State::Idle, true);
+
+                if (request_try_count.reachedLimit())
+                {
+                    // retry count over
+                    Logger::debug("request count over, the last cause: received empty dump");
+                    retryOver(RequestType::SoundDump, ErrorMessageType::Empty, false);
+                }
+                else
+                {
+                    // retry
+                    Logger::debug("retry -> request sound");
+                    setNextState(State::RequestSound, true);
+                }
             }
             else
             {
@@ -231,20 +302,33 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
                     InternalPatch::setPatchFromBytes(original, sound_data);
                     InternalPatch::copyPatchAtoB(original, current);
 
+                    // received correct dump
+                    Logger::debug("received correct sound dump");
+                    requestSuccessful(State::Idle);
+
                     InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
                     char bb = InternalPatch::getSoundBankChar(sound_addr->sound);
                     int bs = InternalPatch::getSoundPatchNumber(sound_addr->sound);
                     char buf[64];
                     sprintf(buf, "Sound %c%d loaded.", bb, bs);
                     Annotation::setText(buf, Annotation::Type::General);
-
-                    setNextState(State::Idle, true);
                 }
                 catch (std::exception& e)
                 {
                     Logger::debug(e.what());
-                    setAppError(ERROR_MESSAGE[static_cast<int>(RequestType::SoundDump)][static_cast<int>(ErrorMessageType::Incorrect)]);
-                    setNextState(State::Idle, true);
+
+                    if (request_try_count.reachedLimit())
+                    {
+                        // retry count over
+                        Logger::debug("request count over, the last cause: received incorrect dump");
+                        retryOver(RequestType::SoundDump, ErrorMessageType::Incorrect, false);
+                    }
+                    else
+                    {
+                        // retry
+                        Logger::debug("retry -> request sound");
+                        setNextState(State::RequestSound, true);
+                    }
                 }
             }
 #ifdef _DEBUG
@@ -285,24 +369,30 @@ Uint32 timeout(Uint32 interval, void* param)
             SDL_RemoveTimer(_waiting_timer);
             synth_input.cancelCallback();
 
-            if (request_try_count < MAX_REQUEST_TRY)
+            if (request_try_count.reachedLimit())
             {
-                // retry
-                if (req_type == RequestType::Confirm)
-                    setNextState(State::RequestInquiry);
-                else if (req_type == RequestType::GlobalDump)
-                    setNextState(State::RequestGlobal);
-                else if (req_type == RequestType::SoundDump)
-                    setNextState(State::RequestSound);
+                // retry count over
+                Logger::debug("request count over, the last cause: request timeout");
+                retryOver(req_type, ErrorMessageType::Timeout);
             }
             else
             {
-                // failed due because of retry count over
-                setAppError(ERROR_MESSAGE[static_cast<int>(req_type)][static_cast<int>(ErrorMessageType::Timeout)]);
-                setNextState(State::Idle, true);
-                setSynthConnected(false);
-
-                request_try_count = 0;
+                // retry
+                if (req_type == RequestType::Confirm)
+                {
+                    Logger::debug("retry -> request inquiry");
+                    setNextState(State::RequestInquiry, true);
+                }
+                else if (req_type == RequestType::GlobalDump)
+                {
+                    Logger::debug("retry -> request global");
+                    setNextState(State::RequestGlobal, true);
+                }
+                else if (req_type == RequestType::SoundDump)
+                {
+                    Logger::debug("retry -> request sound");
+                    setNextState(State::RequestSound, true);
+                }
             }
         }
         else

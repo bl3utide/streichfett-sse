@@ -88,7 +88,7 @@ void initialize()
     synth_output.initialize();
     key_input.initialize();
 
-    request_try_count = 0;
+    request_try_count.reset();
 }
 
 void finalize() noexcept
@@ -245,6 +245,8 @@ void requestInquiry()
     ByteVec confirm_req_sysex =
         MessageHandler::getInquiryRequestMessage();
 
+    Logger::debug(StringUtil::format("request inquiry dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
+
     try
     {
         synth_output.sendMessage(&confirm_req_sysex);
@@ -281,6 +283,8 @@ void requestGlobalData()
 {
     ByteVec global_req_sysex =
         MessageHandler::getGlobalRequestMessage();
+
+    Logger::debug(StringUtil::format("request global dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
 
     try
     {
@@ -320,6 +324,8 @@ void requestSoundData()
 
     ByteVec sound_req_sysex =
         MessageHandler::getSoundRequestMessage(sound_addr->sound);
+
+    Logger::debug(StringUtil::format("request sound dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
 
     try
     {

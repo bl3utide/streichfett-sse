@@ -16,6 +16,53 @@ struct CallbackMutex
     }
 };
 
+class RequestCounter
+{
+public:
+    RequestCounter(int limit)
+        : v_(0), upper_limit_(limit)
+    {}
+
+    RequestCounter() = delete;
+    RequestCounter(const RequestCounter& rhs) = delete;
+
+    void reset() noexcept
+    {
+        v_ = 0;
+    }
+
+    RequestCounter& operator++() noexcept
+    {
+        ++v_;
+        return *this;
+    }
+
+    void inc() noexcept
+    {
+        ++v_;
+    }
+
+    bool reachedLimit() const noexcept
+    {
+        return v_ >= upper_limit_;
+    }
+
+    int v() const noexcept
+    {
+        return v_;
+    }
+
+    int max() const noexcept
+    {
+        return upper_limit_;
+    }
+
+private:
+    int v_;
+    int upper_limit_;
+
+};
+
 enum class RequestType : int
 {
     Confirm = 0,
@@ -27,8 +74,7 @@ enum class RequestType : int
 extern SDL_TimerID _waiting_timer;
 extern bool _is_waiting_store_delay;
 extern CallbackMutex callback_mutex;
-extern int request_try_count;
-extern const int MAX_REQUEST_TRY;
+extern RequestCounter request_try_count;
 extern const int TIMEOUT_DURATION_PER_RETRY;
 
 bool isWaitingStoreDelay() noexcept;
