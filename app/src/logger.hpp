@@ -67,7 +67,7 @@ namespace plog
 {
 
 #ifdef _DEBUG
-template<class Formatter>
+template<typename Formatter>
 class DebugLogAppender : public IAppender
 {
 public:

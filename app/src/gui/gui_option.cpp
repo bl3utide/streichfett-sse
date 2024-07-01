@@ -47,7 +47,7 @@ void endOptionItemValue()
     ImGui::PopFont();
 }
 
-template<class T>
+template<typename T>
 void drawOptionItemValue(const T& v, const bool displayable = false)
 {
     beginOptionItemValue();
