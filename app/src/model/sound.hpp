@@ -49,7 +49,7 @@ enum class ParamIndex : int
 };
 
 // DSI: Streichfett
-const std::map<ParamIndex, int> PARAM_CC
+const std::unordered_map<ParamIndex, int> PARAM_CC
 {
                                         // Control Name
     {ParamIndex::Registration, 70},     // String Registration
