@@ -71,12 +71,12 @@ enum class RequestType : int
     _COUNT_,
 };
 
-extern SDL_TimerID _waiting_timer;
-extern bool _is_waiting_store_delay;
+extern SDL_TimerID waiting_timer;
 extern CallbackMutex callback_mutex;
 extern RequestCounter request_try_count;
 extern const int TIMEOUT_DURATION_PER_RETRY;
 
+void setWaitingStoreDelay(bool is_waiting_store_delay) noexcept;
 bool isWaitingStoreDelay() noexcept;
 
 } // Connector

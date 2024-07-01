@@ -66,7 +66,7 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
     }
 
     synth_input.cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
+    SDL_RemoveTimer(waiting_timer);
 
     delete type_ptr;
     type_ptr = nullptr;
@@ -80,7 +80,7 @@ Uint32 timeoutTest(Uint32 interval, void* param)
     int type_index = static_cast<int>(*type_ptr);
 
     synth_input.cancelCallback();
-    SDL_RemoveTimer(_waiting_timer);
+    SDL_RemoveTimer(waiting_timer);
     send_test[type_index] = SendTestResult::Failed;
     send_test_failed_cause[type_index] = SendTestFailedCause::RequestTimeout;
 

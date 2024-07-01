@@ -94,7 +94,7 @@ void sendTest(const SendTestType type)
     synth_input.ignoreTypes(false, false, false);
 
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::timeoutTest, type_ptr);
+    waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::timeoutTest, type_ptr);
 
     addProcessedHistory(true, synth_output.getPortName(), request);
 }

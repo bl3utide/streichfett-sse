@@ -86,7 +86,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
             req_type_ptr = nullptr;
 
             callback_mutex.is_callback_catched = true;
-            SDL_RemoveTimer(_waiting_timer);
+            SDL_RemoveTimer(waiting_timer);
             synth_input.cancelCallback();
 
             if (message->empty())
@@ -168,7 +168,7 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
             req_type_ptr = nullptr;
 
             callback_mutex.is_callback_catched = true;
-            SDL_RemoveTimer(_waiting_timer);
+            SDL_RemoveTimer(waiting_timer);
             synth_input.cancelCallback();
 
             if (message->empty())
@@ -264,7 +264,7 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
             req_type_ptr = nullptr;
 
             callback_mutex.is_callback_catched = true;
-            SDL_RemoveTimer(_waiting_timer);
+            SDL_RemoveTimer(waiting_timer);
             synth_input.cancelCallback();
 
             if (message->empty())
@@ -366,7 +366,7 @@ Uint32 timeout(Uint32 interval, void* param)
             req_type_ptr = nullptr;
 
             callback_mutex.is_callback_catched = true;
-            SDL_RemoveTimer(_waiting_timer);
+            SDL_RemoveTimer(waiting_timer);
             synth_input.cancelCallback();
 
             if (request_try_count.reachedLimit())
@@ -484,8 +484,8 @@ Uint32 storeDelay(Uint32 interval, void* param)
         InternalPatch::current_patch_changed = false;
     }
 
-    SDL_RemoveTimer(_waiting_timer);
-    _is_waiting_store_delay = false;
+    SDL_RemoveTimer(waiting_timer);
+    setWaitingStoreDelay(false);
 
     delete sound_address_ptr;
     sound_address_ptr = nullptr;
@@ -499,7 +499,7 @@ Uint32 sendDelay(Uint32 interval, void* param)
 
     setNextState(*next_state_ptr, true);
 
-    SDL_RemoveTimer(_waiting_timer);
+    SDL_RemoveTimer(waiting_timer);
 
     delete next_state_ptr;
     next_state_ptr = nullptr;

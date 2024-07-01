@@ -77,7 +77,7 @@ void fetchDeviceList()
 void sendDelay(const State next_state, const int delay_millsec)
 {
     State* next_state_ptr = new State(next_state);
-    _waiting_timer = SDL_AddTimer(delay_millsec, Callback::sendDelay, next_state_ptr);
+    waiting_timer = SDL_AddTimer(delay_millsec, Callback::sendDelay, next_state_ptr);
 
     setNextState(State::WaitingSendDelay);
 }
@@ -271,7 +271,7 @@ void requestInquiry()
     synth_input.ignoreTypes(false, false, false);
 
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
+    waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
 
     setNextState(State::WaitingConfirm);
 #ifdef _DEBUG
@@ -309,7 +309,7 @@ void requestGlobalData()
     synth_input.ignoreTypes(false, false, false);
 
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
+    waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
 
     setNextState(State::WaitingGlobal);
 #ifdef _DEBUG
@@ -350,7 +350,7 @@ void requestSoundData()
     synth_input.ignoreTypes(false, false, false);
 
     // set timer for connection timeout
-    _waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
+    waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
 
     setNextState(State::WaitingSound);
 #ifdef _DEBUG
@@ -372,7 +372,7 @@ void sendSoundDump(const bool is_edit_buffer)
     try
     {
         synth_output.sendMessage(&sound_dump);
-        _is_waiting_store_delay = true;
+        setWaitingStoreDelay(true);
     }
     catch (RtMidiError& error)
     {
@@ -388,7 +388,7 @@ void sendSoundDump(const bool is_edit_buffer)
     InternalPatch::SoundAddress* sound_address_ptr = new InternalPatch::SoundAddress(sound);
 
     // set timer for delay after sending sound dump
-    _waiting_timer = SDL_AddTimer(store_delay_duration, Callback::storeDelay, sound_address_ptr);
+    waiting_timer = SDL_AddTimer(store_delay_duration, Callback::storeDelay, sound_address_ptr);
 
 #ifdef _DEBUG
     Debug::addProcessedHistory(true, synth_output.getPortName(), sound_dump);
