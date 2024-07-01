@@ -14,7 +14,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{adcd22b8-c3ba-44f4-880b-8f64ca2b8673}</ProjectGuid>
-    <RootNamespace>ImGuiProject</RootNamespace>
+    <RootNamespace>StreichfettSse</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>App</ProjectName>
   </PropertyGroup>
