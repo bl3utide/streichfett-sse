@@ -10,7 +10,7 @@ namespace Image
 {
 
 // private
-GLuint texture_[static_cast<int>(Texture::_COUNT_)];
+std::unordered_map<Texture, GLuint> texture_;
 
 bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* output)
 {
@@ -49,23 +49,26 @@ void loadTextures()
     load_tex_ret = loadTextureFromMemory(
         ArrayedTexture::TEX_ICON,
         ArrayedTexture::TEX_ICON_SIZE,
-        &texture_[static_cast<int>(Texture::Icon)]);
+        &texture_.at(Texture::Icon));
     IM_ASSERT(load_tex_ret);
 
     load_tex_ret = loadTextureFromMemory(
         ArrayedTexture::TEX_RELOAD,
         ArrayedTexture::TEX_RELOAD_SIZE,
-        &texture_[static_cast<int>(Texture::Reload)]);
+        &texture_.at(Texture::Reload));
     IM_ASSERT(load_tex_ret);
 }
 
 void unloadTextures()
 {
-    unloadTexture(&texture_[static_cast<int>(Texture::Reload)]);
+    unloadTexture(&texture_.at(Texture::Reload));
 }
 
 void initialize()
 {
+    for (int i = 0; i < static_cast<int>(Texture::_COUNT_); ++i)
+        texture_.emplace(static_cast<Texture>(i), 0);
+
     loadTextures();
 }
 
@@ -76,7 +79,7 @@ void finalize() noexcept
 
 GLuint getTextureId(Texture tex) noexcept
 {
-    return texture_[static_cast<int>(tex)];
+    return texture_.at(tex);
 }
 
 } // Image

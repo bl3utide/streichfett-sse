@@ -27,14 +27,15 @@ enum class SendTestResult : int
 
 enum class SendTestFailedCause : int
 {
+    None,
     RequestTimeout,
     EmptyResponse,
     IncorrectMessage,
     _COUNT_,
 };
 
-extern SendTestResult send_test[static_cast<int>(SendTestType::_COUNT_)];
-extern SendTestFailedCause send_test_failed_cause[static_cast<int>(SendTestType::_COUNT_)];
+extern std::unordered_map<SendTestType, SendTestResult> send_test;
+extern std::unordered_map<SendTestType, SendTestFailedCause> send_test_failed_cause;
 
 struct ProcessedMidiMessage
 {

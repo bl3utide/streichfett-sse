@@ -16,8 +16,8 @@ namespace Debug
 {
 
 // public
-SendTestResult send_test[static_cast<int>(SendTestType::_COUNT_)];
-SendTestFailedCause send_test_failed_cause[static_cast<int>(SendTestType::_COUNT_)];
+std::unordered_map<SendTestType, SendTestResult> send_test;
+std::unordered_map<SendTestType, SendTestFailedCause> send_test_failed_cause;
 std::vector<ProcessedMidiMessage> history;
 int history_selected_index = -1;
 ProcessedMidiMessage history_selected;
@@ -53,7 +53,7 @@ void addProcessedHistory(const bool transmitted, const std::string& device_name,
 void sendTest(const SendTestType type)
 {
     for (int i = 0; i < static_cast<int>(SendTestType::_COUNT_); ++i)
-        send_test[i] = SendTestResult::NotStarted;
+        send_test.at(static_cast<SendTestType>(i)) = SendTestResult::NotStarted;
 
     ByteVec request;
 
@@ -75,7 +75,7 @@ void sendTest(const SendTestType type)
             return;
     }
 
-    send_test[static_cast<int>(type)] = SendTestResult::WaitReceive;
+    send_test.at(type) = SendTestResult::WaitReceive;
 
     try
     {
@@ -84,7 +84,7 @@ void sendTest(const SendTestType type)
     catch (RtMidiError& error)
     {
         Logger::debug(error.getMessage());
-        send_test[static_cast<int>(type)] = SendTestResult::Failed;
+        send_test.at(type) = SendTestResult::Failed;
         return;
     }
 
@@ -102,9 +102,9 @@ void sendTest(const SendTestType type)
 bool isAnyTestSending() noexcept
 {
     return
-        send_test[static_cast<int>(SendTestType::Inquiry)] == SendTestResult::WaitReceive ||
-        send_test[static_cast<int>(SendTestType::GlobalDump)] == SendTestResult::WaitReceive ||
-        send_test[static_cast<int>(SendTestType::SoundDump)] == SendTestResult::WaitReceive;
+        send_test.at(SendTestType::Inquiry) == SendTestResult::WaitReceive ||
+        send_test.at(SendTestType::GlobalDump) == SendTestResult::WaitReceive ||
+        send_test.at(SendTestType::SoundDump) == SendTestResult::WaitReceive;
 }
 
 } // Debug

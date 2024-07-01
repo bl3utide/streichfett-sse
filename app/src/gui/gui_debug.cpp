@@ -100,7 +100,7 @@ void drawDebugTabItemGeneral()
     {
         Operation op = getOperation();
         ImGui::Text("%-24s: [%d]%s", "request order",
-            op, OPERATION_STR[static_cast<int>(op)]);
+            op, OPERATION_STR.at(op));
         ImGui::Text("%-24s: %s", "is_synth_connected", Connector::isSynthConnected() ? "Yes" : "No");
         ImGui::Text("%-24s: %-4s [%2d]%s", "synth input port",
             Connector::synth_input.isPortOpen() ? "open" : "-",
@@ -274,23 +274,23 @@ void drawDebugTabItemSendTest(const State current_state)
 
         for (int i = 0; i < static_cast<int>(cd::SendTestType::_COUNT_); ++i)
         {
-            switch (i)
+            switch (static_cast<cd::SendTestType>(i))
             {
-                case static_cast<int>(cd::SendTestType::Inquiry):
+                case cd::SendTestType::Inquiry:
                     if (ImGui::Button("MIDI Identity Inquiry"))
                     {
                         reservedFuncs.push_back(std::bind(cd::sendTest, cd::SendTestType::Inquiry));
                     }
                     GuiUtil::MouseCursorToHand();
                     break;
-                case static_cast<int>(cd::SendTestType::GlobalDump):
+                case cd::SendTestType::GlobalDump:
                     if (ImGui::Button("Request Global Dump"))
                     {
                         reservedFuncs.push_back(std::bind(cd::sendTest, cd::SendTestType::GlobalDump));
                     }
                     GuiUtil::MouseCursorToHand();
                     break;
-                case static_cast<int>(cd::SendTestType::SoundDump):
+                case cd::SendTestType::SoundDump:
                     if (ImGui::Button("Request Sound Dump"))
                     {
                         reservedFuncs.push_back(std::bind(cd::sendTest, cd::SendTestType::SoundDump));
@@ -299,7 +299,7 @@ void drawDebugTabItemSendTest(const State current_state)
                     break;
             }
             ImGui::SameLine(180.0f);
-            switch (cd::send_test[i])
+            switch (cd::send_test.at(static_cast<cd::SendTestType>(i)))
             {
                 case cd::SendTestResult::NotStarted:
                     ImGui::Text("");
@@ -313,11 +313,11 @@ void drawDebugTabItemSendTest(const State current_state)
                 case cd::SendTestResult::Failed:
                     GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "NG");
                     ImGui::SameLine();
-                    if (cd::send_test_failed_cause[i] == cd::SendTestFailedCause::RequestTimeout)
+                    if (cd::send_test_failed_cause.at(static_cast<cd::SendTestType>(i)) == cd::SendTestFailedCause::RequestTimeout)
                         GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Timeout)");
-                    else if (cd::send_test_failed_cause[i] == cd::SendTestFailedCause::EmptyResponse)
+                    else if (cd::send_test_failed_cause.at(static_cast<cd::SendTestType>(i)) == cd::SendTestFailedCause::EmptyResponse)
                         GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Empty Response)");
-                    else if (cd::send_test_failed_cause[i] == cd::SendTestFailedCause::IncorrectMessage)
+                    else if (cd::send_test_failed_cause.at(static_cast<cd::SendTestType>(i)) == cd::SendTestFailedCause::IncorrectMessage)
                         GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Incorrect Message)");
                     break;
                 default:
@@ -576,7 +576,7 @@ void drawDebugWindow(bool* open, const int window_w, const int window_h,
             && static_cast<int>(current_state) <= static_cast<int>(State::None))
         {
             ImGui::Text("%-24s: [%d]%s", "state",
-                current_state, STATE_STR[static_cast<int>(current_state)]);
+                current_state, STATE_STR.at(current_state));
         }
 
         State next_state = getNextState();
@@ -584,7 +584,7 @@ void drawDebugWindow(bool* open, const int window_w, const int window_h,
             && static_cast<int>(next_state) <= static_cast<int>(State::None))
         {
             ImGui::Text("%-24s: [%d]%s", "next state",
-                next_state, STATE_STR[static_cast<int>(next_state)]);
+                next_state, STATE_STR.at(next_state));
         }
 
         if (ImGui::BeginTabBar("DebugTab", ImGuiTabBarFlags_None))

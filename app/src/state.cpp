@@ -14,23 +14,23 @@ namespace StreichfettSse
 
 // public
 #ifdef _DEBUG
-const char* STATE_STR[static_cast<int>(State::_COUNT_)] =
+const std::unordered_map<State, const char*> STATE_STR
 {
-    "InitInternalData",
-    "ApplyConfig",
-    "Idle",
-    "RequestInquiry",
-    "WaitingConfirm",
-    "RequestGlobal",
-    "WaitingGlobal",
-    "SendBankProgChange",
-    "RequestSound",
-    "WaitingSound",
-    "EnterSoundMode",
-    "EnterOptionMode",
-    "WaitingSendDelay",
-    "PrepareToExit",
-    "None"
+    { State::InitInternalData,      "InitInternalData" },
+    { State::ApplyConfig,           "ApplyConfig" },
+    { State::Idle,                  "Idle" },
+    { State::RequestInquiry,        "RequestInquiry" },
+    { State::WaitingConfirm,        "WaitingConfirm" },
+    { State::RequestGlobal,         "RequestGlobal" },
+    { State::WaitingGlobal,         "WaitingGlobal" },
+    { State::SendBankProgChange,    "SendBankProgChange" },
+    { State::RequestSound,          "RequestSound" },
+    { State::WaitingSound,          "WaitingSound" },
+    { State::EnterSoundMode,        "EnterSoundMode" },
+    { State::EnterOptionMode,       "EnterOptionMode" },
+    { State::WaitingSendDelay,      "WaitingSendDelay" },
+    { State::PrepareToExit,         "PrepareToExit" },
+    { State::None,                  "None" },
 };
 #endif
 
@@ -109,17 +109,17 @@ void setNextState(State target_state, const bool force_mod) noexcept
         next_state_ = target_state;
 #ifdef _DEBUG
         LDEBUG << "setNextState: [" << static_cast<int>(next_state_) << "]"
-            << STATE_STR[static_cast<int>(next_state_)]
-            << " (current: " << STATE_STR[static_cast<int>(state_)] << ")";
+            << STATE_STR.at(next_state_)
+            << " (current: " << STATE_STR.at(state_) << ")";
 #endif
     }
     else
     {
 #ifdef _DEBUG
         LDEBUG << "*** called multiple times in one loop ***";
-        LDEBUG << " -> current_state: " << STATE_STR[static_cast<int>(state_)];
-        LDEBUG << " -> next_state:    " << STATE_STR[static_cast<int>(next_state_)];
-        LDEBUG << " -> arg:           " << STATE_STR[static_cast<int>(target_state)];
+        LDEBUG << " -> current_state: " << STATE_STR.at(state_);
+        LDEBUG << " -> next_state:    " << STATE_STR.at(next_state_);
+        LDEBUG << " -> arg:           " << STATE_STR.at(target_state);
 #endif
     }
 }
@@ -130,7 +130,7 @@ void transitionState() noexcept
     next_state_ = State::None;
 #ifdef _DEBUG
     LDEBUG << "State changed to [" << static_cast<int>(state_) << "]"
-        << STATE_STR[static_cast<int>(state_)];
+        << STATE_STR.at(state_);
 #endif
 }
 

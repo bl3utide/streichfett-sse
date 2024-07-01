@@ -6,19 +6,19 @@ namespace StreichfettSse
 namespace Config
 {
 
-const char* SECTION_NAMES[static_cast<int>(Section::_COUNT_)]
+const std::unordered_map<Section, const char*> SECTION_NAMES
 {
-    "device"
+    { Section::Device,  "device" }
 };
 
-const char* KEY_NAMES[static_cast<int>(Key::_COUNT_)]
+const std::unordered_map<Key, const char*> KEY_NAMES
 {
     // [device]
-    "synth_input_device",
-    "synth_output_device",
-    "keyboard_input_device",
-    "force_adjust_midi_ch",
-    "sysex_delay",
+    { Key::SynthInputDevice,    "synth_input_device" },
+    { Key::SynthOutputDevice,   "synth_output_device" },
+    { Key::KeyboardInputDevice, "keyboard_input_device" },
+    { Key::ForceAdjustMidiCh,   "force_adjust_midi_ch" },
+    { Key::SysExDelay,          "sysex_delay" }
 };
 
 } // Config

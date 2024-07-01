@@ -89,6 +89,14 @@ void initialize()
     key_input.initialize();
 
     request_try_count.reset();
+
+#ifdef _DEBUG
+    for (int i = 0; i < static_cast<int>(Debug::SendTestType::_COUNT_); ++i)
+    {
+        Debug::send_test.emplace(static_cast<Debug::SendTestType>(i), Debug::SendTestResult::NotStarted);
+        Debug::send_test_failed_cause.emplace(static_cast<Debug::SendTestType>(i), Debug::SendTestFailedCause::None);
+    }
+#endif
 }
 
 void finalize() noexcept

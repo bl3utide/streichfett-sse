@@ -6,10 +6,10 @@ namespace StreichfettSse
 
 // public
 #ifdef _DEBUG
-const char* OPERATION_STR[static_cast<int>(Operation::_COUNT_)] =
+const std::unordered_map<Operation, const char*> OPERATION_STR
 {
-    "Sound",
-    "Option"
+    { Operation::Sound, "Sound" },
+    { Operation::Option, "Option" },
 };
 #endif
 

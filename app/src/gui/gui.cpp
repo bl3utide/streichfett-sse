@@ -30,10 +30,10 @@ const int WINDOW_WIDTH = 720;       // DSI: Streichfett
 const int WINDOW_HEIGHT = 560;      // DSI: Streichfett
 const float UI_MAIN_CONTENT_WIDTH = WINDOW_WIDTH - 64.0f;
 Page _page;
-const char* PAGE_STR[static_cast<int>(Page::_COUNT_)] =
+const std::unordered_map<Page, const char*> PAGE_STR
 {
-    "EDIT",
-    "OPTION"
+    { Page::Edit, "EDIT" },
+    { Page::Option, "OPTION" },
 };
 
 void setUiStyle() noexcept
@@ -244,7 +244,7 @@ void drawPageSelector()
         auto is_current_page = static_cast<int>(_page) == page_i;
 
         ImGui::PushStyleColor(ImGuiCol_Text, is_current_page ? UI_COLOR_TEXT_PAGE_ACTIVE : UI_COLOR_TEXT_PAGE_INACTIVE);
-        if (ImGui::Selectable(PAGE_STR[page_i], is_current_page, 0, ImVec2(80, 20)))
+        if (ImGui::Selectable(PAGE_STR.at(static_cast<Page>(page_i)), is_current_page, 0, ImVec2(80, 20)))
         {
             if (!is_current_page)
             {

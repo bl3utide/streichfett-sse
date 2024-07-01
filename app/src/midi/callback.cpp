@@ -29,23 +29,32 @@ enum class ErrorMessageType : int
     _COUNT_,
 };
 
-const std::string ERROR_MESSAGE
-[static_cast<int>(RequestType::_COUNT_)][static_cast<int>(ErrorMessageType::_COUNT_)]
+// private
+const std::unordered_map<RequestType, std::unordered_map<ErrorMessageType, std::string>> ERROR_MESSAGE
 {
     {
-        "The confirm sysex request has timed out.",
-        "Received empty confirm dump.",
-        "You tried to connect to an incorrect device."
+        RequestType::Confirm,
+        {
+            { ErrorMessageType::Timeout,    "The confirm sysex request has timed out." },
+            { ErrorMessageType::Empty,      "Received empty confirm dump." },
+            { ErrorMessageType::Incorrect,  "You tried to connect to an incorrect device." }
+        }
     },
     {
-        "The global dump request has timed out.",
-        "Received empty global dump.",
-        "Incorrect global dump message."
+        RequestType::GlobalDump,
+        {
+            { ErrorMessageType::Timeout,    "The global dump request has timed out." },
+            { ErrorMessageType::Empty,      "Received empty global dump."},
+            { ErrorMessageType::Incorrect,  "Incorrect global dump message." }
+        }
     },
     {
-        "The sound dump request has timed out.",
-        "Received empty sound dump.",
-        "Incorrect sound dump message."
+        RequestType::SoundDump,
+        {
+            { ErrorMessageType::Timeout,    "The sound dump request has timed out." },
+            { ErrorMessageType::Empty,      "Received empty sound dump." },
+            { ErrorMessageType::Incorrect,  "Incorrect sound dump message." }
+        }
     }
 };
 
@@ -59,10 +68,7 @@ void retryOver(
     const RequestType req_type, const ErrorMessageType mes_type,
     const bool set_disconnected = true) noexcept
 {
-    const int rt = static_cast<int>(req_type);
-    const int mt = static_cast<int>(mes_type);
-
-    setAppError(ERROR_MESSAGE[rt][mt]);
+    setAppError(ERROR_MESSAGE.at(req_type).at(mes_type));
     setNextState(State::Idle, true);
 
     if (set_disconnected)

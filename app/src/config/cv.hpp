@@ -105,8 +105,8 @@ private:
 
     void setSectionKey(const Section section, const Key key)
     {
-        section_ = SECTION_NAMES[static_cast<int>(section)];
-        key_ = KEY_NAMES[static_cast<int>(key)];
+        section_ = SECTION_NAMES.at(section);
+        key_ = KEY_NAMES.at(key);
     }
 
     bool isWithinRange(const int v) const noexcept

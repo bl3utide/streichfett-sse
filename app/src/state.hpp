@@ -24,7 +24,7 @@ enum class State : int
 };
 
 #ifdef _DEBUG
-extern const char* STATE_STR[static_cast<int>(State::_COUNT_)];
+extern const std::unordered_map<State, const char*> STATE_STR;
 #endif
 
 bool processForCurrentState();
