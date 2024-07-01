@@ -80,7 +80,7 @@ public:
 
     const std::string& cv() const noexcept { return v_; }
     const Type& type() const noexcept { return type_; }
-    const std::string& type_str() const noexcept { return type_str_.at(type_); }
+    const std::string& type_str() const noexcept { return TYPE_STR.at(type_); }
     int max() const noexcept { return max_; }
     int min() const noexcept { return min_; }
 
@@ -101,7 +101,7 @@ private:
     Type type_;
     std::string v_;
     int min_, max_, def_;   // use if _type == Type::Int
-    static const std::unordered_map<Type, std::string> type_str_;
+    static const std::unordered_map<Type, std::string> TYPE_STR;
 
     void setSectionKey(const Section section, const Key key)
     {

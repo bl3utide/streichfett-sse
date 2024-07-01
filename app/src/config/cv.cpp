@@ -6,7 +6,7 @@ namespace StreichfettSse
 namespace Config
 {
 
-const std::unordered_map<Cv::Type, std::string> Cv::type_str_
+const std::unordered_map<Cv::Type, std::string> Cv::TYPE_STR
 {
     {Type::String, "string"},
     {Type::Int, "int"},
