@@ -51,20 +51,16 @@ template<typename T>
 void drawOptionItemValue(const T& v, const bool displayable = false)
 {
     beginOptionItemValue();
-    //if constexpr (std::is_same_v<T, int>) // TODO delete fix Global Model
     if (displayable)
     {
         if constexpr (std::is_same_v<T, Ev>)
         {
             if (v.hasArr())
             {
-                //ImGui::Text("%d", v); // TODO delete Global Model fix
                 ImGui::Text(v.evs());
             }
-            //else if constexpr (std::is_same_v<T, const char*>)    // TODO delete fix Global Model
             else
             {
-                //ImGui::Text(v);   // TODO delete fix Global Model
                 ImGui::Text("%d", v.ev());
             }
         }
@@ -215,45 +211,23 @@ void drawOptionGroupDeviceSettingInfo()
 
         drawOptionItem("Synth Device");
         ImGui::PushStyleColor(ImGuiCol_Text, displayable_synth_info ? UI_COLOR_TEXT_CONNECTED : UI_COLOR_TEXT_DISCONNECTED);
-        //drawOptionItemValue(displayable_synth_info ? "Connected" : "Disconnected");
         if (displayable_synth_info) drawOptionItemValue(TEXT_CONNECTED, true);
         else drawOptionItemValue(TEXT_DISCONNECTED, true);
         ImGui::PopStyleColor();
 
         drawOptionItem("Firmware Version");
-        //drawOptionItemValue(displayable_synth_info && MessageHandler::inquiry_dump.received ? MessageHandler::inquiry_dump.firmware_version.c_str() : TEXT_INFO_NONE);
         drawOptionItemValue(MessageHandler::inquiry_dump.firmware_version.c_str(), displayable_synth_info && MessageHandler::inquiry_dump.received);
 
         GlobalModel::Global* global = InternalSetting::getGlobalData();
         drawOptionItem("Device ID");
-        /*
-        displayable_synth_info ? drawOptionItemValue(global->device_id)
-            : drawOptionItemValue(TEXT_INFO_NONE);
-            */
         drawOptionItemValue(global->device_id, displayable_synth_info);
         drawOptionItem("MIDI Channel");
-        /*
-        displayable_synth_info ? drawOptionItemValue(global->midi_channel)
-            : drawOptionItemValue(TEXT_INFO_NONE);
-            */
         drawOptionItemValue(global->midi_channel, displayable_synth_info);
         drawOptionItem("Tuning");
-        /*
-        displayable_synth_info ? drawOptionItemValue(global->tuning)
-            : drawOptionItemValue(TEXT_INFO_NONE);
-            */
         drawOptionItemValue(global->tuning, displayable_synth_info);
         drawOptionItem("Transpose");
-        /*
-        displayable_synth_info ? drawOptionItemValue(global->transpose)
-            : drawOptionItemValue(TEXT_INFO_NONE);
-            */
         drawOptionItemValue(global->transpose, displayable_synth_info);
         drawOptionItem("Pitch Bend Range");
-        /*
-        displayable_synth_info ? drawOptionItemValue(global->pitch_bend_range)
-            : drawOptionItemValue(TEXT_INFO_NONE);
-            */
         drawOptionItemValue(global->pitch_bend_range, displayable_synth_info);
     }
     GuiUtil::EndGroupPanel();
