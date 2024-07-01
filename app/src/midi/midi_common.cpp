@@ -14,16 +14,16 @@ const int TIMEOUT_DURATION_PER_RETRY = 200;
 RequestCounter request_try_count(MAX_REQUEST_TRY);
 
 // private
-bool _waiting_store_delay = false;    // store delay check
+bool waiting_store_delay_ = false;    // store delay check
 
 void setWaitingStoreDelay(const bool is_waiting_store_delay) noexcept
 {
-    _waiting_store_delay = is_waiting_store_delay;
+    waiting_store_delay_ = is_waiting_store_delay;
 }
 
 bool isWaitingStoreDelay() noexcept
 {
-    return _waiting_store_delay;
+    return waiting_store_delay_;
 }
 
 } // Connector

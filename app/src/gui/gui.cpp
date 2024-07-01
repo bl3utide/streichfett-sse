@@ -21,11 +21,11 @@ namespace Gui
 std::vector<std::function<void()>> reservedFuncs;
 
 // private
-std::string _app_title;
-std::string _app_version;
-std::string _app_copyright;
-SDL_Window* _window;
-SDL_GLContext _gl_context;
+std::string app_title_;
+std::string app_version_;
+std::string app_copyright_;
+SDL_Window* window_;
+SDL_GLContext gl_context_;
 const int WINDOW_WIDTH = 720;       // DSI: Streichfett
 const int WINDOW_HEIGHT = 560;      // DSI: Streichfett
 const float UI_MAIN_CONTENT_WIDTH = WINDOW_WIDTH - 64.0f;
@@ -173,10 +173,10 @@ void drawAboutModal()
             ImGui::Image((void*)(intptr_t)Image::getTextureId(Image::Texture::Icon), ImVec2(80.0f, 80.0f));
 
             ImGui::TableNextColumn();
-            ImGui::Text(_app_title.c_str());
-            ImGui::Text("version %s", _app_version.c_str());
+            ImGui::Text(app_title_.c_str());
+            ImGui::Text("version %s", app_version_.c_str());
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
-            ImGui::Text(_app_copyright.c_str());
+            ImGui::Text(app_copyright_.c_str());
 
             ImGui::EndTable();
         }
@@ -202,7 +202,7 @@ void drawHeader(const int window_width)
 {
     GuiUtil::PushFont((int)Font::Title);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TITLE_TEXT);
-    ImGui::Text(_app_title.c_str());
+    ImGui::Text(app_title_.c_str());
     ImGui::PopStyleColor();
     ImGui::PopFont();
 
@@ -210,7 +210,7 @@ void drawHeader(const int window_width)
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
     GuiUtil::PushFont((int)Font::Version);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_VERSION_TEXT);
-    ImGui::Text(_app_version.c_str());
+    ImGui::Text(app_version_.c_str());
     ImGui::PopStyleColor();
     ImGui::PopFont();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 7.0f);
@@ -304,14 +304,14 @@ void postDraw()
         ImGui::RenderPlatformWindowsDefault();
         SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
     }
-    SDL_GL_SwapWindow(_window);
+    SDL_GL_SwapWindow(window_);
 }
 
 void initialize()
 {
-    _app_title = StringUtil::getExeVersionInfo(StringUtil::FileVersion::ProductName);
-    _app_version = StringUtil::getExeVersionInfo(StringUtil::FileVersion::ProductVersionMajorOnly);
-    _app_copyright = StringUtil::getExeVersionInfo(StringUtil::FileVersion::Copyright);
+    app_title_ = StringUtil::getExeVersionInfo(StringUtil::FileVersion::ProductName);
+    app_version_ = StringUtil::getExeVersionInfo(StringUtil::FileVersion::ProductVersionMajorOnly);
+    app_copyright_ = StringUtil::getExeVersionInfo(StringUtil::FileVersion::Copyright);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -321,14 +321,14 @@ void initialize()
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
-    _window = SDL_CreateWindow(_app_title.c_str(),
+    window_ = SDL_CreateWindow(app_title_.c_str(),
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         SDL_WINDOW_OPENGL);
-    SDL_SetWindowMaximumSize(_window, WINDOW_WIDTH, WINDOW_HEIGHT);
-    SDL_SetWindowMinimumSize(_window, WINDOW_WIDTH, WINDOW_HEIGHT);
-    _gl_context = SDL_GL_CreateContext(_window);
-    SDL_GL_MakeCurrent(_window, _gl_context);
+    SDL_SetWindowMaximumSize(window_, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SDL_SetWindowMinimumSize(window_, WINDOW_WIDTH, WINDOW_HEIGHT);
+    gl_context_ = SDL_GL_CreateContext(window_);
+    SDL_GL_MakeCurrent(window_, gl_context_);
     SDL_GL_SetSwapInterval(1);  // Enable vsync
 
     IMGUI_CHECKVERSION();
@@ -342,7 +342,7 @@ void initialize()
     io.ConfigViewportsNoDefaultParent = false;
     io.ConfigViewportsNoTaskBarIcon = true;
 
-    ImGui_ImplSDL2_InitForOpenGL(_window, _gl_context);
+    ImGui_ImplSDL2_InitForOpenGL(window_, gl_context_);
     ImGui_ImplOpenGL2_Init();
 
     addAllFonts();
@@ -357,8 +357,8 @@ void finalize() noexcept
     ImGui_ImplOpenGL2_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
-    SDL_GL_DeleteContext(_gl_context);
-    SDL_DestroyWindow(_window);
+    SDL_GL_DeleteContext(gl_context_);
+    SDL_DestroyWindow(window_);
 }
 
 void drawGui()
@@ -370,7 +370,7 @@ void drawGui()
     drawErrorModal();
 
     int window_width, window_height;
-    SDL_GetWindowSize(_window, &window_width, &window_height);
+    SDL_GetWindowSize(window_, &window_width, &window_height);
 
     auto vp_pos = ImGui::GetWindowViewport()->WorkPos;
     ImGui::SetNextWindowPos(vp_pos);
@@ -439,7 +439,7 @@ void drawGui()
 
 void showMessageBox(Uint32 flags, const char* title, const char* message) noexcept
 {
-    SDL_ShowSimpleMessageBox(flags, title, message, _window);
+    SDL_ShowSimpleMessageBox(flags, title, message, window_);
 }
 
 void doReservedFuncs()

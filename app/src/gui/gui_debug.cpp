@@ -24,10 +24,10 @@ namespace Debug
 {
 
 // private
-bool _show_debug_menu_bar = true;
-bool _show_demo_window = false;
-bool _show_debug_window = true;
-bool _show_processed_message_window = false;
+bool show_debug_menu_bar_ = true;
+bool show_demo_window_ = false;
+bool show_debug_window_ = true;
+bool show_processed_message_window_ = false;
 
 void drawDebugMenuBar(const ImVec2 viewport_pos)
 {
@@ -41,23 +41,23 @@ void drawDebugMenuBar(const ImVec2 viewport_pos)
         | ImGuiWindowFlags_NoTitleBar);
     {
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, 3.0f));
-        if (_show_debug_menu_bar)
+        if (show_debug_menu_bar_)
         {
-            if (ImGui::Button("_")) _show_debug_menu_bar = false;
+            if (ImGui::Button("_")) show_debug_menu_bar_ = false;
         }
         else
         {
-            if (ImGui::Button(">")) _show_debug_menu_bar = true;
+            if (ImGui::Button(">")) show_debug_menu_bar_ = true;
         }
         GuiUtil::MouseCursorToHand();
         ImGui::PopStyleVar();
 
-        if (_show_debug_menu_bar)
+        if (show_debug_menu_bar_)
         {
-            ImGui::Checkbox("demo", &_show_demo_window);
+            ImGui::Checkbox("demo", &show_demo_window_);
             GuiUtil::MouseCursorToHand();
             ImGui::SameLine();
-            ImGui::Checkbox("debug", &_show_debug_window);
+            ImGui::Checkbox("debug", &show_debug_window_);
             GuiUtil::MouseCursorToHand();
         }
     }
@@ -355,7 +355,7 @@ void drawDebugTabItemTransReceiveLog()
                 {
                     cd::history_selected_index = selected_index;
                     cd::history_selected = *iter;
-                    _show_processed_message_window = true;
+                    show_processed_message_window_ = true;
                 }
                 GuiUtil::MouseCursorToHand();
                 ImGui::PopStyleColor();
@@ -394,7 +394,7 @@ void drawProcessedWindow()
 {
     Connector::Debug::ProcessedMidiMessage* message = &Connector::Debug::history_selected;
 
-    ImGui::Begin("processed_detail", &_show_processed_message_window,
+    ImGui::Begin("processed_detail", &show_processed_message_window_,
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize |
         ImGuiWindowFlags_NoTitleBar);
     {
@@ -601,7 +601,7 @@ void drawDebugWindow(bool* open, const int window_w, const int window_h,
     }
     ImGui::End();
 
-    if (_show_processed_message_window)
+    if (show_processed_message_window_)
     {
         drawProcessedWindow();
     }
@@ -613,15 +613,15 @@ void drawDebugWindows(const int window_w, const int window_h, const State curren
 {
     GuiUtil::PushFont((int)FontDebug::Text);
 
-    if (_show_demo_window)
+    if (show_demo_window_)
     {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
-        ImGui::ShowDemoWindow(&_show_demo_window);
+        ImGui::ShowDemoWindow(&show_demo_window_);
         ImGui::PopStyleVar();
     }
 
-    if (_show_debug_window)
-        drawDebugWindow(&_show_debug_window, window_w, window_h, current_state);
+    if (show_debug_window_)
+        drawDebugWindow(&show_debug_window_, window_w, window_h, current_state);
 
     ImGui::PopFont();
 }

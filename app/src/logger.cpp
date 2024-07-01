@@ -15,10 +15,10 @@ const size_t MAX_SIZE_DISPLAY_DLOG = 1000;
 std::mutex dlog_mutex;
 
 // private
-int DisplayFormattedDebugLog::_next_log_id = 0;
-std::string _debug_file_name;
+int DisplayFormattedDebugLog::next_log_id_ = 0;
+std::string debug_file_name_;
 #endif
-std::string _error_file_name;
+std::string error_file_name_;
 
 void initialize() noexcept
 {
@@ -28,12 +28,12 @@ void initialize() noexcept
     };
 
 #ifdef _DEBUG
-    _debug_file_name = StringUtil::format("%s.debug.log", APP_NAME.c_str());
+    debug_file_name_ = StringUtil::format("%s.debug.log", APP_NAME.c_str());
     static plog::DebugLogAppender<plog::DebugLogFormatter> debugLogAppender;
-    plog::init<plog::DebugLogFormatter>(plog::debug, _debug_file_name.c_str()).addAppender(&debugLogAppender);
+    plog::init<plog::DebugLogFormatter>(plog::debug, debug_file_name_.c_str()).addAppender(&debugLogAppender);
 #endif
-    _error_file_name = StringUtil::format("%s.error.log", APP_NAME.c_str());
-    plog::init<plog::ErrorLogFormatter, LogId::Error>(plog::error, _error_file_name.c_str());
+    error_file_name_ = StringUtil::format("%s.error.log", APP_NAME.c_str());
+    plog::init<plog::ErrorLogFormatter, LogId::Error>(plog::error, error_file_name_.c_str());
 }
 
 void error(const UncontinuableException& uce) noexcept

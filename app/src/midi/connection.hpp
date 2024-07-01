@@ -28,11 +28,11 @@ protected:
     RtMidi* rtmidi;
 
 private:
+    int port_index_;
+    std::string port_name_;
+    int last_connected_port_index_;
+    int last_failed_port_index_;
     void resetPortInfo() noexcept;
-    int _port_index;
-    std::string _port_name;
-    int _last_connected_port_index;
-    int _last_failed_port_index;
 };
 
 class InputConnection : public Connection

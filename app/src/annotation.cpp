@@ -7,37 +7,37 @@ namespace Annotation
 {
 
 // private
-std::string _text;
-Type _type;
+std::string text_;
+Type type_;
 const std::map<Message, std::string> MESSAGES {
     {Message::DisconnectedAlert, "Please set the MIDI connections from OPTION -> Synth Input/Output Device."},
 };
 
 const std::string& getText() noexcept
 {
-    return _text;
+    return text_;
 }
 
 Type getType() noexcept
 {
-    return _type;
+    return type_;
 }
 
 void setText(const Message message, const Type type) noexcept
 {
-    _text = MESSAGES.at(message);
-    _type = type;
+    text_ = MESSAGES.at(message);
+    type_ = type;
 }
 
 void setText(const std::string& message, const Type type) noexcept
 {
-    _text = message;
-    _type = type;
+    text_ = message;
+    type_ = type;
 }
 
 void clearText() noexcept
 {
-    _text.clear();
+    text_.clear();
 }
 
 } // Annotation

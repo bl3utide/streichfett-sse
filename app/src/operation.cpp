@@ -14,16 +14,16 @@ const char* OPERATION_STR[static_cast<int>(Operation::_COUNT_)] =
 #endif
 
 // private
-Operation _operation = Operation::Sound;
+Operation operation_ = Operation::Sound;
 
 Operation getOperation() noexcept
 {
-    return _operation;
+    return operation_;
 }
 
 void setOperation(Operation operation) noexcept
 {
-    _operation = operation;
+    operation_ = operation;
 }
 
 } // StreichfettSse

@@ -10,7 +10,7 @@ namespace Image
 {
 
 // private
-GLuint _texture[static_cast<int>(Texture::_COUNT_)];
+GLuint texture_[static_cast<int>(Texture::_COUNT_)];
 
 bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* output)
 {
@@ -49,19 +49,19 @@ void loadTextures()
     load_tex_ret = loadTextureFromMemory(
         ArrayedTexture::TEX_ICON,
         ArrayedTexture::TEX_ICON_SIZE,
-        &_texture[static_cast<int>(Texture::Icon)]);
+        &texture_[static_cast<int>(Texture::Icon)]);
     IM_ASSERT(load_tex_ret);
 
     load_tex_ret = loadTextureFromMemory(
         ArrayedTexture::TEX_RELOAD,
         ArrayedTexture::TEX_RELOAD_SIZE,
-        &_texture[static_cast<int>(Texture::Reload)]);
+        &texture_[static_cast<int>(Texture::Reload)]);
     IM_ASSERT(load_tex_ret);
 }
 
 void unloadTextures()
 {
-    unloadTexture(&_texture[static_cast<int>(Texture::Reload)]);
+    unloadTexture(&texture_[static_cast<int>(Texture::Reload)]);
 }
 
 void initialize()
@@ -76,7 +76,7 @@ void finalize() noexcept
 
 GLuint getTextureId(Texture tex) noexcept
 {
-    return _texture[static_cast<int>(tex)];
+    return texture_[static_cast<int>(tex)];
 }
 
 } // Image

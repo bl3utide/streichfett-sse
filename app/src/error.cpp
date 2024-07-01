@@ -25,64 +25,64 @@ const std::unordered_map<ErrorWhen, std::string> MESSAGE
 };
 
 AnyCauseException::AnyCauseException(const char* message, const ErrorCause cause)
-    : std::exception(message), _cause(cause)
+    : std::exception(message), cause_(cause)
 {
 }
 
 const ErrorCause AnyCauseException::getCause() const noexcept
 {
-    return _cause;
+    return cause_;
 }
 
 BaseException::BaseException(const AnyCauseException& ace, const ErrorWhen when)
-    : std::exception(ace.what()), _when(when), _cause(ace.getCause())
+    : std::exception(ace.what()), when_(when), cause_(ace.getCause())
 {
     setErrorMessage();
 }
 
 BaseException::BaseException(const char* message, const ErrorWhen when, const ErrorCause cause)
-    : std::exception(message), _when(when), _cause(cause)
+    : std::exception(message), when_(when), cause_(cause)
 {
     setErrorMessage();
 }
 
 void BaseException::setErrorMessage() noexcept
 {
-    if (MESSAGE.find(_when) != MESSAGE.end())
+    if (MESSAGE.find(when_) != MESSAGE.end())
     {
-        _error_message =
-            StringUtil::format(MESSAGE_FMT, MESSAGE.at(_when).c_str(), getErrorCode());
+        error_message_ =
+            StringUtil::format(MESSAGE_FMT, MESSAGE.at(when_).c_str(), getErrorCode());
     }
     else
     {
-        _error_message =
+        error_message_ =
             StringUtil::format(MESSAGE_FMT_UNDEFINED, getErrorCode());
     }
 }
 
 const std::uint16_t BaseException::getErrorCode() const noexcept
 {
-    return static_cast<std::uint16_t>(_when) << 8 | _cause;
+    return static_cast<std::uint16_t>(when_) << 8 | cause_;
 }
 
 const std::string& BaseException::getErrorMessage() const noexcept
 {
-    return _error_message;
+    return error_message_;
 }
 
 ContinuableException::ContinuableException(const AnyCauseException& ace, const ErrorWhen when, const State next_state)
-    : BaseException(ace, when),  _next_state(next_state)
+    : BaseException(ace, when),  next_state_(next_state)
 {
 }
 
 ContinuableException::ContinuableException(const char* message, const ErrorWhen when, const ErrorCause cause, const State next_state)
-    : BaseException(message, when, cause), _next_state(next_state)
+    : BaseException(message, when, cause), next_state_(next_state)
 {
 }
 
 const State ContinuableException::getNextState() const noexcept
 {
-    return _next_state;
+    return next_state_;
 }
 
 UncontinuableException::UncontinuableException(const AnyCauseException& ace, const ErrorWhen when)

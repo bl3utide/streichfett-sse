@@ -27,7 +27,7 @@ enum class InitSection : int
 };
 
 // private
-std::bitset<static_cast<int>(InitSection::_COUNT_)> _init_flag;
+std::bitset<static_cast<int>(InitSection::_COUNT_)> init_flag_;
 
 void initialize()
 {
@@ -41,13 +41,13 @@ void initialize()
         {
             throw UncontinuableException("SDL_Init error", ERROR_WHEN_INIT, ERROR_CAUSE_INIT_SDL);
         }
-        _init_flag.set(static_cast<int>(InitSection::Sdl));
+        init_flag_.set(static_cast<int>(InitSection::Sdl));
 
         try
         {
             Logger::debug("start init GUI");
             Gui::initialize();
-            _init_flag.set(static_cast<int>(InitSection::Gui));
+            init_flag_.set(static_cast<int>(InitSection::Gui));
         }
         catch (std::exception& e)
         {
@@ -58,7 +58,7 @@ void initialize()
         {
             Logger::debug("start init Image");
             Image::initialize();
-            _init_flag.set(static_cast<int>(InitSection::Image));
+            init_flag_.set(static_cast<int>(InitSection::Image));
         }
         catch (std::exception& e)
         {
@@ -69,7 +69,7 @@ void initialize()
         {
             Logger::debug("start init Connector");
             Connector::initialize();
-            _init_flag.set(static_cast<int>(InitSection::Connector));
+            init_flag_.set(static_cast<int>(InitSection::Connector));
         }
         catch (RtMidiError& e)
         {
@@ -80,7 +80,7 @@ void initialize()
         {
             Logger::debug("start init Config");
             Config::initialize();
-            _init_flag.set(static_cast<int>(InitSection::Config));
+            init_flag_.set(static_cast<int>(InitSection::Config));
         }
         catch (std::exception& e)
         {
@@ -97,19 +97,19 @@ void initialize()
 
 void finalize() noexcept
 {
-    if (_init_flag[static_cast<int>(InitSection::Config)])
+    if (init_flag_[static_cast<int>(InitSection::Config)])
         Config::save();
 
-    if (_init_flag[static_cast<int>(InitSection::Connector)])
+    if (init_flag_[static_cast<int>(InitSection::Connector)])
         Connector::finalize();
 
-    if (_init_flag[static_cast<int>(InitSection::Image)])
+    if (init_flag_[static_cast<int>(InitSection::Image)])
         Image::finalize();
 
-    if (_init_flag[static_cast<int>(InitSection::Gui)])
+    if (init_flag_[static_cast<int>(InitSection::Gui)])
         Gui::finalize();
 
-    if (_init_flag[static_cast<int>(InitSection::Sdl)])
+    if (init_flag_[static_cast<int>(InitSection::Sdl)])
         SDL_Quit();
 
     Logger::debug("<end of application>");

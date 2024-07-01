@@ -21,8 +21,8 @@ void Connection::open(const int port_index, const std::string& port_name)
 
     try
     {
-        _port_index = port_index;
-        _port_name = port_name;
+        port_index_ = port_index;
+        port_name_ = port_name;
         rtmidi->openPort(port_index);
         setLastConnectedPortIndex(port_index);
     }
@@ -56,42 +56,42 @@ std::string Connection::getPortName(unsigned int port_index)
 
 int Connection::getPortIndex() const noexcept
 {
-    return _port_index;
+    return port_index_;
 }
 
 const std::string& Connection::getPortName() const noexcept
 {
-    return _port_name;
+    return port_name_;
 }
 
 int Connection::getLastConnectedPortIndex() const noexcept
 {
-    return _last_connected_port_index;
+    return last_connected_port_index_;
 }
 
 int Connection::getLastFailedPortIndex() const noexcept
 {
-    return _last_failed_port_index;
+    return last_failed_port_index_;
 }
 
 void Connection::setLastConnectedPortIndex(const int port_index) noexcept
 {
-    _last_connected_port_index = port_index;
-    _last_failed_port_index = -1;
+    last_connected_port_index_ = port_index;
+    last_failed_port_index_ = -1;
 }
 
 void Connection::setLastFailedPortIndex(const int port_index) noexcept
 {
-    _last_failed_port_index = port_index;
-    _last_connected_port_index = -1;
+    last_failed_port_index_ = port_index;
+    last_connected_port_index_ = -1;
 }
 
 void Connection::resetPortInfo() noexcept
 {
-    _port_index = -1;
-    _port_name = "";
-    _last_connected_port_index = -1;
-    _last_failed_port_index = -1;
+    port_index_ = -1;
+    port_name_ = "";
+    last_connected_port_index_ = -1;
+    last_failed_port_index_ = -1;
 }
 
 InputConnection::InputConnection() : Connection()

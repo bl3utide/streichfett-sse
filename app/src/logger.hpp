@@ -32,8 +32,8 @@ public:
         std::smatch m;
         if (std::regex_search(message, m, re))
         {
-            log_id = _next_log_id;
-            ++_next_log_id;
+            log_id = next_log_id_;
+            ++next_log_id_;
 
             timestamp = m[1];
             category = m[2];
@@ -44,7 +44,7 @@ public:
     }
 
 private:
-    static int _next_log_id;
+    static int next_log_id_;
 };
 
 extern std::vector<DisplayFormattedDebugLog> dlog;

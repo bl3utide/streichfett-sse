@@ -35,12 +35,12 @@ const char* STATE_STR[static_cast<int>(State::_COUNT_)] =
 #endif
 
 // private
-State _state = State::InitInternalData;
-State _next_state = State::None;    // the next state that change in the next loop
+State state_ = State::InitInternalData;
+State next_state_ = State::None;    // the next state that change in the next loop
 
 bool processForCurrentState()
 {
-    switch (_state)
+    switch (state_)
     {
     case State::InitInternalData:
         InternalPatch::initData();
@@ -91,46 +91,46 @@ bool processForCurrentState()
 
 State getState() noexcept
 {
-    return _state;
+    return state_;
 }
 
 State getNextState() noexcept
 {
-    return _next_state;
+    return next_state_;
 }
 
-void setNextState(State state, const bool force_mod) noexcept
+void setNextState(State target_state, const bool force_mod) noexcept
 {
-    if (state == State::None)
+    if (target_state == State::None)
         return;
 
-    if (_next_state == State::None || force_mod)
+    if (next_state_ == State::None || force_mod)
     {
-        _next_state = state;
+        next_state_ = target_state;
 #ifdef _DEBUG
-        LDEBUG << "setNextState: [" << static_cast<int>(_next_state) << "]"
-            << STATE_STR[static_cast<int>(_next_state)]
-            << " (current: " << STATE_STR[static_cast<int>(_state)] << ")";
+        LDEBUG << "setNextState: [" << static_cast<int>(next_state_) << "]"
+            << STATE_STR[static_cast<int>(next_state_)]
+            << " (current: " << STATE_STR[static_cast<int>(state_)] << ")";
 #endif
     }
     else
     {
 #ifdef _DEBUG
         LDEBUG << "*** called multiple times in one loop ***";
-        LDEBUG << " -> current_state: " << STATE_STR[static_cast<int>(_state)];
-        LDEBUG << " -> next_state:    " << STATE_STR[static_cast<int>(_next_state)];
-        LDEBUG << " -> arg:           " << STATE_STR[static_cast<int>(state)];
+        LDEBUG << " -> current_state: " << STATE_STR[static_cast<int>(state_)];
+        LDEBUG << " -> next_state:    " << STATE_STR[static_cast<int>(next_state_)];
+        LDEBUG << " -> arg:           " << STATE_STR[static_cast<int>(target_state)];
 #endif
     }
 }
 
 void transitionState() noexcept
 {
-    _state = _next_state;
-    _next_state = State::None;
+    state_ = next_state_;
+    next_state_ = State::None;
 #ifdef _DEBUG
-    LDEBUG << "State changed to [" << static_cast<int>(_state) << "]"
-        << STATE_STR[static_cast<int>(_state)];
+    LDEBUG << "State changed to [" << static_cast<int>(state_) << "]"
+        << STATE_STR[static_cast<int>(state_)];
 #endif
 }
 

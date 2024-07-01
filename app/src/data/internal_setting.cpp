@@ -10,7 +10,7 @@ namespace InternalSetting
 {
 
 // private
-GlobalModel::Global _global_data;
+GlobalModel::Global global_data_;
 
 void initData() noexcept
 {
@@ -18,7 +18,7 @@ void initData() noexcept
 
 GlobalModel::Global* getGlobalData() noexcept
 {
-    return &_global_data;
+    return &global_data_;
 }
 
 // DSI: Streichfett
@@ -45,12 +45,12 @@ void setSettingFromBytes(GlobalModel::Global* global, const ByteVec& data)
 // DSI: Streichfett
 int getDeviceMidiChannel() noexcept
 {
-    return _global_data.midi_channel.ev();
+    return global_data_.midi_channel.ev();
 }
 
 int getDeviceId() noexcept
 {
-    return _global_data.device_id.ev();
+    return global_data_.device_id.ev();
 }
 
 } // InternalSetting

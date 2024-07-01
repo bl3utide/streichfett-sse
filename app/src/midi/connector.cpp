@@ -31,7 +31,7 @@ bool force_adjust_midi_channel = true;
 int store_delay_duration = 200;
 
 // private
-bool _is_synth_connected = false;
+bool is_synth_connected_ = false;
 
 void fetchDeviceList()
 {
@@ -471,19 +471,19 @@ void sendOneTaskMessage()
 
 bool isSynthConnected() noexcept
 {
-    return _is_synth_connected;
+    return is_synth_connected_;
 }
 
 void setSynthConnected(const bool connected) noexcept
 {
     if (connected)
     {
-        _is_synth_connected = true;
+        is_synth_connected_ = true;
         Annotation::clearText();
     }
     else
     {
-        _is_synth_connected = false;
+        is_synth_connected_ = false;
         Annotation::setText(Annotation::Message::DisconnectedAlert, Annotation::Type::Alert);
     }
 }

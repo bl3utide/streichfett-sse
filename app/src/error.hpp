@@ -55,7 +55,7 @@ public:
     AnyCauseException& operator=(const AnyCauseException&) = delete;
 
 private:
-    ErrorCause _cause;
+    ErrorCause cause_;
 };
 
 class BaseException : public std::exception
@@ -83,9 +83,9 @@ public:
     BaseException& operator=(const BaseException&) = delete;
 
 private:
-    ErrorWhen _when;
-    ErrorCause _cause;
-    std::string _error_message;
+    ErrorWhen when_;
+    ErrorCause cause_;
+    std::string error_message_;
     const std::uint16_t getErrorCode() const noexcept;
     void setErrorMessage() noexcept;
 };
@@ -113,7 +113,7 @@ public:
     ContinuableException& operator=(const ContinuableException&) = delete;
 
 private:
-    State _next_state;
+    State next_state_;
 };
 
 class UncontinuableException final : public BaseException
