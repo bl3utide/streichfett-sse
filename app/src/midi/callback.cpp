@@ -65,8 +65,9 @@ void requestSuccessful(State next_state) noexcept
 }
 
 void retryOver(
-    const RequestType req_type, const ErrorMessageType mes_type,
-    const bool set_disconnected = true) noexcept
+    RequestType req_type,
+    ErrorMessageType mes_type,
+    bool set_disconnected = true) noexcept
 {
     setAppError(ERROR_MESSAGE.at(req_type).at(mes_type));
     setNextState(State::Idle, true);
