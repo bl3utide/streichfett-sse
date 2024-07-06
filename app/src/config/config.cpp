@@ -71,7 +71,9 @@ std::string getConfigValue(Key key)
     auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::String)
+    {
         throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
+    }
 
     return cv.cv();
 }
@@ -82,7 +84,9 @@ int getConfigValue(Key key)
     auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Int)
+    {
         throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
+    }
 
     return std::stoi(cv.cv());
 }
@@ -93,7 +97,9 @@ bool getConfigValue(Key key)
     const auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Bool)
+    {
         throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
+    }
 
     return cv.cv() == "1";
 }
@@ -112,7 +118,9 @@ void setConfigValue(Key key, std::string value)
     auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::String)
+    {
         throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
+    }
 
     cv.set(value);
 }
@@ -123,7 +131,9 @@ void setConfigValue(Key key, int value)
     auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Int)
+    {
         throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
+    }
 
     cv.set(std::to_string(value));
 }
@@ -134,7 +144,9 @@ void setConfigValue(Key key, bool value)
     Cv& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Bool)
+    {
         throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
+    }
 
     std::string set_v = value ? "1" : "0";
     cv.set(set_v);

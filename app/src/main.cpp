@@ -98,19 +98,29 @@ void initialize()
 void finalize() noexcept
 {
     if (init_flag_[static_cast<int>(InitSection::Config)])
+    {
         Config::save();
+    }
 
     if (init_flag_[static_cast<int>(InitSection::Connector)])
+    {
         Connector::finalize();
+    }
 
     if (init_flag_[static_cast<int>(InitSection::Image)])
+    {
         Image::finalize();
+    }
 
     if (init_flag_[static_cast<int>(InitSection::Gui)])
+    {
         Gui::finalize();
+    }
 
     if (init_flag_[static_cast<int>(InitSection::Sdl)])
+    {
         SDL_Quit();
+    }
 
     Logger::debug("<end of application>");
 }
@@ -127,7 +137,9 @@ void loop()
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
+            {
                 setNextState(State::PrepareToExit);
+            }
         }
 
         // processing branches depending on current state

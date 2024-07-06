@@ -53,7 +53,9 @@ void addProcessedHistory(bool transmitted, const std::string& device_name, const
 void sendTest(SendTestType type)
 {
     for (auto i = 0; i < static_cast<int>(SendTestType::_COUNT_); ++i)
+    {
         send_test.at(static_cast<SendTestType>(i)) = SendTestResult::NotStarted;
+    }
 
     ByteVec request;
 
@@ -70,7 +72,7 @@ void sendTest(SendTestType type)
             const auto sound_addr = InternalPatch::getCurrentSoundAddress();
             request = MessageHandler::getSoundRequestMessage(sound_addr->sound);
         }
-        break;
+            break;
         default:
             return;
     }

@@ -61,20 +61,32 @@ const inline std::string getExeVersionInfo(FileVersion order) noexcept
 
             std::string order_str;
             if (order == FileVersion::InternalName)
+            {
                 order_str = std::string("InternalName");
+            }
             else if (order == FileVersion::ProductName)
+            {
                 order_str = std::string("ProductName");
+            }
             else if (order == FileVersion::CompanyName)
+            {
                 order_str = std::string("CompanyName");
+            }
             else if (order == FileVersion::Copyright)
+            {
                 order_str = std::string("LegalCopyright");
+            }
             sub_block.Format("\\StringFileInfo\\%04x%04x\\%s", lang_code_ptr[0], lang_code_ptr[1], order_str.c_str());
 
             VerQueryValueA(version_ptr, (LPTSTR)(LPCTSTR)sub_block, (void**)&str_info_ptr, &query_len);
             if (query_len > 0)
+            {
                 return format("%s", str_info_ptr);
+            }
             else
+            {
                 return "";
+            }
         }
     }
 

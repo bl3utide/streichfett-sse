@@ -143,25 +143,35 @@ bool checkInquiryDump(const ByteVec& dump)
 void checkDump(const ByteVec& dump, DumpType type)
 {
     if (!isSysex(dump))
+    {
         throw std::exception("checkDump failed (not SysEx)");
+    }
 
     // Waldorf Music Manufacturer ID
     if (dump[1] != DEVICE_MANUFACTURER_ID)
+    {
         throw std::exception("checkDump failed (SysEx has incorrect manufacture id)");
+    }
 
     //  Device Family Code
     if (dump[2] != DEVICE_FAMILY_CODE)
+    {
         throw std::exception("checkDump failed (SysEx has incorrect device family code)");
+    }
 
     if (type == DumpType::Sound)
     {
         if (dump[4] != MESSAGE_SOUND_DUMP)
+        {
             throw std::exception("checkDump failed (not sound dump SysEx)");
+        }
     }
     else if (type == DumpType::Global)
     {
         if (dump[4] != MESSAGE_GLOBAL_DUMP)
+        {
             throw std::exception("checkDump failed (not global dump SysEx)");
+        }
     }
     else
     {
@@ -204,16 +214,24 @@ const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch* c
     req.push_back(static_cast<Byte>(device_id));
     req.push_back(MESSAGE_SOUND_DUMP);
     if (sound == -1)
+    {
         req.push_back(static_cast<Byte>(SOUND_NUMBER_EDIT_BUFFER));
+    }
     else
+    {
         req.push_back(static_cast<Byte>(sound));
+    }
     for (int i = 0; i < sound_data.size(); ++i)
+    {
         req.push_back(sound_data[i]);
+    }
 
     // calculate bytesum
     auto sum = 0;
     for (auto i = 1; i < req.size(); ++i)
+    {
         sum += req[i];
+    }
     req.push_back(static_cast<Byte>(sum & 0x7F));
     req.push_back(0xF7);
 
@@ -262,50 +280,51 @@ const std::string getMessageDesc(const ByteVec& data)
     }
     else if (0x80 <= data[0] && data[0] <= 0x9F)
     {
-        if (data[0] < 0x90)
-            ss << "Note Off";
-        else
-            ss << "Note On";
+        if (data[0] < 0x90) ss << "Note Off";
+        else ss << "Note On";
 
         ss << " <" << static_cast<int>(data[1]) << "> Vel(" << static_cast<int>(data[2]) << ")";
     }
     else if (0xB0 <= data[0] && data[0] <= 0xBF)
     {
-        if (data[1] == 0x00)
-            ss << "Bank Select MSB: " << static_cast<int>(data[2]);
-        else if (data[1] == 0x20)
-            ss << "Bank Select LSB: " << static_cast<int>(data[2]);
-        else if (data[1] == 0x78)
-            ss << "All Sound Off";
-        else if (data[1] == 0x79)
-            ss << "Reset All Controllers";
+        if (data[1] == 0x00)      ss << "Bank Select MSB: " << static_cast<int>(data[2]);
+        else if (data[1] == 0x20) ss << "Bank Select LSB: " << static_cast<int>(data[2]);
+        else if (data[1] == 0x78) ss << "All Sound Off";
+        else if (data[1] == 0x79) ss << "Reset All Controllers";
         else if (data[1] == 0x7A)
         {
             ss << "Local Control";
-            if (data[2] == 0)
-                ss << " Off";
-            else if (data[2] == 127)
-                ss << " On";
-            else
-                ss << " (unknown 3rd byte)";
+            if (data[2] == 0)        ss << " Off";
+            else if (data[2] == 127) ss << " On";
+            else                     ss << " (unknown 3rd byte)";
         }
         else if (data[1] == 0x7B)
+        {
             ss << "All Notes Off";
+        }
         else
+        {
             ss << "Control Change (" << static_cast<int>(data[1]) << "): "
                 << static_cast<int>(data[2]);
+        }
     }
     else if (0xC0 <= data[0] && data[0] <= 0xCF)
+    {
         ss << "Program Change (" << static_cast<int>(data[1]) << ")";
+    }
     else if (data[0] == 0xF0 && data[data.size() - 1] == 0xF7)
     {
         ss << "SysEx: ";
         if (data[3] == MESSAGE_INQUIRY)
         {
             if (data[4] == MESSAGE_INQUIRY_REQUEST)
+            {
                 ss << "Identity Request";
+            }
             else if (data[4] == MESSAGE_INQUIRY_RESPONSE)
+            {
                 ss << "Identity Reply";
+            }
         }
         else if (data[4] == MESSAGE_SOUND_REQUEST)
         {

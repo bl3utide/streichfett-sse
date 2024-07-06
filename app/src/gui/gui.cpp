@@ -251,9 +251,13 @@ void drawPageSelector()
                 _page = static_cast<Page>(page_i);
 
                 if (_page == Page::Edit)
+                {
                     setNextState(State::EnterSoundMode);
+                }
                 else if (_page == Page::Option)
+                {
                     setNextState(State::EnterOptionMode);
+                }
             }
         }
         if (!is_current_page) GuiUtil::MouseCursorToHand();

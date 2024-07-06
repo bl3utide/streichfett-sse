@@ -7,7 +7,9 @@ namespace GuiUtil
 void MouseCursorToHand() noexcept
 {
     if (ImGui::IsItemHovered())
+    {
         ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+    }
 }
 
 void TextColoredU32(const ImU32& col, const char* fmt, ...) noexcept
@@ -37,9 +39,13 @@ void BeginGroupPanel(const char* name, const ImVec2& size)
 
     ImVec2 effectiveSize = size;
     if (size.x < 0.0f)
+    {
         effectiveSize.x = ImGui::GetContentRegionAvail().x;
+    }
     else
+    {
         effectiveSize.x = size.x;
+    }
     ImGui::Dummy(ImVec2(effectiveSize.x, 0.0f));
 
     ImGui::Dummy(ImVec2(frameHeight * 0.5f, 0.0f));

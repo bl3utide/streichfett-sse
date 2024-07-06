@@ -78,7 +78,10 @@ public:
         {
             editor_value_ = rhs;
         }
-        else throw std::exception("The internal value of Ev is out of range");
+        else
+        {
+            throw std::exception("The internal value of Ev is out of range");
+        }
         return *this;
     }
 
@@ -105,17 +108,25 @@ public:
     const char* evs() const
     {
         if (haveEvArr())
+        {
             return editor_value_arr_->at(editor_value_).c_str();
+        }
         else
+        {
             return "(n/a)";
+        }
     }
 
     Byte toDv() const
     {
         if (has_converter_)
+        {
             return static_cast<Byte>(to_dv_func_(editor_value_));
+        }
         else
+        {
             return static_cast<Byte>(editor_value_);
+        }
     }
 
     int max() const { return max_; }

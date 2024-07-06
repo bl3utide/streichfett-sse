@@ -18,7 +18,9 @@ bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* outpu
     auto image_height = 0;
     unsigned char* image_data = stbi_load_from_memory(buffer, size, &image_width, &image_height, NULL, 4);
     if (image_data == nullptr)
+    {
         return false;
+    }
 
     GLuint image_texture = 0;
     glGenTextures(1, &image_texture);
@@ -39,7 +41,9 @@ bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* outpu
 void unloadTexture(const GLuint* texture) noexcept
 {
     if (texture != nullptr)
+    {
         glDeleteTextures(1, texture);
+    }
 }
 
 void loadTextures()
@@ -67,7 +71,9 @@ void unloadTextures()
 void initialize()
 {
     for (auto i = 0; i < static_cast<int>(Texture::_COUNT_); ++i)
+    {
         texture_.emplace(static_cast<Texture>(i), 0);
+    }
 
     loadTextures();
 }

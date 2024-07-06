@@ -28,7 +28,9 @@ void addTask(const ByteVec& m)
 void addParamChangedTask(int index, const Byte& value)
 {
     if (index != -1)
+    {
         addTask(MessageHandler::getSoundParameterChangeMessage(index, value));
+    }
 }
 
 const ByteVec lastTask()

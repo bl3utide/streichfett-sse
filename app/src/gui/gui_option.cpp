@@ -211,8 +211,14 @@ void drawOptionGroupDeviceSettingInfo()
 
         drawOptionItem("Synth Device");
         ImGui::PushStyleColor(ImGuiCol_Text, displayable_synth_info ? UI_COLOR_TEXT_CONNECTED : UI_COLOR_TEXT_DISCONNECTED);
-        if (displayable_synth_info) drawOptionItemValue(TEXT_CONNECTED, true);
-        else drawOptionItemValue(TEXT_DISCONNECTED, true);
+        if (displayable_synth_info)
+        {
+            drawOptionItemValue(TEXT_CONNECTED, true);
+        }
+        else
+        {
+            drawOptionItemValue(TEXT_DISCONNECTED, true);
+        }
         ImGui::PopStyleColor();
 
         drawOptionItem("Firmware Version");

@@ -72,8 +72,7 @@ void retryOver(
     setAppError(ERROR_MESSAGE.at(req_type).at(mes_type));
     setNextState(State::Idle, true);
 
-    if (set_disconnected)
-        setSynthConnected(false);
+    if (set_disconnected) setSynthConnected(false);
 
     request_try_count.reset();
 }
@@ -214,9 +213,13 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
                     Logger::debug("received correct global dump");
                     const auto op = getOperation();
                     if (op == Operation::Sound)
+                    {
                         requestSuccessful(State::SendBankProgChange);
+                    }
                     else if (op == Operation::Option)
+                    {
                         requestSuccessful(State::Idle);
+                    }
                 }
                 catch (std::exception& e)
                 {

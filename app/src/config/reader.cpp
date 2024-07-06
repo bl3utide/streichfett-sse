@@ -18,16 +18,18 @@ void iniValueToCv(const mINI::INIStructure& is, Cv& cv) noexcept
         if (cv.type() == Cv::Type::Int)
         {
             if (StringUtil::isInteger(src_val))
+            {
                 cv.set(std::to_string(std::stoi(src_val)));
+            }
             else
+            {
                 cv.setDefault();
+            }
         }
         else if (cv.type() == Cv::Type::Bool)
         {
-            if (src_val == "1")
-                cv.set("1");
-            else
-                cv.set("0");
+            if (src_val == "1") cv.set("1");
+            else cv.set("0");
         }
         else
         {   // Cv::Type::String
