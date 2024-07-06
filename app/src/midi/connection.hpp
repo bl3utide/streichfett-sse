@@ -15,8 +15,8 @@ public:
     void open(int port_index, const std::string& port_name);
     virtual void close() noexcept;
     bool isPortOpen() const;
-    unsigned int getPortCount();
-    std::string getPortName(unsigned int port_index);
+    unsigned int getPortCount() const;
+    const std::string getPortName(unsigned int port_index) const;
     int getPortIndex() const noexcept;
     const std::string& getPortName() const noexcept;
     int getLastConnectedPortIndex() const noexcept;

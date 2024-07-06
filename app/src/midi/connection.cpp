@@ -44,12 +44,12 @@ bool Connection::isPortOpen() const
     return rtmidi->isPortOpen();
 }
 
-unsigned int Connection::getPortCount()
+unsigned int Connection::getPortCount() const
 {
     return rtmidi->getPortCount();
 }
 
-std::string Connection::getPortName(unsigned int port_index)
+const std::string Connection::getPortName(unsigned int port_index) const
 {
     return rtmidi->getPortName(port_index);
 }

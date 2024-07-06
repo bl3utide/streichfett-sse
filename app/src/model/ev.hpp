@@ -129,15 +129,15 @@ public:
         }
     }
 
-    int max() const { return max_; }
-    int min() const { return min_; }
-    void setDefault() { editor_value_ = def_; }
+    int max() const noexcept { return max_; }
+    int min() const noexcept { return min_; }
+    void setDefault() noexcept { editor_value_ = def_; }
     //const char* name() const { return _name.c_str(); }
-    const std::string& name() const { return name_; }
+    const std::string& name() const noexcept { return name_; }
 
-    bool hasArr() const { return editor_value_arr_ != nullptr; }
+    bool hasArr() const noexcept { return editor_value_arr_ != nullptr; }
 
-    size_t evArraySize() const
+    size_t evArraySize() const noexcept
     {
         return editor_value_arr_ != nullptr ? editor_value_arr_->size() : 0;
     }
