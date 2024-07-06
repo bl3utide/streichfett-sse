@@ -35,8 +35,14 @@ const std::unordered_map<State, const char*> STATE_STR
 #endif
 
 // private
-State state_ = State::InitInternalData;
-State next_state_ = State::None;    // the next state that change in the next loop
+State state_;
+State next_state_;  // the next state that change in the next loop
+
+void initState() noexcept
+{
+    state_ = State::InitInternalData;
+    next_state_ = State::None;
+}
 
 bool processForCurrentState()
 {

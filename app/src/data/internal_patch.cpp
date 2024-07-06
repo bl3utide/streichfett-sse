@@ -10,7 +10,7 @@ namespace InternalPatch
 {
 
 // public
-bool current_patch_changed = false;
+bool current_patch_changed;
 
 // private
 SoundAddress current_sound_;

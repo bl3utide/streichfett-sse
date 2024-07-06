@@ -19,13 +19,13 @@ namespace Debug
 std::unordered_map<SendTestType, SendTestResult> send_test;
 std::unordered_map<SendTestType, SendTestFailedCause> send_test_failed_cause;
 std::vector<ProcessedMidiMessage> history;
-int history_selected_index = -1;
+int history_selected_index;
 ProcessedMidiMessage history_selected;
 std::mutex history_mutex;
 
 // private
-const int TIMEOUT_DURATION = 5000;
-const size_t MAX_SIZE_DISPLAY_HISTORY = 200;
+constexpr int TIMEOUT_DURATION = 5000;
+constexpr size_t MAX_SIZE_DISPLAY_HISTORY = 200;
 
 void addProcessedHistory(bool transmitted, const std::string& device_name, const ByteVec& data)
 {

@@ -9,7 +9,7 @@ namespace Logger
 #ifdef _DEBUG
 // public
 std::vector<DisplayFormattedDebugLog> dlog;
-int dlog_selected_index = -1;
+int dlog_selected_index;
 DisplayFormattedDebugLog dlog_selected;
 const size_t MAX_SIZE_DISPLAY_DLOG = 1000;
 std::mutex dlog_mutex;
@@ -28,6 +28,7 @@ void initialize() noexcept
     };
 
 #ifdef _DEBUG
+    dlog_selected_index = -1;
     debug_file_name_ = StringUtil::format("%s.debug.log", APP_NAME.c_str());
     static plog::DebugLogAppender<plog::DebugLogFormatter> debugLogAppender;
     plog::init<plog::DebugLogFormatter>(plog::debug, debug_file_name_.c_str()).addAppender(&debugLogAppender);

@@ -34,6 +34,8 @@ void initialize()
     Logger::initialize();
     Logger::debug("<beginning of application>");
 
+    initState();
+
     try
     {
         Logger::debug("start init SDL");

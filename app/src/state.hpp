@@ -27,6 +27,7 @@ enum class State : int
 extern const std::unordered_map<State, const char*> STATE_STR;
 #endif
 
+void initState() noexcept;
 bool processForCurrentState();
 State getState() noexcept;
 State getNextState() noexcept;

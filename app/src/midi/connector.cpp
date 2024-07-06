@@ -27,11 +27,11 @@ OutputConnection synth_output;
 InputConnection key_input;
 std::vector<std::string> in_name_list;
 std::vector<std::string> out_name_list;
-bool force_adjust_midi_channel = true;
-int store_delay_duration = 200;
+bool force_adjust_midi_channel;
+int store_delay_duration;
 
 // private
-bool is_synth_connected_ = false;
+bool is_synth_connected_;
 
 void fetchDeviceList()
 {
@@ -90,12 +90,20 @@ void initialize()
 
     request_try_count.reset();
 
+    force_adjust_midi_channel = true;
+    store_delay_duration = 200;
+    is_synth_connected_ = false;
+
+    setWaitingStoreDelay(false);
+
 #ifdef _DEBUG
     for (auto i = 0; i < static_cast<int>(Debug::SendTestType::_COUNT_); ++i)
     {
         Debug::send_test.emplace(static_cast<Debug::SendTestType>(i), Debug::SendTestResult::NotStarted);
         Debug::send_test_failed_cause.emplace(static_cast<Debug::SendTestType>(i), Debug::SendTestFailedCause::None);
     }
+
+    Debug::history_selected_index = -1;
 #endif
 }
 

@@ -13,11 +13,11 @@ namespace StreichfettSse
 namespace Gui
 {
 
-const float ITEM_PADDING_Y = 2.0f;
-const float ITEM_SPACING_Y = 6.0f;
-const char* TEXT_CONNECTED = "Connected";
-const char* TEXT_DISCONNECTED = "Disconnected";
-const char* TEXT_INFO_NONE = "----";
+constexpr float ITEM_PADDING_Y = 2.0f;
+constexpr float ITEM_SPACING_Y = 6.0f;
+constexpr const char* TEXT_CONNECTED = "Connected";
+constexpr const char* TEXT_DISCONNECTED = "Disconnected";
+constexpr char* TEXT_INFO_NONE = "----";
 
 void drawOptionItem(const char* text)
 {

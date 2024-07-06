@@ -26,9 +26,9 @@ std::string app_version_;
 std::string app_copyright_;
 SDL_Window* window_;
 SDL_GLContext gl_context_;
-const int WINDOW_WIDTH = 720;       // DSI: Streichfett
-const int WINDOW_HEIGHT = 560;      // DSI: Streichfett
-const float UI_MAIN_CONTENT_WIDTH = WINDOW_WIDTH - 64.0f;
+constexpr int WINDOW_WIDTH = 720;   // DSI: Streichfett
+constexpr int WINDOW_HEIGHT = 560;  // DSI: Streichfett
+constexpr float UI_MAIN_CONTENT_WIDTH = WINDOW_WIDTH - 64.0f;
 Page _page;
 const std::unordered_map<Page, const char*> PAGE_STR
 {
