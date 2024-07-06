@@ -67,7 +67,7 @@ const std::unordered_map<ParamIndex, int> PARAM_CC
     {ParamIndex::Balance, 82},          // Balance
     {ParamIndex::Animate, 92},          // FX Animate amount
     {ParamIndex::Phaser, 93},           // FX Phaser amount
-    {ParamIndex::Reverb, 94}            // FX Reverb amount
+    {ParamIndex::Reverb, 94},           // FX Reverb amount
 };
 
 // DSI: Streichfett

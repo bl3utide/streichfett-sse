@@ -37,7 +37,7 @@ const std::unordered_map<RequestType, std::unordered_map<ErrorMessageType, std::
         {
             { ErrorMessageType::Timeout,    "The confirm sysex request has timed out." },
             { ErrorMessageType::Empty,      "Received empty confirm dump." },
-            { ErrorMessageType::Incorrect,  "You tried to connect to an incorrect device." }
+            { ErrorMessageType::Incorrect,  "You tried to connect to an incorrect device." },
         }
     },
     {
@@ -45,7 +45,7 @@ const std::unordered_map<RequestType, std::unordered_map<ErrorMessageType, std::
         {
             { ErrorMessageType::Timeout,    "The global dump request has timed out." },
             { ErrorMessageType::Empty,      "Received empty global dump."},
-            { ErrorMessageType::Incorrect,  "Incorrect global dump message." }
+            { ErrorMessageType::Incorrect,  "Incorrect global dump message." },
         }
     },
     {
@@ -53,9 +53,9 @@ const std::unordered_map<RequestType, std::unordered_map<ErrorMessageType, std::
         {
             { ErrorMessageType::Timeout,    "The sound dump request has timed out." },
             { ErrorMessageType::Empty,      "Received empty sound dump." },
-            { ErrorMessageType::Incorrect,  "Incorrect sound dump message." }
+            { ErrorMessageType::Incorrect,  "Incorrect sound dump message." },
         }
-    }
+    },
 };
 
 void requestSuccessful(State next_state) noexcept

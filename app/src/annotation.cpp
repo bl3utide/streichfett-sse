@@ -9,8 +9,9 @@ namespace Annotation
 // private
 std::string text_;
 Type type_;
-const std::unordered_map<Message, std::string> MESSAGES {
-    {Message::DisconnectedAlert, "Please set the MIDI connections from OPTION -> Synth Input/Output Device."},
+const std::unordered_map<Message, std::string> MESSAGES
+{
+    { Message::DisconnectedAlert, "Please set the MIDI connections from OPTION -> Synth Input/Output Device." },
 };
 
 const std::string& getText() noexcept

@@ -28,23 +28,23 @@ struct TextFont
 
 const std::unordered_map<Font, TextFont> FONTS
 {
-    {Font::Title, TextFont(ArrayedFont::TITLE_DATA, ArrayedFont::TITLE_SIZE, 24.0f)},
-    {Font::Version, TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 16.0f)},
-    {Font::OptionItem, TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 18.0f)},
-    {Font::OptionItemBold, TextFont(ArrayedFont::SECTION_BOLD_DATA, ArrayedFont::SECTION_BOLD_SIZE, 18.0f)},
-    {Font::Section, TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 22.0f)},
-    {Font::PatchInfo, TextFont(ArrayedFont::PATCH_NAME_DATA, ArrayedFont::PATCH_NAME_SIZE, 22.0f)},
-    {Font::PatchName, TextFont(ArrayedFont::PATCH_NAME_DATA, ArrayedFont::PATCH_NAME_SIZE, 36.0f)},
-    {Font::Text, TextFont(ArrayedFont::TEXT_DATA, ArrayedFont::TEXT_SIZE, 16.0f)},
-    {Font::TextBold, TextFont(ArrayedFont::TEXT_BOLD_DATA, ArrayedFont::TEXT_BOLD_SIZE, 16.0f)}
+    { Font::Title,          TextFont(ArrayedFont::TITLE_DATA, ArrayedFont::TITLE_SIZE, 24.0f) },
+    { Font::Version,        TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 16.0f) },
+    { Font::OptionItem,     TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 18.0f) },
+    { Font::OptionItemBold, TextFont(ArrayedFont::SECTION_BOLD_DATA, ArrayedFont::SECTION_BOLD_SIZE, 18.0f) },
+    { Font::Section,        TextFont(ArrayedFont::SECTION_DATA, ArrayedFont::SECTION_SIZE, 22.0f) },
+    { Font::PatchInfo,      TextFont(ArrayedFont::PATCH_NAME_DATA, ArrayedFont::PATCH_NAME_SIZE, 22.0f) },
+    { Font::PatchName,      TextFont(ArrayedFont::PATCH_NAME_DATA, ArrayedFont::PATCH_NAME_SIZE, 36.0f) },
+    { Font::Text,           TextFont(ArrayedFont::TEXT_DATA, ArrayedFont::TEXT_SIZE, 16.0f) },
+    { Font::TextBold,       TextFont(ArrayedFont::TEXT_BOLD_DATA, ArrayedFont::TEXT_BOLD_SIZE, 16.0f) },
 };
 
 #ifdef _DEBUG
 const std::unordered_map<FontDebug, TextFont> FONTS_DEBUG
 {
-    {FontDebug::Text, TextFont(ArrayedFont::DEBUG_DATA, ArrayedFont::DEBUG_SIZE, 14.0f)},
-    {FontDebug::ProcHead, TextFont(ArrayedFont::DEBUG_DATA, ArrayedFont::DEBUG_SIZE, 20.0f)},
-    {FontDebug::ProcHex, TextFont(ArrayedFont::DEBUG_DATA, ArrayedFont::DEBUG_SIZE, 18.0f)}
+    { FontDebug::Text,      TextFont(ArrayedFont::DEBUG_DATA, ArrayedFont::DEBUG_SIZE, 14.0f) },
+    { FontDebug::ProcHead,  TextFont(ArrayedFont::DEBUG_DATA, ArrayedFont::DEBUG_SIZE, 20.0f) },
+    { FontDebug::ProcHex,   TextFont(ArrayedFont::DEBUG_DATA, ArrayedFont::DEBUG_SIZE, 18.0f) },
 };
 #endif
 
