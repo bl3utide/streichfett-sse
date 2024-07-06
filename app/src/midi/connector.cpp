@@ -37,7 +37,8 @@ void fetchDeviceList()
 {
     // MIDI IN Port
     in_name_list.clear();
-    for (unsigned int i = 0; i < synth_input.getPortCount(); ++i)
+    const auto in_port_count = synth_input.getPortCount();
+    for (std::uint32_t i = 0; i < in_port_count; ++i)
     {
         try
         {
@@ -56,7 +57,8 @@ void fetchDeviceList()
 
     // MIDI OUT Port
     out_name_list.clear();
-    for (unsigned int i = 0; i < synth_output.getPortCount(); ++i)
+    const auto out_port_count = synth_output.getPortCount();
+    for (std::uint32_t i = 0; i < out_port_count; ++i)
     {
         try
         {

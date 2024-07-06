@@ -88,7 +88,8 @@ void drawOptionGroupConnections()
         if (ImGui::BeginCombo("##SYNTH IN", Connector::synth_input.getPortName().c_str()))
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
-            for (int n = 0; n < Connector::in_name_list.size(); ++n)
+            const auto in_name_list_size = Connector::in_name_list.size();
+            for (int n = 0; n < in_name_list_size; ++n)
             {
                 const auto is_selected = n == Connector::synth_input.getPortIndex();
                 if (n == Connector::key_input.getPortIndex())
@@ -128,7 +129,8 @@ void drawOptionGroupConnections()
         if (ImGui::BeginCombo("##SYNTH OUT", Connector::synth_output.getPortName().c_str()))
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
-            for (int n = 0; n < Connector::out_name_list.size(); ++n)
+            const auto out_name_list_size = Connector::out_name_list.size();
+            for (auto n = 0; n < out_name_list_size; ++n)
             {
                 const auto is_selected = n == Connector::synth_output.getPortIndex();
                 if (ImGui::Selectable(Connector::out_name_list[n].c_str(), is_selected))
@@ -154,7 +156,8 @@ void drawOptionGroupConnections()
         if (ImGui::BeginCombo("##KEY IN", Connector::key_input.getPortName().c_str()))
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
-            for (int n = 0; n < Connector::in_name_list.size(); ++n)
+            const auto in_name_list_size = Connector::in_name_list.size();
+            for (int n = 0; n < in_name_list_size; ++n)
             {
                 const auto is_selected = n == Connector::key_input.getPortIndex();
                 if (n == Connector::synth_input.getPortIndex())
