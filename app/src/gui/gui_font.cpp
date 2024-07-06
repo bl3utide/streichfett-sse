@@ -19,7 +19,7 @@ struct TextFont
 
     void add() const
     {
-        ImFont* font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
+        auto font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
             data, data_size, pixels
         );
         IM_ASSERT(font);
@@ -50,10 +50,10 @@ const std::unordered_map<FontDebug, TextFont> FONTS_DEBUG
 
 void addAllFonts()
 {
-    int num_of_fonts = static_cast<int>(Font::_COUNT_);
-    for (int f_i = 0; f_i < num_of_fonts; ++f_i)
+    const auto num_of_fonts = static_cast<int>(Font::_COUNT_);
+    for (auto f_i = 0; f_i < num_of_fonts; ++f_i)
     {
-        Font f = static_cast<Font>(f_i);
+        const auto f = static_cast<Font>(f_i);
         FONTS.at(f).add();
     }
 }
@@ -61,10 +61,10 @@ void addAllFonts()
 #ifdef _DEBUG
 void addAllFontsDebug()
 {
-    int num_of_fonts = static_cast<int>(FontDebug::_COUNT_);
-    for (int f_i = static_cast<int>(Font::_COUNT_); f_i < num_of_fonts; ++f_i)
+    const auto num_of_fonts = static_cast<int>(FontDebug::_COUNT_);
+    for (auto f_i = static_cast<int>(Font::_COUNT_); f_i < num_of_fonts; ++f_i)
     {
-        FontDebug f = static_cast<FontDebug>(f_i);
+        const auto f = static_cast<FontDebug>(f_i);
         FONTS_DEBUG.at(f).add();
     }
 }

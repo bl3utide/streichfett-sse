@@ -14,8 +14,8 @@ std::unordered_map<Texture, GLuint> texture_;
 
 bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* output)
 {
-    int image_width = 0;
-    int image_height = 0;
+    auto image_width = 0;
+    auto image_height = 0;
     unsigned char* image_data = stbi_load_from_memory(buffer, size, &image_width, &image_height, NULL, 4);
     if (image_data == nullptr)
         return false;
@@ -66,7 +66,7 @@ void unloadTextures()
 
 void initialize()
 {
-    for (int i = 0; i < static_cast<int>(Texture::_COUNT_); ++i)
+    for (auto i = 0; i < static_cast<int>(Texture::_COUNT_); ++i)
         texture_.emplace(static_cast<Texture>(i), 0);
 
     loadTextures();

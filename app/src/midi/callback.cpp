@@ -87,7 +87,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
         if (!callback_mutex.is_callback_catched)
         {
             // succeed
-            RequestType* req_type_ptr = static_cast<RequestType*>(user_data);
+            auto req_type_ptr = static_cast<RequestType*>(user_data);
             delete req_type_ptr;
             req_type_ptr = nullptr;
 
@@ -169,7 +169,7 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
         if (!callback_mutex.is_callback_catched)
         {
             // succeed
-            RequestType* req_type_ptr = static_cast<RequestType*>(user_data);
+            auto req_type_ptr = static_cast<RequestType*>(user_data);
             delete req_type_ptr;
             req_type_ptr = nullptr;
 
@@ -196,23 +196,22 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
             }
             else
             {
-                MessageHandler::DumpType dump_type = MessageHandler::DumpType::Global;
+                const auto dump_type = MessageHandler::DumpType::Global;
 
                 try
                 {
                     // throwable function
                     MessageHandler::checkDump(*message, dump_type);
 
-                    ByteVec global_data =
-                        MessageHandler::getDataBytesFromDump(*message, dump_type);
-                    GlobalModel::Global* setting = InternalSetting::getGlobalData();
+                    const auto global_data = MessageHandler::getDataBytesFromDump(*message, dump_type);
+                    auto setting = InternalSetting::getGlobalData();
 
                     // throwable function
                     InternalSetting::setSettingFromBytes(setting, global_data);
 
                     // received correct dump
                     Logger::debug("received correct global dump");
-                    Operation op = getOperation();
+                    const auto op = getOperation();
                     if (op == Operation::Sound)
                         requestSuccessful(State::SendBankProgChange);
                     else if (op == Operation::Option)
@@ -265,7 +264,7 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
         if (!callback_mutex.is_callback_catched)
         {
             // succeed
-            RequestType* req_type_ptr = static_cast<RequestType*>(user_data);
+            auto req_type_ptr = static_cast<RequestType*>(user_data);
             delete req_type_ptr;
             req_type_ptr = nullptr;
 
@@ -292,17 +291,17 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
             }
             else
             {
-                MessageHandler::DumpType dump_type = MessageHandler::DumpType::Sound;
+                const auto dump_type = MessageHandler::DumpType::Sound;
 
                 try
                 {
                     // throwable function
                     MessageHandler::checkDump(*message, dump_type);
 
-                    ByteVec sound_data =
+                    const auto sound_data =
                         MessageHandler::getDataBytesFromDump(*message, dump_type);
-                    SoundModel::Patch* original = InternalPatch::getOriginalPatch();
-                    SoundModel::Patch* current = InternalPatch::getCurrentPatch();
+                    auto original = InternalPatch::getOriginalPatch();
+                    auto current = InternalPatch::getCurrentPatch();
 
                     // throwable function
                     InternalPatch::setPatchFromBytes(original, sound_data);
@@ -312,9 +311,9 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
                     Logger::debug("received correct sound dump");
                     requestSuccessful(State::Idle);
 
-                    InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
-                    char bb = InternalPatch::getSoundBankChar(sound_addr->sound);
-                    int bs = InternalPatch::getSoundPatchNumber(sound_addr->sound);
+                    auto sound_addr = InternalPatch::getCurrentSoundAddress();
+                    const auto bb = InternalPatch::getSoundBankChar(sound_addr->sound);
+                    const auto bs = InternalPatch::getSoundPatchNumber(sound_addr->sound);
                     char buf[64];
                     sprintf(buf, "Sound %c%d loaded.", bb, bs);
                     Annotation::setText(buf, Annotation::Type::General);
@@ -366,8 +365,8 @@ Uint32 timeout(Uint32 interval, void* param)
         if (!callback_mutex.is_callback_catched)
         {
             // succeed
-            RequestType* req_type_ptr = static_cast<RequestType*>(param);
-            RequestType req_type = *req_type_ptr;
+            auto req_type_ptr = static_cast<RequestType*>(param);
+            auto req_type = *req_type_ptr;
             delete req_type_ptr;
             req_type_ptr = nullptr;
 
@@ -429,7 +428,7 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
         ByteVec send_message;
         if (Connector::force_adjust_midi_channel)
         {
-            const int ch = InternalSetting::getDeviceMidiChannel();
+            const auto ch = InternalSetting::getDeviceMidiChannel();
             if (MessageHandler::isNoteOff(*message))
             {
                 send_message = {
@@ -478,12 +477,12 @@ Uint32 storeDelay(Uint32 interval, void* param)
     // -1: sent to edit buffer
     if (sound != -1)
     {
-        SoundModel::Patch* original = InternalPatch::getOriginalPatch();
-        SoundModel::Patch* current = InternalPatch::getCurrentPatch();
+        auto original = InternalPatch::getOriginalPatch();
+        auto current = InternalPatch::getCurrentPatch();
         InternalPatch::copyPatchAtoB(current, original);
 
-        char bb = InternalPatch::getSoundBankChar(sound);
-        int bs = InternalPatch::getSoundPatchNumber(sound);
+        const auto bb = InternalPatch::getSoundBankChar(sound);
+        const auto bs = InternalPatch::getSoundPatchNumber(sound);
         char buf[64];
         sprintf(buf, "The sound has stored to %c%d", bb, bs);
         Annotation::setText(buf, Annotation::Type::General);
@@ -501,7 +500,7 @@ Uint32 storeDelay(Uint32 interval, void* param)
 
 Uint32 sendDelay(Uint32 interval, void* param)
 {
-    State* next_state_ptr = static_cast<State*>(param);
+    auto next_state_ptr = static_cast<State*>(param);
 
     setNextState(*next_state_ptr, true);
 

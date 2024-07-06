@@ -38,7 +38,7 @@ const std::unordered_map<Page, const char*> PAGE_STR
 
 void setUiStyle() noexcept
 {
-    ImGuiStyle* style = &ImGui::GetStyle();
+    auto style = &ImGui::GetStyle();
     style->WindowPadding = ImVec2(6.0f, 6.0f);
     style->WindowRounding = 0.0f;
     style->WindowBorderSize = 0.0f;
@@ -107,7 +107,7 @@ void drawErrorModal()
             showing_error_message = true;
         }
 
-        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        const auto center = ImGui::GetMainViewport()->GetCenter();
         ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
         if (ImGui::BeginPopupModal("app_error", &showing_error_message,
@@ -145,7 +145,7 @@ void drawErrorModal()
 
 void drawAboutModal()
 {
-    ImGuiIO& io = ImGui::GetIO();
+    auto& io = ImGui::GetIO();
     auto modal_window_size = ImVec2(400.0f, 180.0f);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -235,7 +235,7 @@ void drawHeader(const int window_width)
 // DSI: Streichfett
 void drawPageSelector()
 {
-    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    auto draw_list = ImGui::GetWindowDrawList();
 
     GuiUtil::PushFont((int)Font::TextBold);
     ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
@@ -273,8 +273,8 @@ void drawPageSelector()
 // DSI: Streichfett
 void drawContent()
 {
-    SoundModel::Patch* current_patch = InternalPatch::getCurrentPatch();
-    SoundModel::Patch* original_patch = InternalPatch::getOriginalPatch();
+    auto current_patch = InternalPatch::getCurrentPatch();
+    auto original_patch = InternalPatch::getOriginalPatch();
 
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_BASE);
     if (_page == Page::Edit)    drawEditPanel(current_patch, original_patch);
@@ -363,7 +363,7 @@ void finalize() noexcept
 
 void drawGui()
 {
-    State current_state = getState();
+    const auto current_state = getState();
 
     preDraw();
 
@@ -388,9 +388,9 @@ void drawGui()
         ImGui::Dummy(ImVec2(10.0f, 0.0f));
 
         // Beginning of disable screen operation
-        bool is_waiting_store_delay = Connector::isWaitingStoreDelay();
+        const auto is_waiting_store_delay = Connector::isWaitingStoreDelay();
 #ifdef _DEBUG
-        bool is_any_test_sending = Connector::Debug::isAnyTestSending();
+        const auto is_any_test_sending = Connector::Debug::isAnyTestSending();
 #endif
 
         bool disable_page_content = getState() != State::Idle || is_waiting_store_delay
@@ -406,7 +406,7 @@ void drawGui()
         drawPageSelector();
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 1.0f);
 
-        float y = ImGui::GetCursorPosY();
+        auto y = ImGui::GetCursorPosY();
         ImGui::SetNextWindowPos(ImVec2(vp_pos.x + (window_width - UI_MAIN_CONTENT_WIDTH) * 0.5f, vp_pos.y + y));
         ImGui::BeginChild("main", ImVec2(UI_MAIN_CONTENT_WIDTH, -32.0f), true, 0);
         {

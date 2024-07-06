@@ -22,15 +22,15 @@ const Cv& getCv(Key key) noexcept
 void load() noexcept
 {
     mINI::INIStructure read_is;
-    mINI::INIFile file = mINI::INIFile(config_file_name_);
+    const auto file = mINI::INIFile(config_file_name_);
 
     if (file.read(read_is))
     {
         Logger::debug("Load config from existing ini file");
         // ini-file already exists
-        for (int key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
+        for (auto key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
         {
-            Key key = static_cast<Key>(key_i);
+            const auto key = static_cast<Key>(key_i);
             Reader::iniValueToCv(read_is, cv_by_key_.at(key));
         }
     }
@@ -43,11 +43,11 @@ void load() noexcept
 void save() noexcept
 {
     mINI::INIStructure write_is;
-    mINI::INIFile file = mINI::INIFile(config_file_name_);
+    const auto file = mINI::INIFile(config_file_name_);
 
-    for (int key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
+    for (auto key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
     {
-        Key key = static_cast<Key>(key_i);
+        const auto key = static_cast<Key>(key_i);
         Writer::cvToIni(cv_by_key_.at(key), write_is);
     }
 
@@ -68,7 +68,7 @@ T getConfigValue(Key key)
 template<>
 std::string getConfigValue(Key key)
 {
-    Cv& cv = cv_by_key_.at(key);
+    auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::String)
         throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
@@ -79,7 +79,7 @@ std::string getConfigValue(Key key)
 template<>
 int getConfigValue(Key key)
 {
-    Cv& cv = cv_by_key_.at(key);
+    auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Int)
         throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
@@ -90,7 +90,7 @@ int getConfigValue(Key key)
 template<>
 bool getConfigValue(Key key)
 {
-    Cv& cv = cv_by_key_.at(key);
+    const auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Bool)
         throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
@@ -109,7 +109,7 @@ void setConfigValue(Key key, T value)
 template<>
 void setConfigValue(Key key, std::string value)
 {
-    Cv& cv = cv_by_key_.at(key);
+    auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::String)
         throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
@@ -120,7 +120,7 @@ void setConfigValue(Key key, std::string value)
 template<>
 void setConfigValue(Key key, int value)
 {
-    Cv& cv = cv_by_key_.at(key);
+    auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Int)
         throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));

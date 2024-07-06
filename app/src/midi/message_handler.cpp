@@ -93,8 +93,8 @@ const ByteVec getProgChangeMessage(int value)
 // DSI: Streichfett
 const ByteVec getAllSoundOffMessage()
 {
-    const int ch = InternalSetting::getDeviceMidiChannel();
-    Byte order_byte = 0xB0 + static_cast<Byte>(ch);
+    const auto ch = InternalSetting::getDeviceMidiChannel();
+    const Byte order_byte = 0xB0 + static_cast<Byte>(ch);
 
     ByteVec aso;
     aso.clear();
@@ -174,12 +174,12 @@ const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type)
     ByteVec data;
     if (type == DumpType::Sound)
     {
-        for (int i = SOUND_DATA_START_INDEX; i <= SOUND_DATA_END_INDEX; ++i)
+        for (auto i = SOUND_DATA_START_INDEX; i <= SOUND_DATA_END_INDEX; ++i)
             data.push_back(dump[i]);
     }
     else if (type == DumpType::Global)
     {
-        for (int i = GLOBAL_DATA_START_INDEX; i <= GLOBAL_DATA_END_INDEX; ++i)
+        for (auto i = GLOBAL_DATA_START_INDEX; i <= GLOBAL_DATA_END_INDEX; ++i)
             data.push_back(dump[i]);
     }
     else
@@ -193,8 +193,8 @@ const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type)
 // DSI: Streichfett
 const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch* const patch)
 {
-    ByteVec sound_data = InternalPatch::getDataBytes(patch);
-    int device_id = InternalSetting::getDeviceId();
+    const auto sound_data = InternalPatch::getDataBytes(patch);
+    const auto device_id = InternalSetting::getDeviceId();
 
     ByteVec req;
     req.clear();
@@ -211,8 +211,8 @@ const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch* c
         req.push_back(sound_data[i]);
 
     // calculate bytesum
-    int sum = 0;
-    for (int i = 1; i < req.size(); ++i)
+    auto sum = 0;
+    for (auto i = 1; i < req.size(); ++i)
         sum += req[i];
     req.push_back(static_cast<Byte>(sum & 0x7F));
     req.push_back(0xF7);

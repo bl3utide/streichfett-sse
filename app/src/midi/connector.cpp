@@ -76,7 +76,7 @@ void fetchDeviceList()
 
 void sendDelay(State next_state, int delay_millsec)
 {
-    State* next_state_ptr = new State(next_state);
+    auto next_state_ptr = new State(next_state);
     waiting_timer = SDL_AddTimer(delay_millsec, Callback::sendDelay, next_state_ptr);
 
     setNextState(State::WaitingSendDelay);
@@ -91,7 +91,7 @@ void initialize()
     request_try_count.reset();
 
 #ifdef _DEBUG
-    for (int i = 0; i < static_cast<int>(Debug::SendTestType::_COUNT_); ++i)
+    for (auto i = 0; i < static_cast<int>(Debug::SendTestType::_COUNT_); ++i)
     {
         Debug::send_test.emplace(static_cast<Debug::SendTestType>(i), Debug::SendTestResult::NotStarted);
         Debug::send_test_failed_cause.emplace(static_cast<Debug::SendTestType>(i), Debug::SendTestFailedCause::None);
@@ -109,7 +109,7 @@ void finalize() noexcept
 void applyConfig()
 {
     // Synth Input Device
-    const std::string& cv_synth_input_device_name = Config::getConfigValue<std::string>(Config::Key::SynthInputDevice);
+    const auto cv_synth_input_device_name = Config::getConfigValue<std::string>(Config::Key::SynthInputDevice);
     const auto synth_in_res = std::find(in_name_list.cbegin(), in_name_list.cend(), cv_synth_input_device_name);
     if (synth_in_res != in_name_list.cend())
     {   // found
@@ -125,11 +125,11 @@ void applyConfig()
     }
 
     // Synth Output Device
-    const std::string& cv_synth_output_device_name = Config::getConfigValue<std::string>(Config::Key::SynthOutputDevice);
+    const auto cv_synth_output_device_name = Config::getConfigValue<std::string>(Config::Key::SynthOutputDevice);
     const auto synth_out_res = std::find(out_name_list.cbegin(), out_name_list.cend(), cv_synth_output_device_name);
     if (synth_out_res != out_name_list.cend())
     {   // found
-        const int index = static_cast<int>(std::distance(out_name_list.cbegin(), synth_out_res));
+        const auto index = static_cast<int>(std::distance(out_name_list.cbegin(), synth_out_res));
         try
         {
             openSynthOutputPort(index, out_name_list[index]);
@@ -141,12 +141,12 @@ void applyConfig()
     }
 
     // Keyboard Input Device
-    const std::string& cv_keyboard_input_device_name = Config::getConfigValue<std::string>(Config::Key::KeyboardInputDevice);
+    const auto cv_keyboard_input_device_name = Config::getConfigValue<std::string>(Config::Key::KeyboardInputDevice);
     const auto key_in_res = std::find(in_name_list.cbegin(), in_name_list.cend(), cv_keyboard_input_device_name);
     if (key_in_res != in_name_list.cend())
     {   // found
-        const int synth_in_index = static_cast<int>(std::distance(in_name_list.cbegin(), synth_in_res));
-        const int key_in_index = static_cast<int>(std::distance(in_name_list.cbegin(), key_in_res));
+        const auto synth_in_index = static_cast<int>(std::distance(in_name_list.cbegin(), synth_in_res));
+        const auto key_in_index = static_cast<int>(std::distance(in_name_list.cbegin(), key_in_res));
         if (synth_in_index != key_in_index)
         {
             try
@@ -250,8 +250,7 @@ void requestInquiry()
     MessageHandler::inquiry_dump.received = false;
 
     // send sysex message to device via midi out device
-    ByteVec confirm_req_sysex =
-        MessageHandler::getInquiryRequestMessage();
+    const auto confirm_req_sysex = MessageHandler::getInquiryRequestMessage();
 
     Logger::debug(StringUtil::format("request inquiry dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
 
@@ -289,8 +288,7 @@ void requestInquiry()
 
 void requestGlobalData()
 {
-    ByteVec global_req_sysex =
-        MessageHandler::getGlobalRequestMessage();
+    const auto global_req_sysex = MessageHandler::getGlobalRequestMessage();
 
     Logger::debug(StringUtil::format("request global dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
 
@@ -328,10 +326,9 @@ void requestGlobalData()
 // DSI: Streichfett
 void requestSoundData()
 {
-    InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
+    const auto sound_addr = InternalPatch::getCurrentSoundAddress();
 
-    ByteVec sound_req_sysex =
-        MessageHandler::getSoundRequestMessage(sound_addr->sound);
+    const auto sound_req_sysex = MessageHandler::getSoundRequestMessage(sound_addr->sound);
 
     Logger::debug(StringUtil::format("request sound dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
 
@@ -369,13 +366,11 @@ void requestSoundData()
 // DSI: Streichfett
 void sendSoundDump(const bool is_edit_buffer)
 {
-    InternalPatch::SoundAddress* sound_addr =
-        InternalPatch::getCurrentSoundAddress();
-    int sound = is_edit_buffer ? -1 : sound_addr->sound;
-    SoundModel::Patch* current_patch = InternalPatch::getCurrentPatch();
+    const auto sound_addr = InternalPatch::getCurrentSoundAddress();
+    const auto sound = is_edit_buffer ? -1 : sound_addr->sound;
+    const auto current_patch = InternalPatch::getCurrentPatch();
 
-    ByteVec sound_dump =
-        MessageHandler::getSoundDumpMessageFromPatch(sound, current_patch);
+    const auto sound_dump = MessageHandler::getSoundDumpMessageFromPatch(sound, current_patch);
 
     try
     {
@@ -406,10 +401,9 @@ void sendSoundDump(const bool is_edit_buffer)
 // DSI: Streichfett
 void sendProgChange()
 {
-    InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
+    const auto sound_addr = InternalPatch::getCurrentSoundAddress();
 
-    ByteVec prog_change =
-        MessageHandler::getProgChangeMessage(sound_addr->sound);
+    const auto prog_change = MessageHandler::getProgChangeMessage(sound_addr->sound);
 
     try
     {
@@ -433,7 +427,7 @@ void sendProgChange()
 
 void sendAllSoundOff()
 {
-    ByteVec all_sound_off = MessageHandler::getAllSoundOffMessage();
+    const auto all_sound_off = MessageHandler::getAllSoundOffMessage();
 
     try
     {
@@ -456,7 +450,7 @@ void sendOneTaskMessage()
 {
     if (MessageTask::taskSize() > 0)
     {
-        ByteVec message = MessageTask::lastTask();
+        const auto message = MessageTask::lastTask();
 
         try
         {

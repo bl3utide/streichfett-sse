@@ -35,9 +35,9 @@ void addProcessedHistory(bool transmitted, const std::string& device_name, const
     std::stringstream now_ss;
     now_ss << std::put_time(std::localtime(&now_as_time_t), "%F %T")
         << '.' << std::setfill('0') << std::setw(3) << now_ms.count();
-    std::string timestamp = now_ss.str();
+    const auto timestamp = now_ss.str();
 
-    auto description = MessageHandler::getMessageDesc(data);
+    const auto description = MessageHandler::getMessageDesc(data);
 
     std::unique_lock lock(history_mutex);
     history.emplace_back(ProcessedMidiMessage(timestamp, transmitted, device_name, description, data));
@@ -52,7 +52,7 @@ void addProcessedHistory(bool transmitted, const std::string& device_name, const
 // DSI: Streichfett
 void sendTest(SendTestType type)
 {
-    for (int i = 0; i < static_cast<int>(SendTestType::_COUNT_); ++i)
+    for (auto i = 0; i < static_cast<int>(SendTestType::_COUNT_); ++i)
         send_test.at(static_cast<SendTestType>(i)) = SendTestResult::NotStarted;
 
     ByteVec request;
@@ -67,7 +67,7 @@ void sendTest(SendTestType type)
             break;
         case SendTestType::SoundDump:
         {
-            InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
+            const auto sound_addr = InternalPatch::getCurrentSoundAddress();
             request = MessageHandler::getSoundRequestMessage(sound_addr->sound);
         }
         break;
@@ -88,7 +88,7 @@ void sendTest(SendTestType type)
         return;
     }
 
-    SendTestType* type_ptr = new SendTestType(type);
+    auto type_ptr = new SendTestType(type);
 
     synth_input.setCallback(Callback::receiveTestSysex, type_ptr);
     synth_input.ignoreTypes(false, false, false);

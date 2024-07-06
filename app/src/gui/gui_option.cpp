@@ -90,7 +90,7 @@ void drawOptionGroupConnections()
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
             for (int n = 0; n < Connector::in_name_list.size(); ++n)
             {
-                bool is_selected = n == Connector::synth_input.getPortIndex();
+                const auto is_selected = n == Connector::synth_input.getPortIndex();
                 if (n == Connector::key_input.getPortIndex())
                 {
                     GuiUtil::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
@@ -130,7 +130,7 @@ void drawOptionGroupConnections()
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
             for (int n = 0; n < Connector::out_name_list.size(); ++n)
             {
-                bool is_selected = n == Connector::synth_output.getPortIndex();
+                const auto is_selected = n == Connector::synth_output.getPortIndex();
                 if (ImGui::Selectable(Connector::out_name_list[n].c_str(), is_selected))
                 {
                     reservedFuncs.push_back(std::bind(Connector::openSynthOutputPort, n, Connector::out_name_list[n]));
@@ -156,7 +156,7 @@ void drawOptionGroupConnections()
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
             for (int n = 0; n < Connector::in_name_list.size(); ++n)
             {
-                bool is_selected = n == Connector::key_input.getPortIndex();
+                const auto is_selected = n == Connector::key_input.getPortIndex();
                 if (n == Connector::synth_input.getPortIndex())
                 {
                     GuiUtil::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
@@ -207,7 +207,7 @@ void drawOptionGroupDeviceSettingInfo()
 {
     GuiUtil::BeginGroupPanel("Device Setting Info", ImVec2(320.0f, 200.0f));
     {
-        bool displayable_synth_info = Connector::isSynthConnected();
+        const auto displayable_synth_info = Connector::isSynthConnected();
 
         drawOptionItem("Synth Device");
         ImGui::PushStyleColor(ImGuiCol_Text, displayable_synth_info ? UI_COLOR_TEXT_CONNECTED : UI_COLOR_TEXT_DISCONNECTED);
@@ -218,7 +218,7 @@ void drawOptionGroupDeviceSettingInfo()
         drawOptionItem("Firmware Version");
         drawOptionItemValue(MessageHandler::inquiry_dump.firmware_version.c_str(), displayable_synth_info && MessageHandler::inquiry_dump.received);
 
-        GlobalModel::Global* global = InternalSetting::getGlobalData();
+        const auto global = InternalSetting::getGlobalData();
         drawOptionItem("Device ID");
         drawOptionItemValue(global->device_id, displayable_synth_info);
         drawOptionItem("MIDI Channel");
