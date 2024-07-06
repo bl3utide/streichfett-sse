@@ -457,7 +457,7 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
 
         try
         {
-            synth_output.sendMessage(&send_message);
+            synth_output.sendMessage(send_message);
         }
         catch (RtMidiError& error)
         {

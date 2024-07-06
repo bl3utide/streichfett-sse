@@ -264,7 +264,7 @@ void requestInquiry()
 
     try
     {
-        synth_output.sendMessage(&confirm_req_sysex);
+        synth_output.sendMessage(confirm_req_sysex);
     }
     catch (RtMidiError& error)
     {
@@ -302,7 +302,7 @@ void requestGlobalData()
 
     try
     {
-        synth_output.sendMessage(&global_req_sysex);
+        synth_output.sendMessage(global_req_sysex);
     }
     catch (RtMidiError& error)
     {
@@ -342,7 +342,7 @@ void requestSoundData()
 
     try
     {
-        synth_output.sendMessage(&sound_req_sysex);
+        synth_output.sendMessage(sound_req_sysex);
     }
     catch (RtMidiError& error)
     {
@@ -382,7 +382,7 @@ void sendSoundDump(const bool is_edit_buffer)
 
     try
     {
-        synth_output.sendMessage(&sound_dump);
+        synth_output.sendMessage(sound_dump);
         setWaitingStoreDelay(true);
     }
     catch (RtMidiError& error)
@@ -415,7 +415,7 @@ void sendProgChange()
 
     try
     {
-        synth_output.sendMessage(&prog_change);
+        synth_output.sendMessage(prog_change);
         sendDelay(State::RequestSound, 150);
     }
     catch (RtMidiError& error)
@@ -439,7 +439,7 @@ void sendAllSoundOff()
 
     try
     {
-        synth_output.sendMessage(&all_sound_off);
+        synth_output.sendMessage(all_sound_off);
     }
     catch (RtMidiError& error)
     {
@@ -462,7 +462,7 @@ void sendOneTaskMessage()
 
         try
         {
-            synth_output.sendMessage(&message);
+            synth_output.sendMessage(message);
         }
         catch (RtMidiError& error)
         {

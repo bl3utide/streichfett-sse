@@ -53,7 +53,7 @@ public:
     OutputConnection();
     void initialize() override;
     void finalize() noexcept override;
-    void sendMessage(const ByteVec* message);
+    void sendMessage(const ByteVec& message) const;
 };
 
 } // Connector

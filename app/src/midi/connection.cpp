@@ -153,9 +153,9 @@ void OutputConnection::finalize() noexcept
     }
 }
 
-void OutputConnection::sendMessage(const ByteVec* message)
+void OutputConnection::sendMessage(const ByteVec& message) const
 {
-    dynamic_cast<RtMidiOut*>(rtmidi)->sendMessage(message);
+    dynamic_cast<RtMidiOut*>(rtmidi)->sendMessage(&message);
 }
 
 } // Connector

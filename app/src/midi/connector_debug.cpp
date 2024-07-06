@@ -81,7 +81,7 @@ void sendTest(SendTestType type)
 
     try
     {
-        synth_output.sendMessage(&request);
+        synth_output.sendMessage(request);
     }
     catch (RtMidiError& error)
     {
