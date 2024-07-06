@@ -28,9 +28,9 @@ extern bool current_patch_changed;
 
 void initData() noexcept;
 SoundAddress* getCurrentSoundAddress() noexcept;
-void setCurrentSoundAddress(const int sound) noexcept;  // DSI: Streichfett
-char getSoundBankChar(const int sound) noexcept;        // DSI: Streichfett
-int getSoundPatchNumber(const int sound) noexcept;      // DSI: Streichfett
+void setCurrentSoundAddress(int sound) noexcept;  // DSI: Streichfett
+char getSoundBankChar(int sound) noexcept;        // DSI: Streichfett
+int getSoundPatchNumber(int sound) noexcept;      // DSI: Streichfett
 SoundModel::Patch* getOriginalPatch() noexcept;
 SoundModel::Patch* getCurrentPatch() noexcept;
 void setPatchFromBytes(SoundModel::Patch* patch, const ByteVec& data);

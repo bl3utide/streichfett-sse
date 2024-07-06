@@ -35,7 +35,7 @@ bool isSysex(const ByteVec& mb) noexcept
     return mb.front() == 0xF0 && mb.back() == 0xF7;
 }
 
-ByteVec getInquiryRequestMessage()
+const ByteVec getInquiryRequestMessage()
 {
     ByteVec req;
     req.clear();
@@ -49,7 +49,7 @@ ByteVec getInquiryRequestMessage()
 }
 
 // DSI: Streichfett
-ByteVec getSoundRequestMessage(const int sound)
+const ByteVec getSoundRequestMessage(int sound)
 {
     ByteVec req;
     req.clear();
@@ -64,7 +64,7 @@ ByteVec getSoundRequestMessage(const int sound)
 }
 
 // DSI: Streichfett
-ByteVec getGlobalRequestMessage()
+const ByteVec getGlobalRequestMessage()
 {
     ByteVec req;
     req.clear();
@@ -78,7 +78,7 @@ ByteVec getGlobalRequestMessage()
     return req;
 }
 
-ByteVec getProgChangeMessage(const int value)
+const ByteVec getProgChangeMessage(int value)
 {
     const int ch = InternalSetting::getDeviceMidiChannel();
     Byte order_byte = 0xC0 + static_cast<Byte>(ch);
@@ -91,7 +91,7 @@ ByteVec getProgChangeMessage(const int value)
 }
 
 // DSI: Streichfett
-ByteVec getAllSoundOffMessage()
+const ByteVec getAllSoundOffMessage()
 {
     const int ch = InternalSetting::getDeviceMidiChannel();
     Byte order_byte = 0xB0 + static_cast<Byte>(ch);
@@ -140,7 +140,7 @@ bool checkInquiryDump(const ByteVec& dump)
 }
 
 // DSI: Streichfett
-void checkDump(const ByteVec& dump, const DumpType type)
+void checkDump(const ByteVec& dump, DumpType type)
 {
     if (!isSysex(dump))
         throw std::exception("checkDump failed (not SysEx)");
@@ -169,7 +169,7 @@ void checkDump(const ByteVec& dump, const DumpType type)
     }
 }
 
-ByteVec getDataBytesFromDump(const ByteVec& dump, const DumpType type)
+const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type)
 {
     ByteVec data;
     if (type == DumpType::Sound)
@@ -191,7 +191,7 @@ ByteVec getDataBytesFromDump(const ByteVec& dump, const DumpType type)
 }
 
 // DSI: Streichfett
-ByteVec getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* const patch)
+const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch* const patch)
 {
     ByteVec sound_data = InternalPatch::getDataBytes(patch);
     int device_id = InternalSetting::getDeviceId();
@@ -222,7 +222,7 @@ ByteVec getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* c
 
 // DSI: Streichfett
 //ByteVec getSoundParameterChangeMessage(const int index, const int value)    // TODO delete toDvFunc
-ByteVec getSoundParameterChangeMessage(const int index, const Byte value)
+const ByteVec getSoundParameterChangeMessage(int index, const Byte& value)
 {
     // NOTE: For Streichfett, change the parameters with CC
 
@@ -237,7 +237,7 @@ ByteVec getSoundParameterChangeMessage(const int index, const Byte value)
     return req;
 }
 
-std::string getByteVecString(const ByteVec& bytes)
+const std::string getByteVecString(const ByteVec& bytes)
 {
     std::stringstream ss;
 
@@ -252,7 +252,7 @@ std::string getByteVecString(const ByteVec& bytes)
 }
 
 #ifdef _DEBUG
-std::string getMessageDesc(const ByteVec& data)
+const std::string getMessageDesc(const ByteVec& data)
 {
     std::stringstream ss;
 

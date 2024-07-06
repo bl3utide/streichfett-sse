@@ -9,7 +9,7 @@ namespace Config
 namespace Writer
 {
 
-void cvToIni(Cv& cv, mINI::INIStructure& is) noexcept
+void cvToIni(const Cv& cv, mINI::INIStructure& is) noexcept
 {
     is[cv.section_name()][cv.key_name()] = cv.cv();
     Logger::debug(StringUtil::format("Writed config value [%s]%s: %s",

@@ -29,7 +29,7 @@ bool show_demo_window_ = false;
 bool show_debug_window_ = true;
 bool show_processed_message_window_ = false;
 
-void drawDebugMenuBar(const ImVec2 viewport_pos)
+void drawDebugMenuBar(const ImVec2& viewport_pos)
 {
     GuiUtil::PushFont((int)FontDebug::Text);
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.35f, 0.35f, 0.35f, 0.65f));
@@ -609,7 +609,7 @@ void drawDebugWindow(bool* open, const int window_w, const int window_h,
     popDebugStyles();
 }
 
-void drawDebugWindows(const int window_w, const int window_h, const State current_state)
+void drawDebugWindows(int window_w, int window_h, State current_state)
 {
     GuiUtil::PushFont((int)FontDebug::Text);
 

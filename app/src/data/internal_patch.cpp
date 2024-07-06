@@ -30,19 +30,19 @@ SoundAddress* getCurrentSoundAddress() noexcept
     return &current_sound_;
 }
 
-void setCurrentSoundAddress(const int sound) noexcept
+void setCurrentSoundAddress(int sound) noexcept
 {
     current_sound_.sound = sound;
 }
 
 // DSI: Streichfett
-char getSoundBankChar(const int sound) noexcept
+char getSoundBankChar(int sound) noexcept
 {
     return 'A' + sound / 4;
 }
 
 // DSI: Streichfett
-int getSoundPatchNumber(const int sound) noexcept
+int getSoundPatchNumber(int sound) noexcept
 {
     return sound % 4 + 1;
 }

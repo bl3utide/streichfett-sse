@@ -30,8 +30,8 @@ void drawOptionPanel();
 #ifdef _DEBUG
 namespace Debug
 {
-void drawDebugMenuBar(const ImVec2 viewport_pos);
-void drawDebugWindows(const int window_w, const int window_h, const State current_state);
+void drawDebugMenuBar(const ImVec2& viewport_pos);
+void drawDebugWindows(int window_w, int window_h, State current_state);
 } // Debug
 #endif
 

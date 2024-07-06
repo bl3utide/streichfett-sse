@@ -58,7 +58,7 @@ const std::unordered_map<RequestType, std::unordered_map<ErrorMessageType, std::
     }
 };
 
-void requestSuccessful(const State next_state) noexcept
+void requestSuccessful(State next_state) noexcept
 {
     setNextState(next_state, true);
     request_try_count.reset();

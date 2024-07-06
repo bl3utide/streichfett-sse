@@ -25,7 +25,7 @@ public:
     };
 
     // constructor for std::string
-    Cv(const Section section, const Key key, const std::string& v)
+    Cv(Section section, Key key, const std::string& v)
         : min_(0), max_(0), def_(0), type_(Type::String)
     {
         setSectionKey(section, key);
@@ -33,7 +33,7 @@ public:
     }
 
     // constructor for int
-    Cv(const Section section, const Key key, const int v_min, const int v_max, const int v_def)
+    Cv(Section section, Key key, int v_min, int v_max, int v_def)
         : min_(v_min), max_(v_max), def_(v_def), type_(Type::Int)
     {
         if (min_ > max_) throw std::exception("Max-value is less than min-value");
@@ -46,7 +46,7 @@ public:
     }
 
     // constructor for bool
-    Cv(const Section section, const Key key, const bool v)
+    Cv(Section section, Key key, bool v)
         : min_(0), max_(0), def_(0), type_(Type::Bool)
     {
         setSectionKey(section, key);
@@ -103,13 +103,13 @@ private:
     int min_, max_, def_;   // use if _type == Type::Int
     static const std::unordered_map<Type, std::string> TYPE_STR;
 
-    void setSectionKey(const Section section, const Key key)
+    void setSectionKey(Section section, Key key)
     {
         section_ = SECTION_NAMES.at(section);
         key_ = KEY_NAMES.at(key);
     }
 
-    bool isWithinRange(const int v) const noexcept
+    bool isWithinRange(int v) const noexcept
     {
         return min_ <= v && v <= max_;
     };

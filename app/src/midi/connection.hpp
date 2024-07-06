@@ -12,7 +12,7 @@ public:
     virtual ~Connection();
     virtual void initialize() = 0;
     virtual void finalize() noexcept = 0;
-    void open(const int port_index, const std::string& port_name);
+    void open(int port_index, const std::string& port_name);
     virtual void close() noexcept;
     bool isPortOpen() const;
     unsigned int getPortCount();
@@ -23,8 +23,8 @@ public:
     int getLastFailedPortIndex() const noexcept;
 
 protected:
-    void setLastConnectedPortIndex(const int port_index) noexcept;
-    void setLastFailedPortIndex(const int port_index) noexcept;
+    void setLastConnectedPortIndex(int port_index) noexcept;
+    void setLastFailedPortIndex(int port_index) noexcept;
     RtMidi* rtmidi;
 
 private:

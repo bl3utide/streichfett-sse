@@ -28,22 +28,22 @@ struct InquiryDump
 
 extern InquiryDump inquiry_dump;
 
-ByteVec getInquiryRequestMessage();
-ByteVec getSoundRequestMessage(const int sound);  // DSI: Streichfett
-ByteVec getGlobalRequestMessage();
-ByteVec getProgChangeMessage(const int value);
-ByteVec getAllSoundOffMessage();
+const ByteVec getInquiryRequestMessage();
+const ByteVec getSoundRequestMessage(int sound);  // DSI: Streichfett
+const ByteVec getGlobalRequestMessage();
+const ByteVec getProgChangeMessage(int value);
+const ByteVec getAllSoundOffMessage();
 bool isNoteOff(const ByteVec& mb);
 bool isNoteOn(const ByteVec& mb);
 bool checkInquiryDump(const ByteVec& dump);
-void checkDump(const ByteVec& dump, const DumpType type);
-ByteVec getDataBytesFromDump(const ByteVec& dump, const DumpType type);
-ByteVec getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* const patch);      // DSI: Streichfett
+void checkDump(const ByteVec& dump, DumpType type);
+const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type);
+const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch* const patch);      // DSI: Streichfett
 //ByteVec getSoundParameterChangeMessage(const int index, const int value);   // TODO delete toDvFunc
-ByteVec getSoundParameterChangeMessage(const int index, const Byte value);
-std::string getByteVecString(const ByteVec& bytes);
+const ByteVec getSoundParameterChangeMessage(int index, const Byte& value);
+const std::string getByteVecString(const ByteVec& bytes);
 #ifdef _DEBUG
-std::string getMessageDesc(const ByteVec& data);
+const std::string getMessageDesc(const ByteVec& data);
 #endif
 
 } // MessageHandler

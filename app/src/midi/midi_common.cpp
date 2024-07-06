@@ -16,7 +16,7 @@ RequestCounter request_try_count(MAX_REQUEST_TRY);
 // private
 bool waiting_store_delay_ = false;    // store delay check
 
-void setWaitingStoreDelay(const bool is_waiting_store_delay) noexcept
+void setWaitingStoreDelay(bool is_waiting_store_delay) noexcept
 {
     waiting_store_delay_ = is_waiting_store_delay;
 }

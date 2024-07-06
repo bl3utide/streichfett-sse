@@ -15,7 +15,7 @@ Connection::~Connection()
 {
 }
 
-void Connection::open(const int port_index, const std::string& port_name)
+void Connection::open(int port_index, const std::string& port_name)
 {
     close();
 
@@ -74,13 +74,13 @@ int Connection::getLastFailedPortIndex() const noexcept
     return last_failed_port_index_;
 }
 
-void Connection::setLastConnectedPortIndex(const int port_index) noexcept
+void Connection::setLastConnectedPortIndex(int port_index) noexcept
 {
     last_connected_port_index_ = port_index;
     last_failed_port_index_ = -1;
 }
 
-void Connection::setLastFailedPortIndex(const int port_index) noexcept
+void Connection::setLastFailedPortIndex(int port_index) noexcept
 {
     last_failed_port_index_ = port_index;
     last_connected_port_index_ = -1;

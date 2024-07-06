@@ -9,7 +9,7 @@ namespace Config
 namespace Reader
 {
 
-void iniValueToCv(mINI::INIStructure& is, Cv& cv) noexcept
+void iniValueToCv(const mINI::INIStructure& is, Cv& cv) noexcept
 {
     if (is.get(cv.section_name()).has(cv.key_name()))
     {

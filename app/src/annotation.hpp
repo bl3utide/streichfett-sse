@@ -20,8 +20,8 @@ enum class Message : int
 
 const std::string& getText() noexcept;
 Type getType() noexcept;
-void setText(const Message message, const Type type) noexcept;
-void setText(const std::string& message, const Type type) noexcept;
+void setText(Message message, Type type) noexcept;
+void setText(const std::string& message, Type type) noexcept;
 void clearText() noexcept;
 
 } // Annotation

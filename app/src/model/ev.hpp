@@ -68,7 +68,7 @@ public:
         return *this;
     }
 
-    Ev& operator=(const int rhs)
+    Ev& operator=(int rhs)
     {
         if (has_converter_ && isWithinRange(to_ev_func_(rhs)))
         {
@@ -83,9 +83,9 @@ public:
     }
 
     inline bool operator==(const Ev& rhs) const { return editor_value_ == rhs.editor_value_; }
-    inline bool operator==(const int& rhs) const { return editor_value_ == rhs; }
+    inline bool operator==(int rhs) const { return editor_value_ == rhs; }
     inline bool operator!=(const Ev& rhs) const { return editor_value_ != rhs.editor_value_; }
-    inline bool operator!=(const int& rhs) const { return editor_value_ != rhs; }
+    inline bool operator!=(int rhs) const { return editor_value_ != rhs; }
     inline Ev& operator++() // ++v
     {
         if (isWithinRange(editor_value_ + 1)) ++editor_value_;
@@ -131,7 +131,7 @@ public:
         return editor_value_arr_ != nullptr ? editor_value_arr_->size() : 0;
     }
 
-    const char* getEvArrayItem(const int& i) const
+    const char* getEvArrayItem(int i) const noexcept
     {
         return editor_value_arr_ != nullptr ? editor_value_arr_->at(i).c_str() : "(n/a)";
     }
@@ -144,9 +144,9 @@ private:
     const std::vector<std::string>* const editor_value_arr_;
     const std::string name_;
     bool has_converter_;
-    int(* const to_ev_func_)(const int);
-    int(* const to_dv_func_)(const int);
-    bool isWithinRange(const int& v) const { return min_ <= v && v <= max_; }
+    int(* const to_ev_func_)(int);
+    int(* const to_dv_func_)(int);
+    bool isWithinRange(int v) const { return min_ <= v && v <= max_; }
     bool haveEvArr() const { return editor_value_arr_ != nullptr; }
 };
 

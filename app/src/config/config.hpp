@@ -6,17 +6,17 @@ namespace StreichfettSse
 namespace Config
 {
 
-const Cv& getCv(const Key key) noexcept;
+const Cv& getCv(Key key) noexcept;
 
-template<typename T> const T getConfigValue(const Key key);
-template<> const std::string getConfigValue(const Key key);
-template<> const int getConfigValue(const Key key);
-template<> const bool getConfigValue(const Key key);
+template<typename T> T getConfigValue(Key key);
+template<> std::string getConfigValue(Key key);
+template<> int getConfigValue(Key key);
+template<> bool getConfigValue(Key key);
 
-template<typename T> void setConfigValue(const Key key, T value);
-template<> void setConfigValue(const Key key, std::string value);
-template<> void setConfigValue(const Key key, int value);
-template<> void setConfigValue(const Key key, bool value);
+template<typename T> void setConfigValue(Key key, T value);
+template<> void setConfigValue(Key key, std::string value);
+template<> void setConfigValue(Key key, int value);
+template<> void setConfigValue(Key key, bool value);
 
 void load() noexcept;
 void save() noexcept;

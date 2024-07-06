@@ -29,7 +29,7 @@ enum class FileVersion : int
     Copyright,
 };
 
-inline std::string getExeVersionInfo(const FileVersion order) noexcept
+const inline std::string getExeVersionInfo(FileVersion order) noexcept
 {
     TCHAR file_name[MAX_PATH + 1];
     GetModuleFileNameA(nullptr, file_name, sizeof(file_name));

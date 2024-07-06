@@ -24,7 +24,7 @@ const std::unordered_map<ErrorWhen, std::string> MESSAGE
     { ERROR_WHEN_RESRVED_FUNC,  "Failed in execution reserved function"},
 };
 
-AnyCauseException::AnyCauseException(const char* message, const ErrorCause cause)
+AnyCauseException::AnyCauseException(const char* message, ErrorCause cause)
     : std::exception(message), cause_(cause)
 {
 }
@@ -34,13 +34,13 @@ const ErrorCause AnyCauseException::getCause() const noexcept
     return cause_;
 }
 
-BaseException::BaseException(const AnyCauseException& ace, const ErrorWhen when)
+BaseException::BaseException(const AnyCauseException& ace, ErrorWhen when)
     : std::exception(ace.what()), when_(when), cause_(ace.getCause())
 {
     setErrorMessage();
 }
 
-BaseException::BaseException(const char* message, const ErrorWhen when, const ErrorCause cause)
+BaseException::BaseException(const char* message, ErrorWhen when, ErrorCause cause)
     : std::exception(message), when_(when), cause_(cause)
 {
     setErrorMessage();
@@ -70,12 +70,12 @@ const std::string& BaseException::getErrorMessage() const noexcept
     return error_message_;
 }
 
-ContinuableException::ContinuableException(const AnyCauseException& ace, const ErrorWhen when, const State next_state)
+ContinuableException::ContinuableException(const AnyCauseException& ace, ErrorWhen when, State next_state)
     : BaseException(ace, when),  next_state_(next_state)
 {
 }
 
-ContinuableException::ContinuableException(const char* message, const ErrorWhen when, const ErrorCause cause, const State next_state)
+ContinuableException::ContinuableException(const char* message, ErrorWhen when, ErrorCause cause, State next_state)
     : BaseException(message, when, cause), next_state_(next_state)
 {
 }
@@ -85,12 +85,12 @@ const State ContinuableException::getNextState() const noexcept
     return next_state_;
 }
 
-UncontinuableException::UncontinuableException(const AnyCauseException& ace, const ErrorWhen when)
+UncontinuableException::UncontinuableException(const AnyCauseException& ace, ErrorWhen when)
     : BaseException(ace, when)
 {
 }
 
-UncontinuableException::UncontinuableException(const char* message, const ErrorWhen when, const ErrorCause cause)
+UncontinuableException::UncontinuableException(const char* message, ErrorWhen when, ErrorCause cause)
     : BaseException(message, when, cause)
 {
 }

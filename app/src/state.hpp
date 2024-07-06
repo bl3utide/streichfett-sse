@@ -30,7 +30,7 @@ extern const std::unordered_map<State, const char*> STATE_STR;
 bool processForCurrentState();
 State getState() noexcept;
 State getNextState() noexcept;
-void setNextState(State state, const bool force_mod = false) noexcept;
+void setNextState(State state, bool force_mod = false) noexcept;
 void transitionState() noexcept;
 
 } // StreichfettSse

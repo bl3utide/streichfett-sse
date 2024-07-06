@@ -27,7 +27,7 @@ std::mutex history_mutex;
 const int TIMEOUT_DURATION = 5000;
 const size_t MAX_SIZE_DISPLAY_HISTORY = 200;
 
-void addProcessedHistory(const bool transmitted, const std::string& device_name, const ByteVec& data)
+void addProcessedHistory(bool transmitted, const std::string& device_name, const ByteVec& data)
 {
     auto now = std::chrono::system_clock::now();
     auto now_as_time_t = std::chrono::system_clock::to_time_t(now);
@@ -50,7 +50,7 @@ void addProcessedHistory(const bool transmitted, const std::string& device_name,
 }
 
 // DSI: Streichfett
-void sendTest(const SendTestType type)
+void sendTest(SendTestType type)
 {
     for (int i = 0; i < static_cast<int>(SendTestType::_COUNT_); ++i)
         send_test.at(static_cast<SendTestType>(i)) = SendTestResult::NotStarted;

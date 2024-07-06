@@ -74,7 +74,7 @@ void fetchDeviceList()
     }
 }
 
-void sendDelay(const State next_state, const int delay_millsec)
+void sendDelay(State next_state, int delay_millsec)
 {
     State* next_state_ptr = new State(next_state);
     waiting_timer = SDL_AddTimer(delay_millsec, Callback::sendDelay, next_state_ptr);
@@ -185,7 +185,7 @@ void resetAllConnections()
     setSynthConnected(false);
 }
 
-void openSynthInputPort(const int port_index, const std::string& port_name)
+void openSynthInputPort(int port_index, const std::string& port_name)
 {
     try
     {
@@ -206,7 +206,7 @@ void openSynthInputPort(const int port_index, const std::string& port_name)
     }
 }
 
-void openSynthOutputPort(const int port_index, const std::string& port_name)
+void openSynthOutputPort(int port_index, const std::string& port_name)
 {
     try
     {
@@ -227,7 +227,7 @@ void openSynthOutputPort(const int port_index, const std::string& port_name)
     }
 }
 
-void openKeyInputPort(const int port_index, const std::string& port_name)
+void openKeyInputPort(int port_index, const std::string& port_name)
 {
     try
     {
