@@ -87,7 +87,7 @@ void setWheelControl(Ev* const v, const int param_index)
 void drawParamValueContextMenu(const char* label,
     Ev* const v, const Ev* const original_v,
     //const int param_index, int (*vfn)(const int) = nullptr)   // TODO delete toDvFunc
-    const int param_index)
+    int param_index)
 {
     if (ImGui::BeginPopupContextItem())
     {
@@ -131,7 +131,7 @@ void drawParamValueContextMenu(const char* label,
 void drawSlider(const char* label, int label_index, float label_width, float control_width,
     Ev* const v, const Ev* const original_v,
     //const int param_index = -1, int(*vfn)(const int) = nullptr,   // TODO delete toDvFunc
-    const int param_index = -1,
+    int param_index = -1,
     bool hide_label = false)
 {
     const char* display_format = v->hasArr() ? v->evs() : "%d";
@@ -160,7 +160,7 @@ void drawSlider(const char* label, int label_index, float label_width, float con
 
 void drawCombo(const char* label, int label_index, float label_width, float control_width,
     Ev* const v, const Ev* const original_v,
-    const int param_index = -1, bool hide_label = false)
+    int param_index = -1, bool hide_label = false)
 {
     bool changed_from_org = v->ev() != original_v->ev();
     if (changed_from_org) ImGui::PushStyleColor(ImGuiCol_Border, UI_COLOR_PARAM_CHANGED);
