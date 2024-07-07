@@ -392,14 +392,16 @@ void drawDebugTabItemTransReceiveLog()
 
 void drawProcessedWindow()
 {
-    Connector::Debug::ProcessedMidiMessage* message = &Connector::Debug::history_selected;
+    std::unique_lock lock(Connector::Debug::history_mutex);
+    const auto message = Connector::Debug::history_selected;
+    lock.unlock();
 
     ImGui::Begin("processed_detail", &show_processed_message_window_,
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize |
         ImGuiWindowFlags_NoTitleBar);
     {
         GuiUtil::PushFont((int)FontDebug::ProcHead);
-        if (message->transmitted)
+        if (message.transmitted)
             GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_TRANSMIT, "%s", "Transmitted");
         else
             GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_RECEIVE, "%s", "Received");
@@ -409,13 +411,13 @@ void drawProcessedWindow()
         if (ImGui::Button("Copy to clipboard"))
         {
             std::stringstream cb;
-            for (int i = 0; i < message->data.size(); ++i)
+            for (int i = 0; i < message.data.size(); ++i)
             {
                 cb << std::uppercase << std::hex
                     << std::setfill('0') << std::setw(2)
-                    << static_cast<int>(message->data[i]);
+                    << static_cast<int>(message.data[i]);
 
-                if (i != message->data.size() - 1)
+                if (i != message.data.size() - 1)
                     cb << " ";
             }
             ImGui::LogToClipboard();
@@ -424,11 +426,11 @@ void drawProcessedWindow()
         }
         GuiUtil::MouseCursorToHand();
 
-        ImGui::Text(message->timestamp.c_str());
+        ImGui::Text(message.timestamp.c_str());
         ImGui::Text("%-12s: %s %s", "Device",
-            message->device_name.c_str(), message->transmitted ? "[OUT]" : "[IN]");
-        ImGui::Text("%-12s: %s", "Description", message->description.c_str());
-        ImGui::Text("%-12s: %d", "Size", message->data.size());
+            message.device_name.c_str(), message.transmitted ? "[OUT]" : "[IN]");
+        ImGui::Text("%-12s: %s", "Description", message.description.c_str());
+        ImGui::Text("%-12s: %d", "Size", message.data.size());
 
         ImGui::Separator();
 
@@ -453,7 +455,7 @@ void drawProcessedWindow()
 
         ImGui::BeginChild("processed_detail_content", ImVec2(400.0f, 360.0f));
         {
-            auto size = message->data.size();
+            auto size = message.data.size();
             auto max_row_idx = size / 10;
             auto hex_indent = 94.0f;
             for (auto row_i = 0; row_i <= max_row_idx; ++row_i)
@@ -465,11 +467,11 @@ void drawProcessedWindow()
                     auto current_index = row_i * 10 + col_i;
                     if (current_index < size)
                     {
-                        ImGui::Text("%02X", message->data[current_index]);
+                        ImGui::Text("%02X", message.data[current_index]);
                         if (ImGui::IsItemHovered())
                         {
                             ImGui::BeginTooltip();
-                            ImGui::Text("Index: %d, Data: %02X(%d)", current_index, message->data[current_index], message->data[current_index]);
+                            ImGui::Text("Index: %d, Data: %02X(%d)", current_index, message.data[current_index], message.data[current_index]);
                             ImGui::EndTooltip();
                         }
                         if (col_i != 9) ImGui::SameLine(hex_space * (col_i + 1) + hex_indent);
