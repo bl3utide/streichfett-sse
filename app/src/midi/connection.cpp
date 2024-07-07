@@ -51,6 +51,8 @@ unsigned int Connection::getPortCount() const
 
 const std::string Connection::getPortName(unsigned int port_index) const
 {
+    // NOTE: Since rtmidi->getPortName returns a non ref-value,
+    //       this function should return the copy value.
     return rtmidi->getPortName(port_index);
 }
 
