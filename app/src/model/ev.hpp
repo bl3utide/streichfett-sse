@@ -24,8 +24,8 @@ public:
     */
     explicit Ev(const char* name, int v_min, int v_max, int v_def,
         const std::vector<std::string>* value_arr = nullptr,
-        int(* const to_ev_fn)(const int) = nullptr,
-        int(* const to_dv_fn)(const int) = nullptr)
+        int(* const to_ev_fn)(int) = nullptr,
+        int(* const to_dv_fn)(int) = nullptr)
         : name_(name), min_(v_min), max_(v_max), def_(v_def),
         editor_value_arr_(value_arr),
         to_ev_func_(to_ev_fn),
