@@ -39,22 +39,34 @@ public:
         if (haveEvArr())
         {
             if (min_ < 0)
+            {
                 throw std::exception("The minimum index of Ev string vector must not be negative");
+            }
             if (min_ != 0)
+            {
                 throw std::exception("The minimum index of Ev string vector must be 0");
+            }
             if (max_ > editor_value_arr_->size() - 1)
+            {
                 throw std::exception("The maximum internal value of Ev must not be larger than the size of the vector<string>");
+            }
         }
 
         if ((to_ev_func_ != nullptr && to_dv_func_ == nullptr) ||
             (to_ev_func_ == nullptr && to_dv_func_ != nullptr))
+        {
             throw std::exception("Cannot set only to_ev_fn or only to_dv_fn");
+        }
         else
         {
             if (to_ev_func_ == nullptr)
+            {
                 has_converter_ = false;
+            }
             else
+            {
                 has_converter_ = true;
+            }
         }
 
         editor_value_ = v_def;
