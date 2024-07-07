@@ -13,9 +13,9 @@ struct TextFont
     int data_size;
     float pixels;
 
-    TextFont(const void* font_data, int font_data_size, float font_pixels)
+    explicit TextFont(const void* font_data, int font_data_size, float font_pixels)
         : data(font_data), data_size(font_data_size), pixels(font_pixels)
-    { }
+    {}
 
     void add() const
     {

@@ -11,17 +11,10 @@ namespace InternalPatch
 // DSI: Streichfett
 struct SoundAddress
 {
+    explicit SoundAddress() : sound(0) {}
+    explicit SoundAddress(int s) : sound(s) {}
+
     int sound;      // 0-11 normally
-
-    SoundAddress()
-    {
-        sound = 0;
-    }
-
-    SoundAddress(const int s)
-    {
-        sound = s;
-    }
 };
 
 extern bool current_patch_changed;

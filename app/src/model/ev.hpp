@@ -22,7 +22,7 @@ public:
     to_dv_fn    function called when outputting as device value
                 (to_ev_fn and to_dv_fn must always be set as a pair)
     */
-    Ev(const char* name, int v_min, int v_max, int v_def,
+    explicit Ev(const char* name, int v_min, int v_max, int v_def,
         const std::vector<std::string>* value_arr = nullptr,
         int(* const to_ev_fn)(const int) = nullptr,
         int(* const to_dv_fn)(const int) = nullptr)

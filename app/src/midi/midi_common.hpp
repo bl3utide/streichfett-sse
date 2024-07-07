@@ -10,16 +10,14 @@ struct CallbackMutex
     std::mutex guard;
     bool is_callback_catched;
 
-    CallbackMutex()
-    {
-        is_callback_catched = false;
-    }
+    explicit CallbackMutex() : is_callback_catched(false)
+    {}
 };
 
 class RequestCounter
 {
 public:
-    RequestCounter(int limit)
+    explicit RequestCounter(int limit)
         : v_(0), upper_limit_(limit)
     {}
 

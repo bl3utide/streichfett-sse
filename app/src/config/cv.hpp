@@ -25,7 +25,7 @@ public:
     };
 
     // constructor for std::string
-    Cv(Section section, Key key, const std::string& v)
+    explicit Cv(Section section, Key key, const std::string& v)
         : min_(0), max_(0), def_(0), type_(Type::String)
     {
         setSectionKey(section, key);
@@ -33,7 +33,7 @@ public:
     }
 
     // constructor for int
-    Cv(Section section, Key key, int v_min, int v_max, int v_def)
+    explicit Cv(Section section, Key key, int v_min, int v_max, int v_def)
         : min_(v_min), max_(v_max), def_(v_def), type_(Type::Int)
     {
         if (min_ > max_) throw std::exception("Max-value is less than min-value");
@@ -46,7 +46,7 @@ public:
     }
 
     // constructor for bool
-    Cv(Section section, Key key, bool v)
+    explicit Cv(Section section, Key key, bool v)
         : min_(0), max_(0), def_(0), type_(Type::Bool)
     {
         setSectionKey(section, key);

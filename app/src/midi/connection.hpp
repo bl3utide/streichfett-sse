@@ -8,7 +8,7 @@ namespace Connector
 class Connection
 {
 public:
-    Connection();
+    explicit Connection();
     virtual ~Connection();
     virtual void initialize() = 0;
     virtual void finalize() noexcept = 0;
@@ -38,7 +38,7 @@ private:
 class InputConnection : public Connection
 {
 public:
-    InputConnection();
+    explicit InputConnection();
     void initialize() override;
     void finalize() noexcept override;
     void close() noexcept override;
@@ -50,7 +50,7 @@ public:
 class OutputConnection : public Connection
 {
 public:
-    OutputConnection();
+    explicit OutputConnection();
     void initialize() override;
     void finalize() noexcept override;
     void sendMessage(const ByteVec& message) const;

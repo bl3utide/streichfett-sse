@@ -22,10 +22,10 @@ public:
     std::string line;
     std::string text;
 
-    DisplayFormattedDebugLog() : log_id(0), timestamp(""), category(""), function(""), line(""), text("")
+    explicit DisplayFormattedDebugLog() : log_id(0), timestamp(""), category(""), function(""), line(""), text("")
     {}
 
-    DisplayFormattedDebugLog(const std::string& message)
+    explicit DisplayFormattedDebugLog(const std::string& message)
         : log_id(0), timestamp(""), category(""), function(""), line(""), text("")
     {
         std::regex re("^(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}) (\\S+) \\[([^@]+)@(\\d+)\\] (.+)$");

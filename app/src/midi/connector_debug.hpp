@@ -46,27 +46,20 @@ struct ProcessedMidiMessage
     ByteVec data;
     std::string list_title;
 
-    ProcessedMidiMessage()
-    {
-        timestamp = "";
-        transmitted = true;
-        device_name = "";
-        description = "";
-        data = ByteVec();
-        list_title = "";
-    }
+    explicit ProcessedMidiMessage()
+        : timestamp(""), transmitted(true), device_name(""), description("")
+        , data(ByteVec()), list_title("")
+    {}
 
-    ProcessedMidiMessage(
+    explicit ProcessedMidiMessage(
         const std::string& ts,
-        const bool t,
+        bool t,
         const std::string& d_name,
         const std::string& desc,
-        const ByteVec d)
+        const ByteVec& d)
+        : timestamp(ts), transmitted(t), device_name(d_name)
+        , description(desc)
     {
-        timestamp = ts;
-        transmitted = t;
-        device_name = d_name;
-        description = desc;
         data.clear();
         data = d;
 

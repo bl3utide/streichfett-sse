@@ -114,15 +114,15 @@ struct Patch
 
     Ev reverb{ PNAME_REVERB, 0, 127, 0 };
 
-    Patch()
+    explicit Patch()
+        : patch_name("")
     {
-        patch_name = "";
         init();
     }
 
-    Patch(const char* name)
+    explicit Patch(const char* name)
+        : patch_name(name)
     {
-        patch_name = name;
         init();
     }
 

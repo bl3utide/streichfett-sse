@@ -43,7 +43,7 @@ struct Global
     // 0 - 16;  0(00h) - 126(7Eh)
     Ev device_id{ GPNAME_DEVICE_ID, 0, 126, 0 };
 
-    Global()
+    explicit Global()
     {
         init();
     }
