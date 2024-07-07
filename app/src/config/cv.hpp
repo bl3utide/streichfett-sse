@@ -79,7 +79,7 @@ public:
     }
 
     const std::string& cv() const noexcept { return v_; }
-    const Type& type() const noexcept { return type_; }
+    Type type() const noexcept { return type_; }
     const std::string& type_str() const noexcept { return TYPE_STR.at(type_); }
     int max() const noexcept { return max_; }
     int min() const noexcept { return min_; }
