@@ -17,8 +17,8 @@ namespace Callback
 
 void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
 {
-    SendTestType* type_ptr = static_cast<SendTestType*>(user_data);
-    SendTestType type = *type_ptr;
+    auto* type_ptr = static_cast<SendTestType*>(user_data);
+    auto type = *type_ptr;
 
     if (message->empty())
     {
@@ -81,8 +81,8 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
 
 Uint32 timeoutTest(Uint32 interval, void* param)
 {
-    SendTestType* type_ptr = static_cast<SendTestType*>(param);
-    SendTestType type = *type_ptr;
+    auto* type_ptr = static_cast<SendTestType*>(param);
+    auto type = *type_ptr;
 
     synth_input.cancelCallback();
     SDL_RemoveTimer(waiting_timer);
