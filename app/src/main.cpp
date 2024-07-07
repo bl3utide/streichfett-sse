@@ -185,7 +185,7 @@ void loop()
             }
             catch (std::exception& error)
             {
-                UncontinuableException uce(error.what(), ERROR_WHEN_RESRVED_FUNC);
+                UncontinuableException uce(error.what(), ERROR_WHEN_RESERVED_FUNC);
                 Logger::error(uce);
                 Gui::showMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error by unexpected cause");
                 throw std::runtime_error("");
