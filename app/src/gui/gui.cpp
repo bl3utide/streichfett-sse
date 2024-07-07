@@ -198,7 +198,7 @@ void drawAboutModal()
     ImGui::PopStyleVar();
 }
 
-void drawHeader(const int window_width)
+void drawHeader(int window_width)
 {
     GuiUtil::PushFont((int)Font::Title);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TITLE_TEXT);

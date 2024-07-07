@@ -48,7 +48,7 @@ void endOptionItemValue()
 }
 
 template<typename T>
-void drawOptionItemValue(const T& v, const bool displayable = false)
+void drawOptionItemValue(const T& v, bool displayable = false)
 {
     beginOptionItemValue();
     if (displayable)
