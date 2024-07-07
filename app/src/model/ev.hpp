@@ -36,7 +36,7 @@ public:
         if (def_ < min_) throw std::exception("Default-value is less than min-value");
         if (def_ > max_) throw std::exception("Default-value is larger than max-value");
 
-        if (haveEvArr())
+        if (hasArr())
         {
             if (min_ < 0)
             {
@@ -119,7 +119,7 @@ public:
 
     const char* evs() const
     {
-        if (haveEvArr())
+        if (hasArr())
         {
             return editor_value_arr_->at(editor_value_).c_str();
         }
@@ -170,7 +170,6 @@ private:
     int(* const to_ev_func_)(int);
     int(* const to_dv_func_)(int);
     bool isWithinRange(int v) const { return min_ <= v && v <= max_; }
-    bool haveEvArr() const { return editor_value_arr_ != nullptr; }
 };
 
 } // StreichfettSse
