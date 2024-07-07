@@ -277,8 +277,8 @@ void drawPageSelector()
 // DSI: Streichfett
 void drawContent()
 {
-    auto current_patch = InternalPatch::getCurrentPatch();
-    auto original_patch = InternalPatch::getOriginalPatch();
+    auto& current_patch = InternalPatch::getCurrentPatch();
+    auto& original_patch = InternalPatch::getOriginalPatch();
 
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_BASE);
     if (_page == Page::Edit)    drawEditPanel(current_patch, original_patch);

@@ -25,7 +25,7 @@ void doReservedFuncs();
 void clearReservedFuncs() noexcept;
 
 // sub modules
-void drawEditPanel(SoundModel::Patch* const cp, SoundModel::Patch* const op);
+void drawEditPanel(SoundModel::Patch& cp, SoundModel::Patch& op);
 void drawOptionPanel();
 #ifdef _DEBUG
 namespace Debug

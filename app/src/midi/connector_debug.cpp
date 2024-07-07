@@ -69,8 +69,8 @@ void sendTest(SendTestType type)
             break;
         case SendTestType::SoundDump:
         {
-            const auto sound_addr = InternalPatch::getCurrentSoundAddress();
-            request = MessageHandler::getSoundRequestMessage(sound_addr->sound);
+            auto& sound_addr = InternalPatch::getCurrentSoundAddress();
+            request = MessageHandler::getSoundRequestMessage(sound_addr.sound);
         }
             break;
         default:

@@ -20,15 +20,15 @@ struct SoundAddress
 extern bool current_patch_changed;
 
 void initData() noexcept;
-SoundAddress* getCurrentSoundAddress() noexcept;
+const SoundAddress& getCurrentSoundAddress() noexcept;
 void setCurrentSoundAddress(int sound) noexcept;  // DSI: Streichfett
 char getSoundBankChar(int sound) noexcept;        // DSI: Streichfett
 int getSoundPatchNumber(int sound) noexcept;      // DSI: Streichfett
-SoundModel::Patch* getOriginalPatch() noexcept;
-SoundModel::Patch* getCurrentPatch() noexcept;
-void setPatchFromBytes(SoundModel::Patch* patch, const ByteVec& data);
-ByteVec getDataBytes(const SoundModel::Patch* const patch);
-void copyPatchAtoB(SoundModel::Patch* a, SoundModel::Patch* b);
+SoundModel::Patch& getOriginalPatch() noexcept;
+SoundModel::Patch& getCurrentPatch() noexcept;
+void setPatchFromBytes(SoundModel::Patch& patch, const ByteVec& data);
+const ByteVec getDataBytes(const SoundModel::Patch& patch) noexcept;
+void copyPatchAtoB(const SoundModel::Patch& a, SoundModel::Patch& b) noexcept;
 
 } // InternalPatch
 } // StreichfettSse

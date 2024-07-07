@@ -336,9 +336,9 @@ void requestGlobalData()
 // DSI: Streichfett
 void requestSoundData()
 {
-    const auto sound_addr = InternalPatch::getCurrentSoundAddress();
+    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
 
-    const auto sound_req_sysex = MessageHandler::getSoundRequestMessage(sound_addr->sound);
+    const auto sound_req_sysex = MessageHandler::getSoundRequestMessage(sound_addr.sound);
 
     Logger::debug(StringUtil::format("request sound dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
 
@@ -376,9 +376,9 @@ void requestSoundData()
 // DSI: Streichfett
 void sendSoundDump(const bool is_edit_buffer)
 {
-    const auto sound_addr = InternalPatch::getCurrentSoundAddress();
-    const auto sound = is_edit_buffer ? -1 : sound_addr->sound;
-    const auto current_patch = InternalPatch::getCurrentPatch();
+    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
+    const auto sound = is_edit_buffer ? -1 : sound_addr.sound;
+    const auto& current_patch = InternalPatch::getCurrentPatch();
 
     const auto sound_dump = MessageHandler::getSoundDumpMessageFromPatch(sound, current_patch);
 
@@ -411,9 +411,9 @@ void sendSoundDump(const bool is_edit_buffer)
 // DSI: Streichfett
 void sendProgChange()
 {
-    const auto sound_addr = InternalPatch::getCurrentSoundAddress();
+    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
 
-    const auto prog_change = MessageHandler::getProgChangeMessage(sound_addr->sound);
+    const auto prog_change = MessageHandler::getProgChangeMessage(sound_addr.sound);
 
     try
     {

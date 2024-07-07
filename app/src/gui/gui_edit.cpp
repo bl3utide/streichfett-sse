@@ -11,12 +11,14 @@ namespace ImGui
 {
 
 // DSI: Streichfett
+// TODO: std::format(C++20) -> try to replace pointer-val and ref-value
 bool NiSliderInt(const char* label, StreichfettSse::Ev* v, const char* format)
 {
     return SliderInt(label, v->valp, v->min(), v->max(), format, ImGuiSliderFlags_NoInput);
 }
 
 // DSI: Streichfett
+// TODO: std::format(C++20) -> try to replace pointer-val and ref-value
 bool NiDragInt(const char* label, StreichfettSse::Ev* v, float v_speed, const char* format)
 {
     return DragInt(label, v->valp, v_speed, v->min(), v->max(), format, ImGuiSliderFlags_NoInput);
@@ -65,27 +67,25 @@ void helpMarker(const char* desc)
 void setWheelControl(Ev* const v, const int param_index,
     int (*vfn)(const int) = nullptr)
     */
-void setWheelControl(Ev* const v, const int param_index)
+void setWheelControl(Ev& v, int param_index)
 {
     ImGuiIO& io = ImGui::GetIO();
     if (ImGui::IsItemHovered() && io.MouseWheel != 0.0f)
     {
-        if (io.MouseWheel > 0)
-            ++*v;
-        if (io.MouseWheel < 0)
-            --*v;
+        if (io.MouseWheel > 0) ++v;
+        if (io.MouseWheel < 0) --v;
         /* TODO delete toDvFunc
         int send_value = vfn == nullptr ? v->ev() : vfn(v->ev());
         MessageTask::addParamChangedTask(param_index, send_value);
         */
-        MessageTask::addParamChangedTask(param_index, v->toDv());
+        MessageTask::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
         InternalPatch::current_patch_changed = true;
     }
 }
 
 void drawParamValueContextMenu(const char* label,
-    Ev* const v, const Ev* const original_v,
+    Ev& v, const Ev& original_v,
     //const int param_index, int (*vfn)(const int) = nullptr)   // TODO delete toDvFunc
     int param_index)
 {
@@ -98,12 +98,12 @@ void drawParamValueContextMenu(const char* label,
         GuiUtil::PushFont((int)Font::Text);
         if (ImGui::Selectable("Revert to the original value"))
         {
-            *v = *original_v;
+            v = original_v;
             /* TODO delete toDvFunc
             int send_value = vfn == nullptr ? v->ev() : vfn(v->ev());
             MessageTask::addParamChangedTask(param_index, send_value);
             */
-            MessageTask::addParamChangedTask(param_index, v->toDv());
+            MessageTask::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
@@ -111,12 +111,12 @@ void drawParamValueContextMenu(const char* label,
         GuiUtil::MouseCursorToHand();
         if (ImGui::Selectable("Reset to the initial value"))
         {
-            v->setDefault();
+            v.setDefault();
             /* TODO delete toDvFunc
             int send_value = vfn == nullptr ? v->ev() : vfn(v->ev());
             MessageTask::addParamChangedTask(param_index, send_value);
             */
-            MessageTask::addParamChangedTask(param_index, v->toDv());
+            MessageTask::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
@@ -129,23 +129,23 @@ void drawParamValueContextMenu(const char* label,
 }
 
 void drawSlider(const char* label, int label_index, float label_width, float control_width,
-    Ev* const v, const Ev* const original_v,
+    Ev& v, const Ev& original_v,
     //const int param_index = -1, int(*vfn)(const int) = nullptr,   // TODO delete toDvFunc
     int param_index = -1,
     bool hide_label = false)
 {
-    const char* display_format = v->hasArr() ? v->evs() : "%d";
-    bool changed_from_org = v->ev() != original_v->ev();
+    const char* display_format = v.hasArr() ? v.evs() : "%d";
+    bool changed_from_org = v.ev() != original_v.ev();
     if (changed_from_org) ImGui::PushStyleColor(ImGuiCol_Border, UI_COLOR_PARAM_CHANGED);
     if (GuiUtil::ImGuiLeftLabel(ImGui::NiSliderInt, label_index, label, hide_label,
         label_width, control_width, changed_from_org, UI_COLOR_PARAM_CHANGED,
-        v, display_format))
+        &v, display_format))
     {
         /* TODO delete toDvFunc
         int send_value = vfn == nullptr ? v->ev() : vfn(v->ev());
         MessageTask::addParamChangedTask(param_index, send_value);
         */
-        MessageTask::addParamChangedTask(param_index, v->toDv());
+        MessageTask::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
         InternalPatch::current_patch_changed = true;
     }
@@ -159,24 +159,24 @@ void drawSlider(const char* label, int label_index, float label_width, float con
 }
 
 void drawCombo(const char* label, int label_index, float label_width, float control_width,
-    Ev* const v, const Ev* const original_v,
+    Ev& v, const Ev& original_v,
     int param_index = -1, bool hide_label = false)
 {
-    bool changed_from_org = v->ev() != original_v->ev();
+    bool changed_from_org = v.ev() != original_v.ev();
     if (changed_from_org) ImGui::PushStyleColor(ImGuiCol_Border, UI_COLOR_PARAM_CHANGED);
     if (GuiUtil::ImGuiLeftLabel(ImGui::BeginCombo, label_index, label, hide_label,
         label_width, control_width, changed_from_org, UI_COLOR_PARAM_CHANGED,
-        v->evs(), (int)ImGuiComboFlags_None))
+        v.evs(), (int)ImGuiComboFlags_None))
     {
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
-        for (int n = 0; n < v->evArraySize(); ++n)
+        for (int n = 0; n < v.evArraySize(); ++n)
         {
-            bool is_selected = n == v->ev();
+            bool is_selected = n == v.ev();
             ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_BASE);
-            if (ImGui::Selectable(v->getEvArrayItem(n), is_selected))
+            if (ImGui::Selectable(v.getEvArrayItem(n), is_selected))
             {
-                *v = n;
-                int send_value = v->ev();
+                v = n;
+                int send_value = v.ev();
                 MessageTask::addParamChangedTask(param_index, send_value);
                 Annotation::clearText();
                 InternalPatch::current_patch_changed = true;
@@ -201,7 +201,7 @@ void drawPatchSelector()
 
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_PATCH_INFO);
     GuiUtil::PushFont((int)Font::PatchInfo);
-    InternalPatch::SoundAddress* sound_addr = InternalPatch::getCurrentSoundAddress();
+    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     for (int patch_i = 0; patch_i < 12; ++patch_i)
     {
@@ -210,7 +210,7 @@ void drawPatchSelector()
         char buf[4];
         sprintf(buf, "%c%d", bb, bs);
         ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
-        if (ImGui::Selectable(buf, patch_i == sound_addr->sound, 0, ImVec2(40.0f, 20.0f)))
+        if (ImGui::Selectable(buf, patch_i == sound_addr.sound, 0, ImVec2(40.0f, 20.0f)))
         {
             InternalPatch::setCurrentSoundAddress(patch_i);
             setNextState(State::RequestGlobal);
@@ -239,13 +239,12 @@ void drawPatchSelector()
         draw_list->AddRectFilled(p0, p1, sel_bg);
         GuiUtil::MouseCursorToHand();
 
-        if (patch_i == sound_addr->sound)
+        if (patch_i == sound_addr.sound)
         {
             draw_list->AddRect(p0, p1, IM_COL32(255, 255, 255, 120));
         }
 
-        if (patch_i != 11)
-            ImGui::SameLine();
+        if (patch_i != 11) ImGui::SameLine();
     }
     ImGui::PopFont();
     ImGui::PopStyleColor();
@@ -254,7 +253,7 @@ void drawPatchSelector()
 }
 
 // DSI: Streichfett
-void drawPatchOperators(SoundModel::Patch* const cp)
+void drawPatchOperators(SoundModel::Patch& cp)
 {
     bool current_patch_changed = InternalPatch::current_patch_changed;
 
@@ -291,7 +290,7 @@ void drawPatchOperators(SoundModel::Patch* const cp)
         ImGui::PopFont();
         if (ImGui::Selectable("Initialize All Parameters"))
         {
-            cp->init();
+            cp.init();
             reservedFuncs.push_back(std::bind(Connector::sendSoundDump, true));
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
@@ -314,7 +313,7 @@ void drawPatchOperators(SoundModel::Patch* const cp)
 }
 
 // DSI: Streichfett
-void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const op)
+void drawPatchParameters(SoundModel::Patch& cp, SoundModel::Patch& op)
 {
     using namespace SoundModel;
 
@@ -334,7 +333,7 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
             SoundValueUtil::centerEvToDv);
             */
         drawSlider("Balance", 0, label_width, control_width,
-            &cp->balance, &op->balance, PARAM_CC.at(ParamIndex::Balance));
+            cp.balance, op.balance, PARAM_CC.at(ParamIndex::Balance));
 
         ImGui::PopFont();
     }
@@ -348,22 +347,22 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
         GuiUtil::PushFont((int)Font::Text);
 
         drawSlider("Registration", 0, label_width, control_width,
-            &cp->registration, &op->registration, PARAM_CC.at(ParamIndex::Registration));
+            cp.registration, op.registration, PARAM_CC.at(ParamIndex::Registration));
 
         drawSlider("Octaves", 0, label_width, control_width,
-            &cp->octave_switch, &op->octave_switch, PARAM_CC.at(ParamIndex::OctaveSwitch));
+            cp.octave_switch, op.octave_switch, PARAM_CC.at(ParamIndex::OctaveSwitch));
 
         drawSlider("Ensemble", 0, label_width, control_width,
-            &cp->ensemble, &op->ensemble, PARAM_CC.at(ParamIndex::Ensemble));
+            cp.ensemble, op.ensemble, PARAM_CC.at(ParamIndex::Ensemble));
 
         drawCombo("Ensemble Type", 0, label_width, control_width,
-            &cp->ensemble_effect, &op->ensemble_effect, PARAM_CC.at(ParamIndex::EnsembleEffect));
+            cp.ensemble_effect, op.ensemble_effect, PARAM_CC.at(ParamIndex::EnsembleEffect));
 
         drawSlider("Crescendo", 0, label_width, control_width,
-            &cp->crescendo, &op->crescendo, PARAM_CC.at(ParamIndex::Crescendo));
+            cp.crescendo, op.crescendo, PARAM_CC.at(ParamIndex::Crescendo));
 
         drawSlider("Release", 0, label_width, control_width,
-            &cp->release, &op->release, PARAM_CC.at(ParamIndex::Release));
+            cp.release, op.release, PARAM_CC.at(ParamIndex::Release));
 
         ImGui::PopFont();
     }
@@ -379,28 +378,28 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
         GuiUtil::PushFont((int)Font::Text);
 
         drawSlider("Tone", 0, label_width, control_width,
-            &cp->tone, &op->tone, PARAM_CC.at(ParamIndex::Tone));
+            cp.tone, op.tone, PARAM_CC.at(ParamIndex::Tone));
 
         drawSlider("Tremolo", 0, label_width, control_width,
-            &cp->tremolo, &op->tremolo, PARAM_CC.at(ParamIndex::Tremolo));
+            cp.tremolo, op.tremolo, PARAM_CC.at(ParamIndex::Tremolo));
 
         drawCombo("Split", 0, label_width, control_width,
-            &cp->split_layer, &op->split_layer, PARAM_CC.at(ParamIndex::SplitLayer));
+            cp.split_layer, op.split_layer, PARAM_CC.at(ParamIndex::SplitLayer));
 
         drawSlider("Spliy key", 0, label_width, control_width,
             //&cp->split_key, &op->split_key, -1, nullptr, false);  // TODO delete toDvFunc
-            &cp->split_key, &op->split_key, -1, false);
+            cp.split_key, op.split_key, -1, false);
         drawSameLine();
         helpMarker("Changes to this parameter will take effect the next time you load.");
 
         drawCombo("Envelope Mode", 0, label_width, control_width,
-            &cp->envelope_mode, &op->envelope_mode, PARAM_CC.at(ParamIndex::EnvelopeMode));
+            cp.envelope_mode, op.envelope_mode, PARAM_CC.at(ParamIndex::EnvelopeMode));
 
         drawSlider("Attack", 0, label_width, control_width,
-            &cp->attack, &op->attack, PARAM_CC.at(ParamIndex::Attack));
+            cp.attack, op.attack, PARAM_CC.at(ParamIndex::Attack));
 
         drawSlider("Decay(Release)", 0, label_width, control_width,
-            &cp->decay, &op->decay, PARAM_CC.at(ParamIndex::Decay));
+            cp.decay, op.decay, PARAM_CC.at(ParamIndex::Decay));
 
         ImGui::PopFont();
     }
@@ -414,13 +413,13 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
         GuiUtil::PushFont((int)Font::Text);
 
         drawSlider("Animate", 0, label_width, control_width,
-            &cp->animate, &op->animate, PARAM_CC.at(ParamIndex::Animate));
+            cp.animate, op.animate, PARAM_CC.at(ParamIndex::Animate));
 
         drawSlider("Phaser", 0, label_width, control_width,
-            &cp->phaser, &op->phaser, PARAM_CC.at(ParamIndex::Phaser));
+            cp.phaser, op.phaser, PARAM_CC.at(ParamIndex::Phaser));
 
         drawSlider("Reverb", 0, label_width, control_width,
-            &cp->reverb, &op->reverb, PARAM_CC.at(ParamIndex::Reverb));
+            cp.reverb, op.reverb, PARAM_CC.at(ParamIndex::Reverb));
 
         ImGui::PopFont();
     }
@@ -430,7 +429,7 @@ void drawPatchParameters(SoundModel::Patch* const cp, SoundModel::Patch* const o
     ImGui::PopFont();
 }
 
-void drawEditPanel(SoundModel::Patch* const cp, SoundModel::Patch* const op)
+void drawEditPanel(SoundModel::Patch& cp, SoundModel::Patch& op)
 {
     bool is_synth_connected = Connector::isSynthConnected();
 

@@ -193,8 +193,8 @@ void drawDebugTabItemParams()
     {
         ImGui::BeginChild("params_list", ImVec2(0, 300));
         {
-            SoundModel::Patch* po = InternalPatch::getOriginalPatch();
-            SoundModel::Patch* pc = InternalPatch::getCurrentPatch();
+            auto& po = InternalPatch::getOriginalPatch();
+            auto& pc = InternalPatch::getCurrentPatch();
 
             auto drawParamRow = [](const char* name, Ev& ov, Ev& cv)
             {
@@ -216,23 +216,23 @@ void drawDebugTabItemParams()
 
                 ImGui::TableHeadersRow();
 
-                drawParamRow("String Octaves", po->octave_switch, pc->octave_switch);
-                drawParamRow("String Registration", po->registration, pc->registration);
-                drawParamRow("String Ensemble Type", po->ensemble_effect, pc->ensemble_effect);
-                drawParamRow("String Ensemble", po->ensemble, pc->ensemble);
-                drawParamRow("String Crescendo", po->crescendo, pc->crescendo);
-                drawParamRow("String Release", po->release, pc->release);
-                drawParamRow("Solo Tone", po->tone, pc->tone);
-                drawParamRow("Solo Tremolo", po->tremolo, pc->tremolo);
-                drawParamRow("Solo Split", po->split_layer, pc->split_layer);
-                drawParamRow("Solo Sustain", po->envelope_mode, pc->envelope_mode);
-                drawParamRow("Solo Attack", po->attack, pc->attack);
-                drawParamRow("Solo Decay", po->decay, pc->decay);
-                drawParamRow("Balance", po->balance, pc->balance);
-                drawParamRow("FX Animate", po->animate, pc->animate);
-                drawParamRow("FX Phaser", po->phaser, pc->phaser);
-                drawParamRow("FX Reverb", po->reverb, pc->reverb);
-                drawParamRow("Split Key", po->split_key, pc->split_key);
+                drawParamRow("String Octaves", po.octave_switch, pc.octave_switch);
+                drawParamRow("String Registration", po.registration, pc.registration);
+                drawParamRow("String Ensemble Type", po.ensemble_effect, pc.ensemble_effect);
+                drawParamRow("String Ensemble", po.ensemble, pc.ensemble);
+                drawParamRow("String Crescendo", po.crescendo, pc.crescendo);
+                drawParamRow("String Release", po.release, pc.release);
+                drawParamRow("Solo Tone", po.tone, pc.tone);
+                drawParamRow("Solo Tremolo", po.tremolo, pc.tremolo);
+                drawParamRow("Solo Split", po.split_layer, pc.split_layer);
+                drawParamRow("Solo Sustain", po.envelope_mode, pc.envelope_mode);
+                drawParamRow("Solo Attack", po.attack, pc.attack);
+                drawParamRow("Solo Decay", po.decay, pc.decay);
+                drawParamRow("Balance", po.balance, pc.balance);
+                drawParamRow("FX Animate", po.animate, pc.animate);
+                drawParamRow("FX Phaser", po.phaser, pc.phaser);
+                drawParamRow("FX Reverb", po.reverb, pc.reverb);
+                drawParamRow("Split Key", po.split_key, pc.split_key);
 
                 ImGui::EndTable();
             }
@@ -248,13 +248,13 @@ void drawDebugTabItemDeviceSetting()
 {
     if (ImGui::BeginTabItem("Device Setting"))
     {
-        GlobalModel::Global* global = InternalSetting::getGlobalData();
+        const auto& global = InternalSetting::getGlobalData();
 
-        ImGui::Text("%-16s: %s", "MIDI Channel", global->midi_channel.evs());
-        ImGui::Text("%-16s: %d", "Tuning", global->tuning.ev());
-        ImGui::Text("%-16s: %s", "Transpose", global->transpose.evs());
-        ImGui::Text("%-16s: %d", "Pitch Bend Range", global->pitch_bend_range.ev());
-        ImGui::Text("%-16s: %d", "MIDI Device ID", global->device_id.ev());
+        ImGui::Text("%-16s: %s", "MIDI Channel", global.midi_channel.evs());
+        ImGui::Text("%-16s: %d", "Tuning", global.tuning.ev());
+        ImGui::Text("%-16s: %s", "Transpose", global.transpose.evs());
+        ImGui::Text("%-16s: %d", "Pitch Bend Range", global.pitch_bend_range.ev());
+        ImGui::Text("%-16s: %d", "MIDI Device ID", global.device_id.ev());
 
         ImGui::EndTabItem();
     }

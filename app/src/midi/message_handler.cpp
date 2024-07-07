@@ -201,7 +201,7 @@ const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type)
 }
 
 // DSI: Streichfett
-const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch* const patch)
+const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& patch)
 {
     const auto sound_data = InternalPatch::getDataBytes(patch);
     const auto device_id = InternalSetting::getDeviceId();

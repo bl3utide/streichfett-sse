@@ -16,24 +16,24 @@ void initData() noexcept
 {
 }
 
-GlobalModel::Global* getGlobalData() noexcept
+GlobalModel::Global& getGlobalData() noexcept
 {
-    return &global_data_;
+    return global_data_;
 }
 
 // DSI: Streichfett
-void setSettingFromBytes(GlobalModel::Global* global, const ByteVec& data)
+void setSettingFromBytes(GlobalModel::Global& global, const ByteVec& data)
 {
     using namespace GlobalModel;
 
     // convert Device values to Editor values
     try
     {
-        global->midi_channel        = data[(int)ParamIndex::MidiChannel];
-        global->tuning              = data[(int)ParamIndex::Tuning];
-        global->transpose           = data[(int)ParamIndex::Transpose];
-        global->pitch_bend_range    = data[(int)ParamIndex::PitchBendRange];
-        global->device_id           = data[(int)ParamIndex::DeviceId];
+        global.midi_channel         = data[(int)ParamIndex::MidiChannel];
+        global.tuning               = data[(int)ParamIndex::Tuning];
+        global.transpose            = data[(int)ParamIndex::Transpose];
+        global.pitch_bend_range     = data[(int)ParamIndex::PitchBendRange];
+        global.device_id            = data[(int)ParamIndex::DeviceId];
     }
     catch (std::exception& error)
     {

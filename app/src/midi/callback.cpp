@@ -204,7 +204,7 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
                     MessageHandler::checkDump(*message, dump_type);
 
                     const auto global_data = MessageHandler::getDataBytesFromDump(*message, dump_type);
-                    auto setting = InternalSetting::getGlobalData();
+                    auto& setting = InternalSetting::getGlobalData();
 
                     // throwable function
                     InternalSetting::setSettingFromBytes(setting, global_data);
@@ -304,8 +304,8 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
 
                     const auto sound_data =
                         MessageHandler::getDataBytesFromDump(*message, dump_type);
-                    auto original = InternalPatch::getOriginalPatch();
-                    auto current = InternalPatch::getCurrentPatch();
+                    auto& original = InternalPatch::getOriginalPatch();
+                    auto& current = InternalPatch::getCurrentPatch();
 
                     // throwable function
                     InternalPatch::setPatchFromBytes(original, sound_data);
@@ -315,9 +315,9 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
                     Logger::debug("received correct sound dump");
                     requestSuccessful(State::Idle);
 
-                    auto sound_addr = InternalPatch::getCurrentSoundAddress();
-                    const auto bb = InternalPatch::getSoundBankChar(sound_addr->sound);
-                    const auto bs = InternalPatch::getSoundPatchNumber(sound_addr->sound);
+                    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
+                    const auto bb = InternalPatch::getSoundBankChar(sound_addr.sound);
+                    const auto bs = InternalPatch::getSoundPatchNumber(sound_addr.sound);
                     char buf[64];
                     sprintf(buf, "Sound %c%d loaded.", bb, bs);
                     Annotation::setText(buf, Annotation::Type::General);
@@ -481,8 +481,8 @@ Uint32 storeDelay(Uint32 interval, void* param)
     // -1: sent to edit buffer
     if (sound != -1)
     {
-        auto original = InternalPatch::getOriginalPatch();
-        auto current = InternalPatch::getCurrentPatch();
+        auto& original = InternalPatch::getOriginalPatch();
+        auto& current = InternalPatch::getCurrentPatch();
         InternalPatch::copyPatchAtoB(current, original);
 
         const auto bb = InternalPatch::getSoundBankChar(sound);

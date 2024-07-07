@@ -15,6 +15,7 @@ namespace Gui
 
 constexpr float ITEM_PADDING_Y = 2.0f;
 constexpr float ITEM_SPACING_Y = 6.0f;
+// TODO change to constexpr std::string (C++20)
 constexpr const char* TEXT_CONNECTED = "Connected";
 constexpr const char* TEXT_DISCONNECTED = "Disconnected";
 constexpr char* TEXT_INFO_NONE = "----";
@@ -227,17 +228,17 @@ void drawOptionGroupDeviceSettingInfo()
         drawOptionItem("Firmware Version");
         drawOptionItemValue(MessageHandler::inquiry_dump.firmware_version.c_str(), displayable_synth_info && MessageHandler::inquiry_dump.received);
 
-        const auto global = InternalSetting::getGlobalData();
+        const auto& global = InternalSetting::getGlobalData();
         drawOptionItem("Device ID");
-        drawOptionItemValue(global->device_id, displayable_synth_info);
+        drawOptionItemValue(global.device_id, displayable_synth_info);
         drawOptionItem("MIDI Channel");
-        drawOptionItemValue(global->midi_channel, displayable_synth_info);
+        drawOptionItemValue(global.midi_channel, displayable_synth_info);
         drawOptionItem("Tuning");
-        drawOptionItemValue(global->tuning, displayable_synth_info);
+        drawOptionItemValue(global.tuning, displayable_synth_info);
         drawOptionItem("Transpose");
-        drawOptionItemValue(global->transpose, displayable_synth_info);
+        drawOptionItemValue(global.transpose, displayable_synth_info);
         drawOptionItem("Pitch Bend Range");
-        drawOptionItemValue(global->pitch_bend_range, displayable_synth_info);
+        drawOptionItemValue(global.pitch_bend_range, displayable_synth_info);
     }
     GuiUtil::EndGroupPanel();
 }

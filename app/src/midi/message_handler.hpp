@@ -38,7 +38,7 @@ bool isNoteOn(const ByteVec& mb);
 bool checkInquiryDump(const ByteVec& dump);
 void checkDump(const ByteVec& dump, DumpType type);
 const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type);
-const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch* const patch);      // DSI: Streichfett
+const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& patch);      // DSI: Streichfett
 //ByteVec getSoundParameterChangeMessage(const int index, const int value);   // TODO delete toDvFunc
 const ByteVec getSoundParameterChangeMessage(int index, const Byte& value);
 const std::string getByteVecString(const ByteVec& bytes);
