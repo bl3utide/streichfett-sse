@@ -242,7 +242,7 @@ const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch* c
 //ByteVec getSoundParameterChangeMessage(const int index, const int value)    // TODO delete toDvFunc
 const ByteVec getSoundParameterChangeMessage(int index, const Byte& value)
 {
-    // NOTE: For Streichfett, change the parameters with CC
+    // NOTE: For Streichfett, change the parameters with CC.
 
     const int ch = InternalSetting::getDeviceMidiChannel();
 
