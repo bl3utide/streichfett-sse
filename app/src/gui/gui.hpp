@@ -15,7 +15,7 @@ enum class Page : int
     _COUNT_,
 };
 
-extern std::vector<std::function<void()>> reservedFuncs;
+extern std::vector<std::function<void()>> reserved_funcs;
 
 void initialize();
 void finalize() noexcept;

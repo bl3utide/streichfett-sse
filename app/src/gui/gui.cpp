@@ -18,7 +18,7 @@ namespace Gui
 {
 
 // public
-std::vector<std::function<void()>> reservedFuncs;
+std::vector<std::function<void()>> reserved_funcs;
 
 // private
 std::string app_title_;
@@ -448,7 +448,7 @@ void showMessageBox(Uint32 flags, const char* title, const char* message) noexce
 
 void doReservedFuncs()
 {
-    for (auto& func : reservedFuncs)
+    for (auto& func : reserved_funcs)
     {
         func();
     }
@@ -456,7 +456,7 @@ void doReservedFuncs()
 
 void clearReservedFuncs() noexcept
 {
-    reservedFuncs.clear();
+    reserved_funcs.clear();
 }
 
 } // Gui

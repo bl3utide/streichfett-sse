@@ -270,7 +270,7 @@ void drawPatchOperators(SoundModel::Patch& cp)
     }
     if (ImGui::Button("Send Sound Dump"))
     {
-        reservedFuncs.push_back(std::bind(Connector::sendSoundDump, false));
+        reserved_funcs.push_back(std::bind(Connector::sendSoundDump, false));
     }
     GuiUtil::MouseCursorToHand();
     if (!current_patch_changed) ImGui::EndDisabled();
@@ -291,7 +291,7 @@ void drawPatchOperators(SoundModel::Patch& cp)
         if (ImGui::Selectable("Initialize All Parameters"))
         {
             cp.init();
-            reservedFuncs.push_back(std::bind(Connector::sendSoundDump, true));
+            reserved_funcs.push_back(std::bind(Connector::sendSoundDump, true));
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
         }
@@ -302,7 +302,7 @@ void drawPatchOperators(SoundModel::Patch& cp)
     ImGui::SameLine(0.0f, 365.0f);
     if (ImGui::Button("All Sound Off"))
     {
-        reservedFuncs.push_back(std::bind(Connector::sendAllSoundOff));
+        reserved_funcs.push_back(std::bind(Connector::sendAllSoundOff));
         Annotation::clearText();
     }
     GuiUtil::MouseCursorToHand();

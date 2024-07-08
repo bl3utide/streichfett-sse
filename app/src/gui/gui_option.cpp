@@ -101,7 +101,7 @@ void drawOptionGroupConnections()
                 {
                     if (ImGui::Selectable(Connector::in_name_list[n].c_str(), is_selected))
                     {
-                        reservedFuncs.push_back(std::bind(Connector::openSynthInputPort, n, Connector::in_name_list[n]));
+                        reserved_funcs.push_back(std::bind(Connector::openSynthInputPort, n, Connector::in_name_list[n]));
                     }
                     GuiUtil::MouseCursorToHand();
                     if (is_selected) ImGui::SetItemDefaultFocus();
@@ -116,7 +116,7 @@ void drawOptionGroupConnections()
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
         if (ImGui::ImageButton((void*)(intptr_t)Image::getTextureId(Image::Texture::Reload), ImVec2(14.0f, 14.0f)))
         {
-            reservedFuncs.push_back(std::bind(Connector::resetAllConnections));
+            reserved_funcs.push_back(std::bind(Connector::resetAllConnections));
         }
         GuiUtil::MouseCursorToHand();
         ImGui::PopStyleVar(3);
@@ -136,7 +136,7 @@ void drawOptionGroupConnections()
                 const auto is_selected = n == Connector::synth_output.getPortIndex();
                 if (ImGui::Selectable(Connector::out_name_list[n].c_str(), is_selected))
                 {
-                    reservedFuncs.push_back(std::bind(Connector::openSynthOutputPort, n, Connector::out_name_list[n]));
+                    reserved_funcs.push_back(std::bind(Connector::openSynthOutputPort, n, Connector::out_name_list[n]));
                 }
                 GuiUtil::MouseCursorToHand();
                 if (is_selected) ImGui::SetItemDefaultFocus();
@@ -169,7 +169,7 @@ void drawOptionGroupConnections()
                 {
                     if (ImGui::Selectable(Connector::in_name_list[n].c_str(), is_selected))
                     {
-                        reservedFuncs.push_back(std::bind(Connector::openKeyInputPort, n, Connector::in_name_list[n]));
+                        reserved_funcs.push_back(std::bind(Connector::openKeyInputPort, n, Connector::in_name_list[n]));
                     }
                     GuiUtil::MouseCursorToHand();
                     if (is_selected) ImGui::SetItemDefaultFocus();
