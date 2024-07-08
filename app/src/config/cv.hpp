@@ -84,7 +84,7 @@ public:
     int max() const noexcept { return max_; }
     int min() const noexcept { return min_; }
 
-    // works only if _type == Type::Int
+    // works only if type_ == Type::Int
     void setDefault() noexcept {
         if (type_ == Type::Int)
         {
