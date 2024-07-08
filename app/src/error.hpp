@@ -33,8 +33,8 @@ constexpr ErrorCause    ERROR_CAUSE_REQ_INQUIRY = 0x00;
 constexpr ErrorCause    ERROR_CAUSE_REQ_GLOBAL  = 0x01;
 constexpr ErrorCause    ERROR_CAUSE_REQ_SOUND   = 0x02;
 constexpr ErrorCause    ERROR_CAUSE_SOUND_DUMP  = 0x10;
-constexpr ErrorCause    ERROR_CAUSE_PROG_CHANGE = 0x11;
-constexpr ErrorCause    ERROR_CAUSE_ALL_SND_OFF = 0x12;
+constexpr ErrorCause    ERROR_CAUSE_PROG_CHANGE = 0x13;
+constexpr ErrorCause    ERROR_CAUSE_ALL_SND_OFF = 0x14;
 constexpr ErrorCause    ERROR_CAUSE_ONE_TASK    = 0x20;
 
 constexpr ErrorWhen     ERROR_WHEN_STATE_PROCESS    = 0xF0;
