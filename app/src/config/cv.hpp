@@ -100,7 +100,7 @@ private:
     std::string key_;
     Type type_;
     std::string v_;
-    int min_, max_, def_;   // use if _type == Type::Int
+    int min_, max_, def_;   // use if type_ == Type::Int
     static const std::unordered_map<Type, std::string> TYPE_STR;
 
     void setSectionKey(Section section, Key key)
