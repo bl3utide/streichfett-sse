@@ -260,7 +260,7 @@ void drawDebugTabItemDeviceSetting()
     }
 }
 
-void drawDebugTabItemSendTest(const State current_state)
+void drawDebugTabItemSendTest(State current_state)
 {
     if (ImGui::BeginTabItem("Send Test"))
     {
@@ -562,7 +562,7 @@ void drawDebugTabItemLogger()
     }
 }
 
-void drawDebugWindow(bool* open, const int window_w, const int window_h,
+void drawDebugWindow(bool* open, int window_w, int window_h,
     const State current_state)
 {
     pushDebugStyles();
