@@ -21,7 +21,7 @@ bool ImGuiHiddenLabel(bool func(const char*, Args...), int repeat_idx,
 template<typename... Args>
 bool ImGuiLeftLabel(bool func(const char*, Args...), int repeat_idx,
     const char* label, bool hide_label, float offset, float width,
-    bool param_changed, const ImU32& param_changed_color, Args... args)
+    bool param_changed, ImU32 param_changed_color, Args... args)
 {
     if (param_changed) ImGui::PushStyleColor(ImGuiCol_Text, param_changed_color);
     if (!hide_label)
@@ -47,7 +47,7 @@ enum class ImGuiCustomKey : int
 };
 
 void MouseCursorToHand() noexcept;
-void TextColoredU32(const ImU32& col, const char* fmt, ...) noexcept;
+void TextColoredU32(ImU32 col, const char* fmt, ...) noexcept;
 void BeginGroupPanel(const char* name, const ImVec2& size);
 void EndGroupPanel();
 void PushFont(int font_id) noexcept;
