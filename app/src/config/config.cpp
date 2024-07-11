@@ -68,7 +68,7 @@ T getConfigValue(Key key)
 template<>
 std::string getConfigValue(Key key)
 {
-    auto& cv = cv_by_key_.at(key);
+    const auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::String)
     {
@@ -81,7 +81,7 @@ std::string getConfigValue(Key key)
 template<>
 int getConfigValue(Key key)
 {
-    auto& cv = cv_by_key_.at(key);
+    const auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Int)
     {
@@ -141,7 +141,7 @@ void setConfigValue(Key key, int value)
 template<>
 void setConfigValue(Key key, bool value)
 {
-    Cv& cv = cv_by_key_.at(key);
+    auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Bool)
     {
