@@ -24,7 +24,6 @@ void addTask(const ByteVec& m)
 #endif
 }
 
-//void addParamChangedTask(const int index, const int value)    // TODO delete toDvFunc
 void addParamChangedTask(int index, const Byte& value)
 {
     if (index != -1)

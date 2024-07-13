@@ -5,7 +5,6 @@ namespace StreichfettSse
 namespace MessageTask
 {
 
-//void addParamChangedTask(const int index, const int value); // TODO delete toDvFunc
 void addParamChangedTask(int index, const Byte& value);
 const ByteVec lastTask();
 size_t taskSize() noexcept;

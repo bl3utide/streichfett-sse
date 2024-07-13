@@ -239,7 +239,6 @@ const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& p
 }
 
 // DSI: Streichfett
-//ByteVec getSoundParameterChangeMessage(const int index, const int value)    // TODO delete toDvFunc
 const ByteVec getSoundParameterChangeMessage(int index, const Byte& value)
 {
     // NOTE: For Streichfett, change the parameters with CC.
@@ -250,7 +249,6 @@ const ByteVec getSoundParameterChangeMessage(int index, const Byte& value)
     req.clear();
     req.push_back(0xB0 + static_cast<Byte>(ch));
     req.push_back(static_cast<Byte>(index));
-    //req.push_back(static_cast<Byte>(value)); // TODO delete toDvFunc
     req.push_back(value);
     return req;
 }

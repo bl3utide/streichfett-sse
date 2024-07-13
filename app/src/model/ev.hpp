@@ -144,7 +144,6 @@ public:
     int max() const noexcept { return max_; }
     int min() const noexcept { return min_; }
     void setDefault() noexcept { editor_value_ = def_; }
-    //const char* name() const { return _name.c_str(); }
     const std::string& name() const noexcept { return name_; }
 
     bool hasArr() const noexcept { return editor_value_arr_ != nullptr; }

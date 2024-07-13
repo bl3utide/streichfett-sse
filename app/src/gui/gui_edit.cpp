@@ -5,7 +5,6 @@
 #include "gui/gui_font.hpp"
 #include "midi/connector.hpp"
 #include "midi/message_task.hpp"
-//#include "model/sound_value_util.hpp"     // TODO delete toDvFunc
 
 namespace ImGui
 {
@@ -63,10 +62,6 @@ void helpMarker(const char* desc)
     }
 }
 
-/* TODO delete toDvFunc
-void setWheelControl(Ev* const v, const int param_index,
-    int (*vfn)(const int) = nullptr)
-    */
 void setWheelControl(Ev& v, int param_index)
 {
     ImGuiIO& io = ImGui::GetIO();
@@ -74,10 +69,6 @@ void setWheelControl(Ev& v, int param_index)
     {
         if (io.MouseWheel > 0) ++v;
         if (io.MouseWheel < 0) --v;
-        /* TODO delete toDvFunc
-        int send_value = vfn == nullptr ? v->ev() : vfn(v->ev());
-        MessageTask::addParamChangedTask(param_index, send_value);
-        */
         MessageTask::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
         InternalPatch::current_patch_changed = true;
@@ -86,7 +77,6 @@ void setWheelControl(Ev& v, int param_index)
 
 void drawParamValueContextMenu(const char* label,
     Ev& v, const Ev& original_v,
-    //const int param_index, int (*vfn)(const int) = nullptr)   // TODO delete toDvFunc
     int param_index)
 {
     if (ImGui::BeginPopupContextItem())
@@ -99,10 +89,6 @@ void drawParamValueContextMenu(const char* label,
         if (ImGui::Selectable("Revert to the original value"))
         {
             v = original_v;
-            /* TODO delete toDvFunc
-            int send_value = vfn == nullptr ? v->ev() : vfn(v->ev());
-            MessageTask::addParamChangedTask(param_index, send_value);
-            */
             MessageTask::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
@@ -112,10 +98,6 @@ void drawParamValueContextMenu(const char* label,
         if (ImGui::Selectable("Reset to the initial value"))
         {
             v.setDefault();
-            /* TODO delete toDvFunc
-            int send_value = vfn == nullptr ? v->ev() : vfn(v->ev());
-            MessageTask::addParamChangedTask(param_index, send_value);
-            */
             MessageTask::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
@@ -130,7 +112,6 @@ void drawParamValueContextMenu(const char* label,
 
 void drawSlider(const char* label, int label_index, float label_width, float control_width,
     Ev& v, const Ev& original_v,
-    //const int param_index = -1, int(*vfn)(const int) = nullptr,   // TODO delete toDvFunc
     int param_index = -1,
     bool hide_label = false)
 {
@@ -141,20 +122,14 @@ void drawSlider(const char* label, int label_index, float label_width, float con
         label_width, control_width, changed_from_org, UI_COLOR_PARAM_CHANGED,
         &v, display_format))
     {
-        /* TODO delete toDvFunc
-        int send_value = vfn == nullptr ? v->ev() : vfn(v->ev());
-        MessageTask::addParamChangedTask(param_index, send_value);
-        */
         MessageTask::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
         InternalPatch::current_patch_changed = true;
     }
     if (changed_from_org) ImGui::PopStyleColor();
     GuiUtil::MouseCursorToHand();
-    //setWheelControl(v, param_index, vfn); // TODO delete toDvFunc
     setWheelControl(v, param_index);
 
-    //drawParamValueContextMenu(label, v, original_v, param_index, vfn);    // TODO delete toDvFunc
     drawParamValueContextMenu(label, v, original_v, param_index);
 }
 
@@ -327,11 +302,6 @@ void drawPatchParameters(SoundModel::Patch& cp, SoundModel::Patch& op)
 
         GuiUtil::PushFont((int)Font::Text);
 
-        /* TODO delete toDvFunc
-        drawSlider("Balance", 0, label_width, control_width,
-            &cp->balance, &op->balance, PARAM_CC.at(ParamIndex::Balance),
-            SoundValueUtil::centerEvToDv);
-            */
         drawSlider("Balance", 0, label_width, control_width,
             cp.balance, op.balance, PARAM_CC.at(ParamIndex::Balance));
 
@@ -387,7 +357,6 @@ void drawPatchParameters(SoundModel::Patch& cp, SoundModel::Patch& op)
             cp.split_layer, op.split_layer, PARAM_CC.at(ParamIndex::SplitLayer));
 
         drawSlider("Spliy key", 0, label_width, control_width,
-            //&cp->split_key, &op->split_key, -1, nullptr, false);  // TODO delete toDvFunc
             cp.split_key, op.split_key, -1, false);
         drawSameLine();
         helpMarker("Changes to this parameter will take effect the next time you load.");
