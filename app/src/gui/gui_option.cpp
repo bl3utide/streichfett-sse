@@ -90,7 +90,7 @@ void drawOptionGroupConnections()
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
             const auto in_name_list_size = Connector::in_name_list.size();
-            for (int n = 0; n < in_name_list_size; ++n)
+            for (auto n = 0; n < in_name_list_size; ++n)
             {
                 const auto is_selected = n == Connector::synth_input.getPortIndex();
                 if (n == Connector::key_input.getPortIndex())
@@ -158,7 +158,7 @@ void drawOptionGroupConnections()
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
             const auto in_name_list_size = Connector::in_name_list.size();
-            for (int n = 0; n < in_name_list_size; ++n)
+            for (auto n = 0; n < in_name_list_size; ++n)
             {
                 const auto is_selected = n == Connector::key_input.getPortIndex();
                 if (n == Connector::synth_input.getPortIndex())

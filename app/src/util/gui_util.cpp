@@ -108,7 +108,7 @@ void EndGroupPanel()
     ImRect frameRect = ImRect(itemMin + halfFrame, itemMax - ImVec2(halfFrame.x, 0.0f));
     labelRect.Min.x -= itemSpacing.x;
     labelRect.Max.x += itemSpacing.x;
-    for (int i = 0; i < 4; ++i)
+    for (auto i = 0; i < 4; ++i)
     {
         switch (i)
         {

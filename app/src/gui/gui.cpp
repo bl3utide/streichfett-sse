@@ -239,7 +239,7 @@ void drawPageSelector()
 
     GuiUtil::PushFont((int)Font::TextBold);
     ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
-    for (int page_i = 0; page_i < static_cast<int>(Page::_COUNT_); ++page_i)
+    for (auto page_i = 0; page_i < static_cast<int>(Page::_COUNT_); ++page_i)
     {
         auto is_current_page = static_cast<int>(_page) == page_i;
 

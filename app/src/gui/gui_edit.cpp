@@ -169,7 +169,7 @@ void drawCombo(const char* label, int label_index, float label_width, float cont
         v.evs(), (int)ImGuiComboFlags_None))
     {
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
-        for (int n = 0; n < v.evArraySize(); ++n)
+        for (auto n = 0; n < v.evArraySize(); ++n)
         {
             bool is_selected = n == v.ev();
             ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_BASE);
@@ -203,7 +203,7 @@ void drawPatchSelector()
     GuiUtil::PushFont((int)Font::PatchInfo);
     auto& sound_addr = InternalPatch::getCurrentSoundAddress();
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    for (int patch_i = 0; patch_i < 12; ++patch_i)
+    for (auto patch_i = 0; patch_i < 12; ++patch_i)
     {
         char bb = InternalPatch::getSoundBankChar(patch_i);
         int bs = InternalPatch::getSoundPatchNumber(patch_i);

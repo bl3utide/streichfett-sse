@@ -172,7 +172,7 @@ void drawDebugTabItemConfig()
 
                 ImGui::TableHeadersRow();
 
-                for (int key_i = 0; key_i < static_cast<int>(Config::Key::_COUNT_); ++key_i)
+                for (auto key_i = 0; key_i < static_cast<int>(Config::Key::_COUNT_); ++key_i)
                 {
                     drawParamsRow(static_cast<Config::Key>(key_i));
                 }
@@ -272,7 +272,7 @@ void drawDebugTabItemSendTest(State current_state)
             ImGui::BeginDisabled();
         }
 
-        for (int i = 0; i < static_cast<int>(cd::SendTestType::_COUNT_); ++i)
+        for (auto i = 0; i < static_cast<int>(cd::SendTestType::_COUNT_); ++i)
         {
             switch (static_cast<cd::SendTestType>(i))
             {
@@ -424,7 +424,7 @@ void drawProcessedWindow()
         if (ImGui::Button("Copy to clipboard"))
         {
             std::stringstream cb;
-            for (int i = 0; i < message.data.size(); ++i)
+            for (auto i = 0; i < message.data.size(); ++i)
             {
                 cb << std::uppercase << std::hex
                     << std::setfill('0') << std::setw(2)
@@ -456,7 +456,7 @@ void drawProcessedWindow()
         ImGui::BeginChild("processed_detail_header", ImVec2(340.0f, 18.0f));
         {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
-            for (int i = 0; i < 10; ++i)
+            for (auto i = 0; i < 10; ++i)
             {
                 ImGui::Text("%02X", i);
                 ImGui::SameLine(hex_space * (i + 1));

@@ -221,7 +221,7 @@ const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& p
     {
         req.push_back(static_cast<Byte>(sound));
     }
-    for (int i = 0; i < sound_data.size(); ++i)
+    for (auto i = 0; i < sound_data.size(); ++i)
     {
         req.push_back(sound_data[i]);
     }
