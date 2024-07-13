@@ -156,19 +156,27 @@ bool IsCustomKeyPressed(ImGuiCustomKey key, bool repeat) noexcept
     {
         case ImGuiCustomKey::Up:
             if (ImGui::IsKeyPressed(ImGuiKey_UpArrow, repeat) || ImGui::IsKeyPressed(ImGuiKey_W, repeat))
+            {
                 return true;
+            }
             break;
         case ImGuiCustomKey::Left:
             if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow, repeat) || ImGui::IsKeyPressed(ImGuiKey_A, repeat))
+            {
                 return true;
+            }
             break;
         case ImGuiCustomKey::Down:
             if (ImGui::IsKeyPressed(ImGuiKey_DownArrow, repeat) || ImGui::IsKeyPressed(ImGuiKey_S, repeat))
+            {
                 return true;
+            }
             break;
         case ImGuiCustomKey::Right:
             if (ImGui::IsKeyPressed(ImGuiKey_RightArrow, repeat) || ImGui::IsKeyPressed(ImGuiKey_D, repeat))
+            {
                 return true;
+            }
             break;
         default:
             break;

@@ -314,11 +314,17 @@ void drawDebugTabItemSendTest(State current_state)
                     GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "NG");
                     ImGui::SameLine();
                     if (cd::send_test_failed_cause.at(static_cast<cd::SendTestType>(i)) == cd::SendTestFailedCause::RequestTimeout)
+                    {
                         GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Timeout)");
+                    }
                     else if (cd::send_test_failed_cause.at(static_cast<cd::SendTestType>(i)) == cd::SendTestFailedCause::EmptyResponse)
+                    {
                         GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Empty Response)");
+                    }
                     else if (cd::send_test_failed_cause.at(static_cast<cd::SendTestType>(i)) == cd::SendTestFailedCause::IncorrectMessage)
+                    {
                         GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_NG, "(Incorrect Message)");
+                    }
                     break;
                 default:
                     ImGui::Text("");
@@ -364,7 +370,9 @@ void drawDebugTabItemTransReceiveLog()
             }
 
             if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+            {
                 ImGui::SetScrollHereY(1.0f);
+            }
         }
         ImGui::EndChild();
         if (ImGui::IsItemHovered())
@@ -403,9 +411,13 @@ void drawProcessedWindow()
     {
         GuiUtil::PushFont((int)FontDebug::ProcHead);
         if (message.transmitted)
+        {
             GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_TRANSMIT, "%s", "Transmitted");
+        }
         else
+        {
             GuiUtil::TextColoredU32(DEBUG_UI_COLOR_TEXT_RECEIVE, "%s", "Received");
+        }
         ImGui::PopFont();
 
         ImGui::SameLine(300.0f);
@@ -478,7 +490,9 @@ void drawProcessedWindow()
                         if (col_i != 9) ImGui::SameLine(hex_space * (col_i + 1) + hex_indent);
                     }
                     else
+                    {
                         break;
+                    }
                 }
             }
         }
@@ -521,7 +535,9 @@ void drawDebugTabItemLogger()
             }
 
             if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+            {
                 ImGui::SetScrollHereY(1.0f);
+            }
         }
         ImGui::EndChild();
         if (ImGui::IsItemHovered())
@@ -629,7 +645,9 @@ void drawDebugWindows(int window_w, int window_h, State current_state)
     }
 
     if (show_debug_window_)
+    {
         drawDebugWindow(&show_debug_window_, window_w, window_h, current_state);
+    }
 
     ImGui::PopFont();
 }

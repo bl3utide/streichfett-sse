@@ -49,7 +49,8 @@ struct ProcessedMidiMessage
     explicit ProcessedMidiMessage()
         : timestamp(""), transmitted(true), device_name(""), description("")
         , data(ByteVec()), list_title("")
-    {}
+    {
+    }
 
     explicit ProcessedMidiMessage(
         const std::string& ts,

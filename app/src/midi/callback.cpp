@@ -435,7 +435,8 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
             const auto ch = InternalSetting::getDeviceMidiChannel();
             if (MessageHandler::isNoteOff(*message))
             {
-                send_message = {
+                send_message =
+                {
                     static_cast<Byte>(0x80 + ch),
                     message->at(1),
                     message->at(2)
@@ -443,7 +444,8 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
             }
             else
             {
-                send_message = {
+                send_message =
+                {
                     static_cast<Byte>(0x90 + ch),
                     message->at(1),
                     message->at(2)

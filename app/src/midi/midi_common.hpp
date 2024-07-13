@@ -11,7 +11,8 @@ struct CallbackMutex
     bool is_callback_catched;
 
     explicit CallbackMutex() : is_callback_catched(false)
-    {}
+    {
+    }
 };
 
 class RequestCounter
@@ -19,7 +20,8 @@ class RequestCounter
 public:
     explicit RequestCounter(int limit)
         : v_(0), upper_limit_(limit)
-    {}
+    {
+    }
 
     RequestCounter() = delete;
     RequestCounter(const RequestCounter& rhs) = delete;
