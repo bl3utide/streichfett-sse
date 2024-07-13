@@ -24,7 +24,7 @@ const std::vector<std::string> EV_MIDI_CHANNEL
     "r:omni / t:13",
     "r:omni / t:14",
     "r:omni / t:15",
-    "r:omni / t:16"
+    "r:omni / t:16",
 };
 
 const std::vector<std::string> EV_TRANSPOSE
@@ -33,7 +33,7 @@ const std::vector<std::string> EV_TRANSPOSE
     "-6", "-5", "-4", "-3", "-2", "-1",
     "+0",
     "+1", "+2", "+3", "+4", "+5", "+6",
-    "+7", "+8", "+9", "+10", "+11", "+12"
+    "+7", "+8", "+9", "+10", "+11", "+12",
 };
 
 } // GlobalModel

@@ -20,7 +20,7 @@ enum class State : int
     WaitingSendDelay,
     PrepareToExit,
     None,
-    _COUNT_
+    _COUNT_,
 };
 
 #ifdef _DEBUG

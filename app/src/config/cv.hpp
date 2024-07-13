@@ -21,7 +21,7 @@ public:
     {
         String,
         Int,
-        Bool
+        Bool,
     };
 
     // constructor for std::string
