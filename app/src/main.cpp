@@ -18,10 +18,10 @@ namespace StreichfettSse
 enum class InitSection : int
 {
     Sdl,
+    Config,
     Gui,
     Image,
     Connector,
-    Config,
 
     _COUNT_,
 };
@@ -45,6 +45,17 @@ void initialize()
             throw UncontinuableException("SDL_Init error", ERROR_WHEN_INIT, ERROR_CAUSE_INIT_SDL);
         }
         init_flag_.set(static_cast<int>(InitSection::Sdl));
+
+        try
+        {
+            Logger::debug("start init Config");
+            Config::initialize();
+            init_flag_.set(static_cast<int>(InitSection::Config));
+        }
+        catch (std::exception& e)
+        {
+            throw UncontinuableException(e.what(), ERROR_WHEN_INIT, ERROR_CAUSE_INIT_CONFIG);
+        }
 
         try
         {
@@ -77,17 +88,6 @@ void initialize()
         catch (RtMidiError& e)
         {
             throw UncontinuableException(e.getMessage().c_str(), ERROR_WHEN_INIT, ERROR_CAUSE_INIT_CONN);
-        }
-
-        try
-        {
-            Logger::debug("start init Config");
-            Config::initialize();
-            init_flag_.set(static_cast<int>(InitSection::Config));
-        }
-        catch (std::exception& e)
-        {
-            throw UncontinuableException(e.what(), ERROR_WHEN_INIT, ERROR_CAUSE_INIT_CONFIG);
         }
     }
     catch (UncontinuableException& uce)

@@ -14,10 +14,10 @@ using ErrorCause = std::uint8_t;
 // ERROR DEFINITIONS
 constexpr ErrorWhen     ERROR_WHEN_INIT         = 0x00;
 constexpr ErrorCause    ERROR_CAUSE_INIT_SDL    = 0x00;
-constexpr ErrorCause    ERROR_CAUSE_INIT_GUI    = 0x01;
-constexpr ErrorCause    ERROR_CAUSE_INIT_IMAGE  = 0x02;
-constexpr ErrorCause    ERROR_CAUSE_INIT_CONN   = 0x03;
-constexpr ErrorCause    ERROR_CAUSE_INIT_CONFIG = 0x04;
+constexpr ErrorCause    ERROR_CAUSE_INIT_CONFIG = 0x01;
+constexpr ErrorCause    ERROR_CAUSE_INIT_GUI    = 0x02;
+constexpr ErrorCause    ERROR_CAUSE_INIT_IMAGE  = 0x03;
+constexpr ErrorCause    ERROR_CAUSE_INIT_CONN   = 0x04;
 
 constexpr ErrorWhen     ERROR_WHEN_FETCH_DEV_LIST   = 0x10;
 constexpr ErrorCause    ERROR_CAUSE_GET_INDEV_NAME  = 0x00;
