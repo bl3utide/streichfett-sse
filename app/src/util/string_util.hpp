@@ -48,9 +48,13 @@ const inline std::string getExeVersionInfo(FileVersion order) noexcept
             auto v2 = LOWORD(file_info_ptr->dwProductVersionMS);
             auto v3 = HIWORD(file_info_ptr->dwProductVersionLS);
             if (order == FileVersion::ProductVersionMajorOnly)
+            {
                 return format("%hu.%hu", v1, v2);
+            }
             else
+            {
                 return format("%hu.%hu.%hu", v1, v2, v3);
+            }
         }
         else
         {

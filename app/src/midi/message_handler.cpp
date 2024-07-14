@@ -103,12 +103,12 @@ const ByteVec getAllSoundOffMessage()
     return aso;
 }
 
-bool isNoteOff(const ByteVec& mb)
+bool isNoteOff(const ByteVec& mb) noexcept
 {
     return 0x80 <= mb[0] && mb[0] <= 0x8F;
 }
 
-bool isNoteOn(const ByteVec& mb)
+bool isNoteOn(const ByteVec& mb) noexcept
 {
     return 0x90 <= mb[0] && mb[0] <= 0x9F;
 }

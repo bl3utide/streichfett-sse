@@ -13,7 +13,7 @@ void iniValueToCv(const mINI::INIStructure& is, Cv& cv) noexcept
 {
     if (is.get(cv.section_name()).has(cv.key_name()))
     {
-        const std::string& src_val = is.get(cv.section_name()).get(cv.key_name());
+        const auto src_val = is.get(cv.section_name()).get(cv.key_name());
 
         if (cv.type() == Cv::Type::Int)
         {

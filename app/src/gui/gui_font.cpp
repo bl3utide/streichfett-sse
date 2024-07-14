@@ -20,7 +20,7 @@ struct TextFont
 
     void add() const
     {
-        auto font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
+        auto* font = ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(
             data, data_size, pixels
         );
         IM_ASSERT(font);

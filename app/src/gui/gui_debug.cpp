@@ -524,7 +524,7 @@ void drawDebugTabItemLogger()
             auto dlog_copy_end = dlog_copy.cend();
             for (auto iter = dlog_copy.cbegin(); iter != dlog_copy_end; ++iter)
             {
-                bool is_selected = selected_index == Logger::dlog_selected_index;
+                const bool is_selected = selected_index == Logger::dlog_selected_index;
                 if (ImGui::Selectable(StringUtil::format("%05d %s", iter->log_id, iter->text.c_str()).c_str(), is_selected))
                 {
                     Logger::dlog_selected_index = selected_index;

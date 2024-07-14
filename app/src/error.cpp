@@ -71,7 +71,7 @@ const std::string& BaseException::getErrorMessage() const noexcept
 }
 
 ContinuableException::ContinuableException(const AnyCauseException& ace, ErrorWhen when, State next_state)
-    : BaseException(ace, when),  next_state_(next_state)
+    : BaseException(ace, when), next_state_(next_state)
 {
 }
 
