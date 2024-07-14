@@ -86,7 +86,7 @@ private:
     ErrorWhen when_;
     ErrorCause cause_;
     std::string error_message_;
-    const std::uint16_t getErrorCode() const noexcept;
+    std::uint16_t getErrorCode() const noexcept;
     void setErrorMessage() noexcept;
 };
 
@@ -106,7 +106,7 @@ public:
         State next_state = State::None
     );
 
-    const State getNextState() const noexcept;
+    State getNextState() const noexcept;
 
     // disable default functions
     ContinuableException(const ContinuableException&) = delete;
