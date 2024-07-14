@@ -123,7 +123,7 @@ void applyConfig()
     const auto synth_in_res = std::find(in_name_list.cbegin(), in_name_list.cend(), cv_synth_input_device_name);
     if (synth_in_res != in_name_list.cend())
     {   // found
-        const int index = static_cast<int>(std::distance(in_name_list.cbegin(), synth_in_res));
+        const auto index = static_cast<int>(std::distance(in_name_list.cbegin(), synth_in_res));
         try
         {
             openSynthInputPort(index, in_name_list[index]);
@@ -374,7 +374,7 @@ void requestSoundData()
 }
 
 // DSI: Streichfett
-void sendSoundDump(const bool is_edit_buffer)
+void sendSoundDump(bool is_edit_buffer)
 {
     auto& sound_addr = InternalPatch::getCurrentSoundAddress();
     const auto sound = is_edit_buffer ? -1 : sound_addr.sound;
@@ -486,7 +486,7 @@ bool isSynthConnected() noexcept
     return is_synth_connected_;
 }
 
-void setSynthConnected(const bool connected) noexcept
+void setSynthConnected(bool connected) noexcept
 {
     if (connected)
     {

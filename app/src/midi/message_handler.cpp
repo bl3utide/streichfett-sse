@@ -80,7 +80,7 @@ const ByteVec getGlobalRequestMessage()
 
 const ByteVec getProgChangeMessage(int value)
 {
-    const int ch = InternalSetting::getDeviceMidiChannel();
+    const auto ch = InternalSetting::getDeviceMidiChannel();
     Byte order_byte = 0xC0 + static_cast<Byte>(ch);
 
     ByteVec pc;
@@ -243,7 +243,7 @@ const ByteVec getSoundParameterChangeMessage(int index, const Byte& value)
 {
     // NOTE: For Streichfett, change the parameters with CC.
 
-    const int ch = InternalSetting::getDeviceMidiChannel();
+    const auto ch = InternalSetting::getDeviceMidiChannel();
 
     ByteVec req;
     req.clear();
