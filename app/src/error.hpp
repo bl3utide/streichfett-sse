@@ -48,7 +48,7 @@ class AnyCauseException final : public std::exception
 public:
     explicit AnyCauseException(const char* message, ErrorCause cause = ERROR_CAUSE_UNDEFINED);
 
-    const ErrorCause getCause() const noexcept;
+    ErrorCause getCause() const noexcept;
 
     // disable default functions
     AnyCauseException(const AnyCauseException&) = delete;

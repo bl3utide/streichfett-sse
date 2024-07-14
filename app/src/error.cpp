@@ -29,7 +29,7 @@ AnyCauseException::AnyCauseException(const char* message, ErrorCause cause)
 {
 }
 
-const ErrorCause AnyCauseException::getCause() const noexcept
+ErrorCause AnyCauseException::getCause() const noexcept
 {
     return cause_;
 }
