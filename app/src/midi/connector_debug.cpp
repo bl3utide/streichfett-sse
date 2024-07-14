@@ -24,8 +24,8 @@ ProcessedMidiMessage history_selected;
 std::mutex history_mutex;
 
 // private
-constexpr int TIMEOUT_DURATION = 5000;
-constexpr size_t MAX_SIZE_DISPLAY_HISTORY = 200;
+const int TIMEOUT_DURATION = 5000;
+const size_t MAX_SIZE_DISPLAY_HISTORY = 200;
 
 void addProcessedHistory(bool transmitted, const std::string& device_name, const ByteVec& data)
 {

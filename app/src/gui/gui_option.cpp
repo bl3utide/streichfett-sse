@@ -13,12 +13,11 @@ namespace StreichfettSse
 namespace Gui
 {
 
-constexpr float ITEM_PADDING_Y = 2.0f;
-constexpr float ITEM_SPACING_Y = 6.0f;
-// TODO change to constexpr std::string (C++20)
-constexpr const char* TEXT_CONNECTED = "Connected";
-constexpr const char* TEXT_DISCONNECTED = "Disconnected";
-constexpr char* TEXT_INFO_NONE = "----";
+const float ITEM_PADDING_Y = 2.0f;
+const float ITEM_SPACING_Y = 6.0f;
+const std::string TEXT_CONNECTED = "Connected";
+const std::string TEXT_DISCONNECTED = "Disconnected";
+const std::string TEXT_INFO_NONE = "----";
 
 void drawOptionItem(const char* text)
 {
@@ -65,6 +64,10 @@ void drawOptionItemValue(const T& v, bool displayable = false)
                 ImGui::Text("%d", v.ev());
             }
         }
+        else if constexpr (std::is_same_v<T, std::string>)
+        {
+            ImGui::Text(v.c_str());
+        }
         else if constexpr (std::is_same_v<T, const char*>)
         {
             ImGui::Text(v);
@@ -72,7 +75,7 @@ void drawOptionItemValue(const T& v, bool displayable = false)
     }
     else
     {
-        ImGui::Text(TEXT_INFO_NONE);
+        ImGui::Text(TEXT_INFO_NONE.c_str());
     }
     endOptionItemValue();
 }
