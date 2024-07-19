@@ -28,7 +28,7 @@ const int       SOUND_DATA_END_INDEX = 29;                          // DSI: Stre
 const int       GLOBAL_DATA_START_INDEX = 6;                        // DSI: Streichfett
 const int       GLOBAL_DATA_END_INDEX = 13;                         // DSI: Streichfett
 
-bool isSysex(const ByteVec& mb) noexcept
+static bool isSysex(const ByteVec& mb) noexcept
 {
     return mb.front() == 0xF0 && mb.back() == 0xF7;
 }

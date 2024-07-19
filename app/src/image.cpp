@@ -12,7 +12,7 @@ namespace Image
 // private
 std::unordered_map<Texture, GLuint> texture_;
 
-bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* output)
+static bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* output)
 {
     auto image_width = 0;
     auto image_height = 0;
@@ -38,7 +38,7 @@ bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* outpu
     return true;
 }
 
-void unloadTexture(const GLuint* texture) noexcept
+static void unloadTexture(const GLuint* texture) noexcept
 {
     if (texture != nullptr)
     {
@@ -46,7 +46,7 @@ void unloadTexture(const GLuint* texture) noexcept
     }
 }
 
-void loadTextures()
+static void loadTextures()
 {
     bool load_tex_ret;
 
@@ -63,7 +63,7 @@ void loadTextures()
     IM_ASSERT(load_tex_ret);
 }
 
-void unloadTextures()
+static void unloadTextures()
 {
     unloadTexture(&texture_.at(Texture::Reload));
 }

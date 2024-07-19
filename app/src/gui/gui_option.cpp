@@ -19,7 +19,7 @@ const std::string TEXT_CONNECTED = "Connected";
 const std::string TEXT_DISCONNECTED = "Disconnected";
 const std::string TEXT_INFO_NONE = "----";
 
-void drawOptionItem(const char* text)
+static void drawOptionItem(const char* text)
 {
     GuiUtil::PushFont((int)Font::OptionItemBold);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
@@ -31,7 +31,7 @@ void drawOptionItem(const char* text)
     ImGui::PopFont();
 }
 
-void beginOptionItemValue()
+static void beginOptionItemValue()
 {
     GuiUtil::PushFont((int)Font::OptionItem);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
@@ -39,7 +39,7 @@ void beginOptionItemValue()
     ImGui::PushItemWidth(320.0f);
 }
 
-void endOptionItemValue()
+static void endOptionItemValue()
 {
     ImGui::PopItemWidth();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - ITEM_PADDING_Y);    // text v-align
@@ -80,7 +80,7 @@ void drawOptionItemValue(const T& v, bool displayable = false)
     endOptionItemValue();
 }
 
-void drawOptionGroupConnections()
+static void drawOptionGroupConnections()
 {
     GuiUtil::BeginGroupPanel("Connections", ImVec2(440.0f, 200.0f));
     {
@@ -210,7 +210,7 @@ void drawOptionGroupConnections()
 }
 
 // DSI: Streichfett
-void drawOptionGroupDeviceSettingInfo()
+static void drawOptionGroupDeviceSettingInfo()
 {
     GuiUtil::BeginGroupPanel("Device Setting Info", ImVec2(320.0f, 200.0f));
     {

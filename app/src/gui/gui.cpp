@@ -34,7 +34,7 @@ const std::unordered_map<Page, const char*> PAGE_STR
     { Page::Option, "OPTION" },
 };
 
-void setUiStyle() noexcept
+static void setUiStyle() noexcept
 {
     auto style = &ImGui::GetStyle();
     style->WindowPadding = ImVec2(6.0f, 6.0f);
@@ -95,7 +95,7 @@ void setUiStyle() noexcept
     style->Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.0f, 0.98f, 0.95f, 0.73f);
 }
 
-void drawErrorModal()
+static void drawErrorModal()
 {
     if (has_error)
     {
@@ -141,7 +141,7 @@ void drawErrorModal()
     }
 }
 
-void drawAboutModal()
+static void drawAboutModal()
 {
     auto& io = ImGui::GetIO();
     auto modal_window_size = ImVec2(400.0f, 180.0f);
@@ -196,7 +196,7 @@ void drawAboutModal()
     ImGui::PopStyleVar();
 }
 
-void drawHeader(int window_width)
+static void drawHeader(int window_width)
 {
     GuiUtil::PushFont((int)Font::Title);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TITLE_TEXT);
@@ -231,7 +231,7 @@ void drawHeader(int window_width)
 }
 
 // DSI: Streichfett
-void drawPageSelector()
+static void drawPageSelector()
 {
     auto draw_list = ImGui::GetWindowDrawList();
 
@@ -273,7 +273,7 @@ void drawPageSelector()
 }
 
 // DSI: Streichfett
-void drawContent()
+static void drawContent()
 {
     auto& current_patch = InternalPatch::getCurrentPatch();
     auto& original_patch = InternalPatch::getOriginalPatch();
@@ -284,14 +284,14 @@ void drawContent()
     ImGui::PopStyleColor();
 }
 
-void preDraw()
+static void preDraw()
 {
     ImGui_ImplOpenGL2_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 }
 
-void postDraw()
+static void postDraw()
 {
     ImGui::Render();
     glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
