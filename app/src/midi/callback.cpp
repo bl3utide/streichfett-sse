@@ -124,7 +124,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
                 {
                     Logger::debug("checkInquiryDump failed");
                     const auto byte_str = MessageHandler::getByteVecString(*message);
-                    Logger::debug(StringUtil::format(" >> %s", byte_str.c_str()));
+                    Logger::debug(std::format(" >> {}", byte_str));
 
                     if (request_try_count.reachedLimit())
                     {
@@ -463,7 +463,7 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
         }
         catch (RtMidiError& error)
         {
-            Logger::debug(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
+            Logger::debug(std::format("MIDI error: {}", error.getMessage()));
             setAppError("MIDI error when sending message from key to output");
         }
     }

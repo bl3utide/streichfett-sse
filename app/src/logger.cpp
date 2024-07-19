@@ -29,11 +29,11 @@ void initialize() noexcept
 
 #ifdef _DEBUG
     dlog_selected_index = -1;
-    debug_file_name_ = StringUtil::format("%s.debug.log", APP_NAME.c_str());
+    debug_file_name_ = std::format("{}.debug.log", APP_NAME);
     static plog::DebugLogAppender<plog::DebugLogFormatter> debugLogAppender;
     plog::init<plog::DebugLogFormatter>(plog::debug, debug_file_name_.c_str()).addAppender(&debugLogAppender);
 #endif
-    error_file_name_ = StringUtil::format("%s.error.log", APP_NAME.c_str());
+    error_file_name_ = std::format("{}.error.log", APP_NAME);
     plog::init<plog::ErrorLogFormatter, LogId::Error>(plog::error, error_file_name_.c_str());
 }
 

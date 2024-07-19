@@ -88,7 +88,7 @@ void setPatchFromBytes(SoundModel::Patch& patch, const ByteVec& data)
     catch (std::exception& error)
     {
         // The received tone data seems to be invalid
-        throw std::exception(StringUtil::format("setPatchFromBytes failed: %s", error.what()).c_str());
+        throw std::exception(std::format("setPatchFromBytes failed: {}", error.what()).c_str());
     }
 }
 

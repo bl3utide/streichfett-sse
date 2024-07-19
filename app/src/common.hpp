@@ -12,6 +12,7 @@
 #include <mutex>
 #include <functional>
 #include <bitset>
+#include <format>
 
 #include <SDL.h>
 #include <SDL_opengl.h>

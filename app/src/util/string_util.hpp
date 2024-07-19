@@ -4,16 +4,6 @@
 namespace StringUtil
 {
 
-// Hint: '%%' escapes '%'
-template <typename... Args>
-std::string format(const std::string& fmt, Args ... args)
-{
-    size_t len = std::snprintf(nullptr, 0, fmt.c_str(), args ...);
-    std::vector<char> buf(len + 1);
-    std::snprintf(&buf[0], len + 1, fmt.c_str(), args ...);
-    return std::string(&buf[0], &buf[0] + len);
-}
-
 inline bool isInteger(const std::string& str)
 {
     return std::regex_match(str, std::regex("[(-|+)|][0-9]*"));
@@ -49,11 +39,11 @@ const inline std::string getExeVersionInfo(FileVersion order) noexcept
             auto v3 = HIWORD(file_info_ptr->dwProductVersionLS);
             if (order == FileVersion::ProductVersionMajorOnly)
             {
-                return format("%hu.%hu", v1, v2);
+                return std::format("{0}.{1}", v1, v2);
             }
             else
             {
-                return format("%hu.%hu.%hu", v1, v2, v3);
+                return std::format("{0}.{1}.{2}", v1, v2, v3);
             }
         }
         else
@@ -85,7 +75,7 @@ const inline std::string getExeVersionInfo(FileVersion order) noexcept
             VerQueryValueA(version_ptr, (LPTSTR)(LPCTSTR)sub_block, (void**)&str_info_ptr, &query_len);
             if (query_len > 0)
             {
-                return format("%s", str_info_ptr);
+                return std::format("{}", str_info_ptr);
             }
             else
             {
