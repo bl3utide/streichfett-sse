@@ -1,14 +1,12 @@
 ﻿#include "common.hpp"
 #include "error.hpp"
 #include "image.hpp"
-#include "compressed/arrayed_font.hpp"
 #include "data/internal_patch.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
 #include "midi/midi_common.hpp"
 #ifdef _DEBUG
-#include "logger.hpp"
 #include "midi/connector_debug.hpp"
 #endif
 

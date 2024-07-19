@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include "model/global.hpp"
 #include "model/sound.hpp"
 
 namespace StreichfettSse

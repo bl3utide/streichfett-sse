@@ -1,8 +1,5 @@
 ﻿#include "common.hpp"
 #include "data/internal_setting.hpp"
-#ifdef _DEBUG
-#include "logger.hpp"
-#endif
 
 namespace StreichfettSse
 {

@@ -7,7 +7,6 @@
 #include "data/internal_patch.hpp"
 #include "data/internal_setting.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/callback.hpp"
 #include "midi/connector.hpp"
 #include "midi/message_handler.hpp"
 #ifdef _DEBUG
