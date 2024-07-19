@@ -63,7 +63,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;PLOG_CHAR_IS_UTF8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)sdl2\include;$(SolutionDir)imgui\include;$(SolutionDir)rtmidi\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -85,7 +85,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <ExceptionHandling>Sync</ExceptionHandling>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)src;$(SolutionDir)sdl2\include;$(SolutionDir)imgui\include;$(SolutionDir)rtmidi\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
