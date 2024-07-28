@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "model/global.hpp"
 
 namespace StreichfettSse

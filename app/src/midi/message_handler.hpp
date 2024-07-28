@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "model/sound.hpp"
 
 namespace StreichfettSse

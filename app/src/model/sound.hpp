@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "model/ev.hpp"
 #include "model/sound_const.hpp"
 #include "model/sound_value_util.hpp"
