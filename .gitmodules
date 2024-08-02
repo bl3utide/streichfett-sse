@@ -19,3 +19,6 @@
 [submodule "deps/plog"]
 	path = deps/plog
 	url = https://github.com/SergiusTheBest/plog
+[submodule "deps/mINI"]
+	path = deps/mINI
+	url = https://github.com/metayeti/mINI
