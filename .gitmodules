@@ -16,3 +16,6 @@
 [submodule "deps/rtmidi"]
 	path = deps/rtmidi
 	url = https://github.com/thestk/rtmidi
+[submodule "deps/plog"]
+	path = deps/plog
+	url = https://github.com/SergiusTheBest/plog
