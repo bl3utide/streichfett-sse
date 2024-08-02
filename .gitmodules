@@ -22,3 +22,6 @@
 [submodule "deps/mINI"]
 	path = deps/mINI
 	url = https://github.com/metayeti/mINI
+[submodule "deps/stb"]
+	path = deps/stb
+	url = https://github.com/nothings/stb
