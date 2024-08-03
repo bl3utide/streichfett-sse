@@ -35,7 +35,7 @@ void setSettingFromBytes(GlobalModel::Global& global, const ByteVec& data)
     catch (std::exception& error)
     {
         // The received global data seems to be invalid
-        throw std::exception(StringUtil::format("setSettingFromBytes failed: %s", error.what()).c_str());
+        throw std::exception(std::format("setSettingFromBytes failed: {}", error.what()).c_str());
     }
 }
 

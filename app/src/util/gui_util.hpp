@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "string_util.hpp"
 
 namespace GuiUtil
 {
@@ -8,7 +9,7 @@ bool ImGuiHiddenLabel(bool func(const char*, Args...), int repeat_idx,
     const char* label, float width, Args... args)
 {
     ImGui::SetNextItemWidth(width);
-    return func(StringUtil::format("##%s_%d", label, repeat_idx).c_str(), args...);
+    return func(std::format("##{0}_{1}", label, repeat_idx).c_str(), args...);
 }
 
 /*

@@ -132,7 +132,7 @@ bool checkInquiryDump(const ByteVec& dump)
 
     inquiry_dump.received = true;
     inquiry_dump.device_id = (int)dump[2];
-    inquiry_dump.firmware_version = StringUtil::format("%d.%d", dump[10], dump[11]);
+    inquiry_dump.firmware_version = std::format("{0}.{1}", dump[10], dump[11]);
 
     return true;
 }

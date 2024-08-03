@@ -64,10 +64,10 @@ struct ProcessedMidiMessage
         data.clear();
         data = d;
 
-        list_title = StringUtil::format("%s %s %s",
+        list_title = std::format("{0} {1} {2}",
             transmitted ? "T" : "R",
-            timestamp.c_str(),
-            description.c_str());
+            timestamp,
+            description);
     }
 };
 extern std::vector<ProcessedMidiMessage> history;

@@ -46,7 +46,7 @@ static void fetchDeviceList()
         catch (RtMidiError& error)
         {
             throw ContinuableException(
-                StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+                std::format("MIDI error: {}", error.getMessage()).c_str(),
                 ERROR_WHEN_FETCH_DEV_LIST,
                 ERROR_CAUSE_GET_INDEV_NAME
             );
@@ -66,7 +66,7 @@ static void fetchDeviceList()
         catch (RtMidiError& error)
         {
             throw ContinuableException(
-                StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+                std::format("MIDI error: {}", error.getMessage()).c_str(),
                 ERROR_WHEN_FETCH_DEV_LIST,
                 ERROR_CAUSE_GET_OUTDEV_NAME
             );
@@ -203,7 +203,7 @@ void openSynthInputPort(int port_index, const std::string& port_name)
     {
         setSynthConnected(false);
         throw ContinuableException(
-            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            std::format("MIDI error: {}", error.getMessage()).c_str(),
             ERROR_WHEN_OPEN_DEV, ERROR_CAUSE_OPEN_DEV_SI);
     }
 
@@ -224,7 +224,7 @@ void openSynthOutputPort(int port_index, const std::string& port_name)
     {
         setSynthConnected(false);
         throw ContinuableException(
-            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            std::format("MIDI error: {}", error.getMessage()).c_str(),
             ERROR_WHEN_OPEN_DEV, ERROR_CAUSE_OPEN_DEV_SO);
     }
 
@@ -244,7 +244,7 @@ void openKeyInputPort(int port_index, const std::string& port_name)
     catch (RtMidiError& error)
     {
         throw ContinuableException(
-            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            std::format("MIDI error: {}", error.getMessage()).c_str(),
             ERROR_WHEN_OPEN_DEV, ERROR_CAUSE_OPEN_DEV_KI);
     }
 
@@ -260,7 +260,7 @@ void requestInquiry()
     // send sysex message to device via midi out device
     const auto confirm_req_sysex = MessageHandler::getInquiryRequestMessage();
 
-    Logger::debug(StringUtil::format("request inquiry dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
+    Logger::debug(std::format("request inquiry dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
     try
     {
@@ -270,7 +270,7 @@ void requestInquiry()
     {
         setSynthConnected(false);
         throw ContinuableException(
-            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            std::format("MIDI error: {}", error.getMessage()).c_str(),
             ERROR_WHEN_SEND_MESSAGE,
             ERROR_CAUSE_REQ_INQUIRY,
             State::Idle
@@ -298,7 +298,7 @@ void requestGlobalData()
 {
     const auto global_req_sysex = MessageHandler::getGlobalRequestMessage();
 
-    Logger::debug(StringUtil::format("request global dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
+    Logger::debug(std::format("request global dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
     try
     {
@@ -308,7 +308,7 @@ void requestGlobalData()
     {
         setSynthConnected(false);
         throw ContinuableException(
-            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            std::format("MIDI error: {}", error.getMessage()).c_str(),
             ERROR_WHEN_SEND_MESSAGE,
             ERROR_CAUSE_REQ_GLOBAL,
             State::Idle
@@ -338,7 +338,7 @@ void requestSoundData()
 
     const auto sound_req_sysex = MessageHandler::getSoundRequestMessage(sound_addr.sound);
 
-    Logger::debug(StringUtil::format("request sound dump [try count: %d/%d]", request_try_count.v() + 1, request_try_count.max()));
+    Logger::debug(std::format("request sound dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
     try
     {
@@ -348,7 +348,7 @@ void requestSoundData()
     {
         setSynthConnected(false);
         throw ContinuableException(
-            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            std::format("MIDI error: {}", error.getMessage()).c_str(),
             ERROR_WHEN_SEND_MESSAGE,
             ERROR_CAUSE_REQ_SOUND,
             State::Idle
@@ -389,7 +389,7 @@ void sendSoundDump(bool is_edit_buffer)
     {
         setSynthConnected(false);
         throw ContinuableException(
-            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            std::format("MIDI error: {}", error.getMessage()).c_str(),
             ERROR_WHEN_SEND_MESSAGE,
             ERROR_CAUSE_SOUND_DUMP,
             State::Idle
@@ -422,7 +422,7 @@ void sendProgChange()
     {
         setSynthConnected(false);
         throw ContinuableException(
-            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            std::format("MIDI error: {}", error.getMessage()).c_str(),
             ERROR_WHEN_SEND_MESSAGE,
             ERROR_CAUSE_PROG_CHANGE,
             State::Idle
@@ -444,7 +444,7 @@ void sendAllSoundOff()
     catch (RtMidiError& error)
     {
         throw ContinuableException(
-            StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+            std::format("MIDI error: {}", error.getMessage()).c_str(),
             ERROR_WHEN_SEND_MESSAGE,
             ERROR_CAUSE_ALL_SND_OFF
         );
@@ -467,7 +467,7 @@ void sendOneTaskMessage()
         catch (RtMidiError& error)
         {
             throw ContinuableException(
-                StringUtil::format("MIDI error: %s", error.getMessage().c_str()).c_str(),
+                std::format("MIDI error: {}", error.getMessage()).c_str(),
                 ERROR_WHEN_SEND_MESSAGE,
                 ERROR_CAUSE_ONE_TASK
             );

@@ -57,7 +57,7 @@ void save() noexcept
     }
 }
 
-const std::string GET_CONFIG_VALUE_TYPE_ERR_TEXT = "Config key '%s' is not %s";
+constexpr std::string_view GET_CONFIG_VALUE_TYPE_ERR_TEXT = "Config key '{0}' is not {1}";
 
 template<typename T>
 T getConfigValue(Key key)
@@ -72,7 +72,7 @@ std::string getConfigValue(Key key)
 
     if (cv.type() != Cv::Type::String)
     {
-        throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
+        throw new std::runtime_error(std::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
     }
 
     return cv.cv();
@@ -85,7 +85,7 @@ int getConfigValue(Key key)
 
     if (cv.type() != Cv::Type::Int)
     {
-        throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
+        throw new std::runtime_error(std::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
     }
 
     return std::stoi(cv.cv());
@@ -98,13 +98,13 @@ bool getConfigValue(Key key)
 
     if (cv.type() != Cv::Type::Bool)
     {
-        throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
+        throw new std::runtime_error(std::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
     }
 
     return cv.cv() == "1";
 }
 
-const std::string SET_CONFIG_VALUE_TYPE_ERR_TEXT = "The type of config key '%s' is not %s";
+constexpr std::string_view SET_CONFIG_VALUE_TYPE_ERR_TEXT = "The type of config key '{0}' is not {1}";
 
 template<typename T>
 void setConfigValue(Key key, T value)
@@ -119,7 +119,7 @@ void setConfigValue(Key key, std::string value)
 
     if (cv.type() != Cv::Type::String)
     {
-        throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
+        throw new std::runtime_error(std::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
     }
 
     cv.set(value);
@@ -132,7 +132,7 @@ void setConfigValue(Key key, int value)
 
     if (cv.type() != Cv::Type::Int)
     {
-        throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
+        throw new std::runtime_error(std::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
     }
 
     cv.set(std::to_string(value));
@@ -145,7 +145,7 @@ void setConfigValue(Key key, bool value)
 
     if (cv.type() != Cv::Type::Bool)
     {
-        throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
+        throw new std::runtime_error(std::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
     }
 
     std::string set_v = value ? "1" : "0";
@@ -154,7 +154,7 @@ void setConfigValue(Key key, bool value)
 
 void initialize()
 {
-    config_file_name_ = StringUtil::format("%s.ini", APP_NAME.c_str());
+    config_file_name_ = std::format("{}.ini", APP_NAME);
 
     // [Device]
     cv_by_key_.insert({ Key::SynthInputDevice,   Cv(Section::Device, Key::SynthInputDevice, std::string()) });

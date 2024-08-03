@@ -65,7 +65,7 @@ public:
             }
             else
             {
-                throw std::exception(StringUtil::format("the internal config value is out of range (%s::%s)", section_.c_str(), key_.c_str()).c_str());
+                throw std::exception(std::format("the internal config value is out of range ({0}::{1})", section_, key_).c_str());
             }
         }
         else if (type_ == Type::Bool)

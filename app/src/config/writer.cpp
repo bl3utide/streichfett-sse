@@ -12,10 +12,10 @@ namespace Writer
 void cvToIni(const Cv& cv, mINI::INIStructure& is) noexcept
 {
     is[cv.section_name()][cv.key_name()] = cv.cv();
-    Logger::debug(StringUtil::format("Writed config value [%s]%s: %s",
-        cv.section_name().c_str(),
-        cv.key_name().c_str(),
-        cv.cv().c_str()));
+    Logger::debug(std::format("Writed config value [{0}]{1}: {2}",
+        cv.section_name(),
+        cv.key_name(),
+        cv.cv()));
 }
 
 } // Writer

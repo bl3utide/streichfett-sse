@@ -10,10 +10,10 @@ std::string error_message;
 bool showing_error_message;
 
 // private
-const std::string MESSAGE_FMT
-{ "%s (ERROR CODE 0x%04X)" };
-const std::string MESSAGE_FMT_UNDEFINED
-{ "<Unexplained Error> (ERROR CODE 0x%04X)" };
+constexpr std::string_view MESSAGE_FMT
+{ "{0} (ERROR CODE 0x{1:04X})" };
+constexpr std::string_view MESSAGE_FMT_UNDEFINED
+{ "<Unexplained Error> (ERROR CODE 0x{:04X})" };
 
 const std::unordered_map<ErrorWhen, std::string> MESSAGE
 {
@@ -51,12 +51,12 @@ void BaseException::setErrorMessage() noexcept
     if (MESSAGE.find(when_) != MESSAGE.end())
     {
         error_message_ =
-            StringUtil::format(MESSAGE_FMT, MESSAGE.at(when_).c_str(), getErrorCode());
+            std::format(MESSAGE_FMT, MESSAGE.at(when_), getErrorCode());
     }
     else
     {
         error_message_ =
-            StringUtil::format(MESSAGE_FMT_UNDEFINED, getErrorCode());
+            std::format(MESSAGE_FMT_UNDEFINED, getErrorCode());
     }
 }
 
