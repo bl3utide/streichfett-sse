@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "string_util.hpp"
 
 namespace GuiUtil
 {

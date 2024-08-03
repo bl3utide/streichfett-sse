@@ -1,6 +1,5 @@
 ﻿#include "common.hpp"
 #include "logger.hpp"
-#include "config/config.hpp"
 #include "config/cv.hpp"
 #include "config/reader.hpp"
 #include "config/writer.hpp"
