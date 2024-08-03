@@ -11,14 +11,14 @@ namespace ImGui
 
 // DSI: Streichfett
 // TODO: std::format(C++20) -> try to replace pointer-val and ref-value
-bool NiSliderInt(const char* label, StreichfettSse::Ev* v, const char* format)
+static bool NiSliderInt(const char* label, StreichfettSse::Ev* v, const char* format)
 {
     return SliderInt(label, v->valp, v->min(), v->max(), format, ImGuiSliderFlags_NoInput);
 }
 
 // DSI: Streichfett
 // TODO: std::format(C++20) -> try to replace pointer-val and ref-value
-bool NiDragInt(const char* label, StreichfettSse::Ev* v, float v_speed, const char* format)
+static bool NiDragInt(const char* label, StreichfettSse::Ev* v, float v_speed, const char* format)
 {
     return DragInt(label, v->valp, v_speed, v->min(), v->max(), format, ImGuiSliderFlags_NoInput);
 }
@@ -44,12 +44,12 @@ const float EFFECT_CONTROL_WIDTH = 179.0f;
 
 const float NEXT_GROUP_SPACE = 4.0f;
 
-void drawSameLine()
+static void drawSameLine()
 {
     ImGui::SameLine(0.0f, 2.0f);
 }
 
-void helpMarker(const char* desc)
+static void helpMarker(const char* desc)
 {
     ImGui::Text("(?)");
     if (ImGui::IsItemHovered())
@@ -62,7 +62,7 @@ void helpMarker(const char* desc)
     }
 }
 
-void setWheelControl(Ev& v, int param_index)
+static void setWheelControl(Ev& v, int param_index)
 {
     ImGuiIO& io = ImGui::GetIO();
     if (ImGui::IsItemHovered() && io.MouseWheel != 0.0f)
@@ -75,7 +75,7 @@ void setWheelControl(Ev& v, int param_index)
     }
 }
 
-void drawParamValueContextMenu(const char* label,
+static void drawParamValueContextMenu(const char* label,
     Ev& v, const Ev& original_v,
     int param_index)
 {
@@ -110,7 +110,7 @@ void drawParamValueContextMenu(const char* label,
     }
 }
 
-void drawSlider(const char* label, int label_index, float label_width, float control_width,
+static void drawSlider(const char* label, int label_index, float label_width, float control_width,
     Ev& v, const Ev& original_v,
     int param_index = -1,
     bool hide_label = false)
@@ -133,7 +133,7 @@ void drawSlider(const char* label, int label_index, float label_width, float con
     drawParamValueContextMenu(label, v, original_v, param_index);
 }
 
-void drawCombo(const char* label, int label_index, float label_width, float control_width,
+static void drawCombo(const char* label, int label_index, float label_width, float control_width,
     Ev& v, const Ev& original_v,
     int param_index = -1, bool hide_label = false)
 {
@@ -170,7 +170,7 @@ void drawCombo(const char* label, int label_index, float label_width, float cont
 }
 
 // DSI: Streichfett
-void drawPatchSelector()
+static void drawPatchSelector()
 {
     ImGui::Indent(10.0f);
 
@@ -228,7 +228,7 @@ void drawPatchSelector()
 }
 
 // DSI: Streichfett
-void drawPatchOperators(SoundModel::Patch& cp)
+static void drawPatchOperators(SoundModel::Patch& cp)
 {
     bool current_patch_changed = InternalPatch::current_patch_changed;
 
@@ -288,7 +288,7 @@ void drawPatchOperators(SoundModel::Patch& cp)
 }
 
 // DSI: Streichfett
-void drawPatchParameters(SoundModel::Patch& cp, SoundModel::Patch& op)
+static void drawPatchParameters(SoundModel::Patch& cp, SoundModel::Patch& op)
 {
     using namespace SoundModel;
 

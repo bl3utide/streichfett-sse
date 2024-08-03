@@ -1,9 +1,5 @@
 ﻿#include "common.hpp"
 #include "midi/message_handler.hpp"
-#include "midi/message_task.hpp"
-#ifdef _DEBUG
-#include "logger.hpp"
-#endif
 
 namespace StreichfettSse
 {
@@ -16,7 +12,7 @@ std::list<ByteVec> task_list_;
 size_t largest_task_size_ever_ = 0;
 #endif
 
-void addTask(const ByteVec& m)
+static void addTask(const ByteVec& m)
 {
     task_list_.push_front(m);
 #ifdef _DEBUG

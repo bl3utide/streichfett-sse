@@ -29,7 +29,7 @@ enum class InitSection : int
 // private
 std::bitset<static_cast<int>(InitSection::_COUNT_)> init_flag_;
 
-void initialize()
+static void initialize()
 {
     Logger::initialize();
     Logger::debug("<beginning of application>");
@@ -98,7 +98,7 @@ void initialize()
     }
 }
 
-void finalize() noexcept
+static void finalize() noexcept
 {
     if (init_flag_[static_cast<int>(InitSection::Config)])
     {
@@ -128,7 +128,7 @@ void finalize() noexcept
     Logger::debug("<end of application>");
 }
 
-void loop()
+static void loop()
 {
     SDL_Event event;
     auto running = true;

@@ -7,7 +7,6 @@
 #include "data/internal_patch.hpp"
 #include "data/internal_setting.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/callback.hpp"
 #include "midi/connector.hpp"
 #include "midi/message_handler.hpp"
 #ifdef _DEBUG
@@ -58,13 +57,13 @@ const std::unordered_map<RequestType, std::unordered_map<ErrorMessageType, std::
     },
 };
 
-void requestSuccessful(State next_state) noexcept
+static void requestSuccessful(State next_state) noexcept
 {
     setNextState(next_state, true);
     request_try_count.reset();
 }
 
-void retryOver(
+static void retryOver(
     RequestType req_type,
     ErrorMessageType mes_type,
     bool set_disconnected = true) noexcept

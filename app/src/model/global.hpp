@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "model/ev.hpp"
 #include "model/global_const.hpp"
 #include "model/global_value_util.hpp"

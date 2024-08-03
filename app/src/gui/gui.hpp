@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "state.hpp"
 #include "model/sound.hpp"
 

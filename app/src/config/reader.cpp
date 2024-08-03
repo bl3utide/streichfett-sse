@@ -1,6 +1,6 @@
 ﻿#include "common.hpp"
 #include "logger.hpp"
-#include "config/reader.hpp"
+#include "config/cv.hpp"
 
 namespace StreichfettSse
 {

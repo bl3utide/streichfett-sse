@@ -51,7 +51,6 @@ public:
     ErrorCause getCause() const noexcept;
 
     // disable default functions
-    AnyCauseException(const AnyCauseException&) = delete;
     AnyCauseException& operator=(const AnyCauseException&) = delete;
 
 private:
@@ -79,7 +78,6 @@ public:
     const std::string& getErrorMessage() const noexcept;
 
     // disable default functions
-    BaseException(const BaseException&) = delete;
     BaseException& operator=(const BaseException&) = delete;
 
 private:
@@ -109,7 +107,6 @@ public:
     State getNextState() const noexcept;
 
     // disable default functions
-    ContinuableException(const ContinuableException&) = delete;
     ContinuableException& operator=(const ContinuableException&) = delete;
 
 private:
@@ -131,7 +128,6 @@ public:
     );
 
     // disable default functions
-    UncontinuableException(const UncontinuableException&) = delete;
     UncontinuableException& operator=(const UncontinuableException&) = delete;
 };
 

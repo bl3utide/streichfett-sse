@@ -2,11 +2,9 @@
 #include "annotation.hpp"
 #include "error.hpp"
 #include "logger.hpp"
-#include "operation.hpp"
 #include "state.hpp"
 #include "config/config.hpp"
 #include "data/internal_patch.hpp"
-#include "data/internal_setting.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
@@ -33,7 +31,7 @@ int store_delay_duration;
 // private
 bool is_synth_connected_;
 
-void fetchDeviceList()
+static void fetchDeviceList()
 {
     // MIDI IN Port
     in_name_list.clear();
@@ -76,7 +74,7 @@ void fetchDeviceList()
     }
 }
 
-void sendDelay(State next_state, int delay_millsec)
+static void sendDelay(State next_state, int delay_millsec)
 {
     auto next_state_ptr = new State(next_state);
     waiting_timer = SDL_AddTimer(delay_millsec, Callback::sendDelay, next_state_ptr);
