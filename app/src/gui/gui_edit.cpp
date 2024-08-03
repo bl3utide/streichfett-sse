@@ -10,14 +10,12 @@ namespace ImGui
 {
 
 // DSI: Streichfett
-// TODO: std::format(C++20) -> try to replace pointer-val and ref-value
 static bool NiSliderInt(const char* label, StreichfettSse::Ev* v, const char* format)
 {
     return SliderInt(label, v->valp, v->min(), v->max(), format, ImGuiSliderFlags_NoInput);
 }
 
 // DSI: Streichfett
-// TODO: std::format(C++20) -> try to replace pointer-val and ref-value
 static bool NiDragInt(const char* label, StreichfettSse::Ev* v, float v_speed, const char* format)
 {
     return DragInt(label, v->valp, v_speed, v->min(), v->max(), format, ImGuiSliderFlags_NoInput);
