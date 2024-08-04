@@ -1,7 +1,7 @@
 ﻿/*
     Streichfett SSE
     Copyright (C) 2024 bl3utide <bl3utide@gmail.com>
-    1.2.0
+    1.3.0
 */
 #include "common.hpp"
 #include "error.hpp"
