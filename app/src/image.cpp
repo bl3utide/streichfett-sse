@@ -10,15 +10,17 @@ namespace Image
 {
 
 // private
-GLuint _texture[static_cast<int>(Texture::_COUNT_)];
+std::unordered_map<Texture, GLuint> texture_;
 
-bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* output)
+static bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* output)
 {
-    int image_width = 0;
-    int image_height = 0;
+    auto image_width = 0;
+    auto image_height = 0;
     unsigned char* image_data = stbi_load_from_memory(buffer, size, &image_width, &image_height, NULL, 4);
     if (image_data == nullptr)
+    {
         return false;
+    }
 
     GLuint image_texture = 0;
     glGenTextures(1, &image_texture);
@@ -36,36 +38,43 @@ bool loadTextureFromMemory(const unsigned char buffer[], int size, GLuint* outpu
     return true;
 }
 
-void unloadTexture(const GLuint* texture) noexcept
+static void unloadTexture(const GLuint* texture) noexcept
 {
     if (texture != nullptr)
+    {
         glDeleteTextures(1, texture);
+    }
 }
 
-void loadTextures()
+static void loadTextures()
 {
     bool load_tex_ret;
 
     load_tex_ret = loadTextureFromMemory(
         ArrayedTexture::TEX_ICON,
         ArrayedTexture::TEX_ICON_SIZE,
-        &_texture[static_cast<int>(Texture::Icon)]);
+        &texture_.at(Texture::Icon));
     IM_ASSERT(load_tex_ret);
 
     load_tex_ret = loadTextureFromMemory(
         ArrayedTexture::TEX_RELOAD,
         ArrayedTexture::TEX_RELOAD_SIZE,
-        &_texture[static_cast<int>(Texture::Reload)]);
+        &texture_.at(Texture::Reload));
     IM_ASSERT(load_tex_ret);
 }
 
-void unloadTextures()
+static void unloadTextures()
 {
-    unloadTexture(&_texture[static_cast<int>(Texture::Reload)]);
+    unloadTexture(&texture_.at(Texture::Reload));
 }
 
 void initialize()
 {
+    for (auto i = 0; i < static_cast<int>(Texture::_COUNT_); ++i)
+    {
+        texture_.emplace(static_cast<Texture>(i), 0);
+    }
+
     loadTextures();
 }
 
@@ -76,7 +85,7 @@ void finalize() noexcept
 
 GLuint getTextureId(Texture tex) noexcept
 {
-    return _texture[static_cast<int>(tex)];
+    return texture_.at(tex);
 }
 
 } // Image

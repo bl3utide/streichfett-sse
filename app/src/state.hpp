@@ -20,16 +20,18 @@ enum class State : int
     WaitingSendDelay,
     PrepareToExit,
     None,
-    _COUNT_
+    _COUNT_,
 };
 
 #ifdef _DEBUG
-extern const char* STATE_STR[static_cast<int>(State::_COUNT_)];
+extern const std::unordered_map<State, const char*> STATE_STR;
 #endif
 
+void initState() noexcept;
+bool processForCurrentState();
 State getState() noexcept;
 State getNextState() noexcept;
-void setNextState(State state) noexcept;
+void setNextState(State state, bool force_mod = false) noexcept;
 void transitionState() noexcept;
 
 } // StreichfettSse

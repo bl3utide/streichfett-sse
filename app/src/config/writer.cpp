@@ -1,5 +1,6 @@
 ﻿#include "common.hpp"
-#include "config/writer.hpp"
+#include "logger.hpp"
+#include "config/cv.hpp"
 
 namespace StreichfettSse
 {
@@ -8,12 +9,13 @@ namespace Config
 namespace Writer
 {
 
-void cvToIni(Cv& cv, mINI::INIStructure& is) noexcept
+void cvToIni(const Cv& cv, mINI::INIStructure& is) noexcept
 {
     is[cv.section_name()][cv.key_name()] = cv.cv();
-#ifdef _DEBUG
-    LOGD << "Writed config value [" << cv.section_name() << "]" << cv.key_name() << ": " << cv.cv();
-#endif
+    Logger::debug(std::format("Writed config value [{0}]{1}: {2}",
+        cv.section_name(),
+        cv.key_name(),
+        cv.cv()));
 }
 
 } // Writer

@@ -8,7 +8,7 @@ namespace Config
 namespace Writer
 {
 
-void cvToIni(Cv& cv, mINI::INIStructure& is) noexcept;
+void cvToIni(const Cv& cv, mINI::INIStructure& is) noexcept;
 
 } // Writer
 } // Config

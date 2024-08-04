@@ -1,9 +1,5 @@
 ﻿#include "common.hpp"
 #include "midi/message_handler.hpp"
-#include "midi/message_task.hpp"
-#ifdef _DEBUG
-#include "logger.hpp"
-#endif
 
 namespace StreichfettSse
 {
@@ -11,42 +7,45 @@ namespace MessageTask
 {
 
 // private
-std::list<ByteVec> _task_list;
+std::list<ByteVec> task_list_;
 #ifdef _DEBUG
-size_t _largest_task_size_ever = 0;
+size_t largest_task_size_ever_ = 0;
 #endif
 
-void addTask(ByteVec& m)
+static void addTask(const ByteVec& m)
 {
-    _task_list.push_front(m);
+    task_list_.push_front(m);
 #ifdef _DEBUG
-    if (_task_list.size() > _largest_task_size_ever) _largest_task_size_ever = _task_list.size();
+    if (task_list_.size() > largest_task_size_ever_) largest_task_size_ever_ = task_list_.size();
 #endif
 }
 
-//void addParamChangedTask(const int index, const int value)    // TODO delete toDvFunc
-void addParamChangedTask(const int index, const Byte value)
+void addParamChangedTask(int index, const Byte& value)
 {
     if (index != -1)
+    {
         addTask(MessageHandler::getSoundParameterChangeMessage(index, value));
+    }
 }
 
-ByteVec lastTask()
+const ByteVec lastTask()
 {
-    ByteVec lastTask = _task_list.back();
-    _task_list.pop_back();
+    // NOTE: Since you will call pop_back() immediately after this,
+    //       you need getting a copy of the element from the list.
+    ByteVec lastTask = task_list_.back();
+    task_list_.pop_back();
     return lastTask;
 }
 
 size_t taskSize() noexcept
 {
-    return _task_list.size();
+    return task_list_.size();
 }
 
 #ifdef _DEBUG
 size_t largestTaskSizeEver() noexcept
 {
-    return _largest_task_size_ever;
+    return largest_task_size_ever_;
 }
 #endif
 

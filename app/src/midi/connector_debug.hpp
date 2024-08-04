@@ -27,14 +27,15 @@ enum class SendTestResult : int
 
 enum class SendTestFailedCause : int
 {
+    None,
     RequestTimeout,
     EmptyResponse,
     IncorrectMessage,
     _COUNT_,
 };
 
-extern SendTestResult send_test[static_cast<int>(SendTestType::_COUNT_)];
-extern SendTestFailedCause send_test_failed_cause[static_cast<int>(SendTestType::_COUNT_)];
+extern std::unordered_map<SendTestType, SendTestResult> send_test;
+extern std::unordered_map<SendTestType, SendTestFailedCause> send_test_failed_cause;
 
 struct ProcessedMidiMessage
 {
@@ -45,42 +46,36 @@ struct ProcessedMidiMessage
     ByteVec data;
     std::string list_title;
 
-    ProcessedMidiMessage()
+    explicit ProcessedMidiMessage()
+        : timestamp(""), transmitted(true), device_name(""), description("")
+        , data(ByteVec()), list_title("")
     {
-        timestamp = "";
-        transmitted = true;
-        device_name = "";
-        description = "";
-        data = ByteVec();
-        list_title = "";
     }
 
-    ProcessedMidiMessage(
+    explicit ProcessedMidiMessage(
         const std::string& ts,
-        const bool t,
+        bool t,
         const std::string& d_name,
         const std::string& desc,
-        const ByteVec d)
+        const ByteVec& d)
+        : timestamp(ts), transmitted(t), device_name(d_name)
+        , description(desc)
     {
-        timestamp = ts;
-        transmitted = t;
-        device_name = d_name;
-        description = desc;
         data.clear();
         data = d;
 
-        list_title = StringUtil::format("%s %s %s",
+        list_title = std::format("{0} {1} {2}",
             transmitted ? "T" : "R",
-            timestamp.c_str(),
-            description.c_str());
+            timestamp,
+            description);
     }
 };
-extern std::list<ProcessedMidiMessage> processed_history;
+extern std::vector<ProcessedMidiMessage> history;
 extern int history_selected_index;
-extern ProcessedMidiMessage selected_processed_message;
+extern ProcessedMidiMessage history_selected;
+extern std::mutex history_mutex;
 
-void addProcessedHistory(const bool transmitted, const std::string& device_name, const ByteVec& data);
-void sendTest(const SendTestType type);
+void addProcessedHistory(bool transmitted, const std::string& device_name, const ByteVec& data);
 void sendTest(SendTestType type);
 bool isAnyTestSending() noexcept;
 

@@ -1,154 +1,197 @@
-﻿#include "common.hpp"
+﻿/*
+    Streichfett SSE
+    Copyright (C) 2024 bl3utide <bl3utide@gmail.com>
+    1.3.0
+*/
+#include "common.hpp"
 #include "error.hpp"
-#include "main.hpp"
 #include "image.hpp"
-#include "operation.hpp"
 #include "state.hpp"
 #include "config/config.hpp"
-#include "data/internal_patch.hpp"
-#include "data/internal_setting.hpp"
 #include "gui/gui.hpp"
 #include "midi/connector.hpp"
-#ifdef _DEBUG
 #include "logger.hpp"
-#endif
 
 namespace StreichfettSse
 {
 
-// private
-const std::string APP_NAME = DEF_APP_NAME;
-const std::string APP_VERSION = DEF_APP_VERSION;
-const std::string APP_COPYRIGHT = StringUtil::format("Copyright (C) %d %s", DEF_APP_DEV_YR, DEF_APP_DEV_BY);
-const std::string APP_TITLE = DEF_APP_TITLE;
-const std::string CONFIG_FILE_NAME = StringUtil::format("%s.ini", APP_NAME.c_str());
-#ifdef _DEBUG
-const std::string DEBUG_FILE_NAME = StringUtil::format("%s.debug.log", APP_NAME.c_str());
-#endif
-
-void initialize()
+enum class InitSection : int
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
-    {
-        throw std::runtime_error("SDL_Init error");
-    }
+    Sdl,
+    Config,
+    Gui,
+    Image,
+    Connector,
+
+    _COUNT_,
+};
+
+// private
+std::bitset<static_cast<int>(InitSection::_COUNT_)> init_flag_;
+
+static void initialize()
+{
+    Logger::initialize();
+    Logger::debug("<beginning of application>");
+
+    initError();
+    initState();
 
     try
     {
-        Gui::initialize(APP_TITLE, APP_VERSION, APP_COPYRIGHT);
-        Image::initialize();
-        Connector::initialize();
-        Config::initialize();
-    }
-    catch (RtMidiError& error)
-    {
-#ifdef _DEBUG
-        LOGD << error.getMessage();
-#endif
-        throw error;
-    }
-}
-
-void finalize() noexcept
-{
-    Config::save(CONFIG_FILE_NAME);
-    Connector::finalize();
-    Image::finalize();
-    Gui::finalize();
-
-    SDL_Quit();
-}
-
-void loop()
-{
-    SDL_Event event;
-    bool running = true;
-
-    while (running)
-    {
-        while (SDL_PollEvent(&event))
+        Logger::debug("start init SDL");
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
         {
-            ImGui_ImplSDL2_ProcessEvent(&event);
-            if (event.type == SDL_QUIT)
-                setNextState(State::PrepareToExit);
+            throw UncontinuableException("SDL_Init error", ERROR_WHEN_INIT, ERROR_CAUSE_INIT_SDL);
+        }
+        init_flag_.set(static_cast<int>(InitSection::Sdl));
+
+        try
+        {
+            Logger::debug("start init Config");
+            Config::initialize();
+            init_flag_.set(static_cast<int>(InitSection::Config));
+        }
+        catch (std::exception& e)
+        {
+            throw UncontinuableException(e.what(), ERROR_WHEN_INIT, ERROR_CAUSE_INIT_CONFIG);
         }
 
         try
         {
-            switch (getState())
+            Logger::debug("start init GUI");
+            Gui::initialize();
+            init_flag_.set(static_cast<int>(InitSection::Gui));
+        }
+        catch (std::exception& e)
+        {
+            throw UncontinuableException(e.what(), ERROR_WHEN_INIT, ERROR_CAUSE_INIT_GUI);
+        }
+
+        try
+        {
+            Logger::debug("start init Image");
+            Image::initialize();
+            init_flag_.set(static_cast<int>(InitSection::Image));
+        }
+        catch (std::exception& e)
+        {
+            throw UncontinuableException(e.what(), ERROR_WHEN_INIT, ERROR_CAUSE_INIT_IMAGE);
+        }
+
+        try
+        {
+            Logger::debug("start init Connector");
+            Connector::initialize();
+            init_flag_.set(static_cast<int>(InitSection::Connector));
+        }
+        catch (RtMidiError& e)
+        {
+            throw UncontinuableException(e.getMessage().c_str(), ERROR_WHEN_INIT, ERROR_CAUSE_INIT_CONN);
+        }
+    }
+    catch (UncontinuableException& uce)
+    {
+        Logger::error(uce);
+        Gui::showMessageBox(SDL_MESSAGEBOX_ERROR, "Error", uce.getErrorMessage().c_str());
+        throw std::runtime_error("");
+    }
+}
+
+static void finalize() noexcept
+{
+    if (init_flag_[static_cast<int>(InitSection::Config)])
+    {
+        Config::save();
+    }
+
+    if (init_flag_[static_cast<int>(InitSection::Connector)])
+    {
+        Connector::finalize();
+    }
+
+    if (init_flag_[static_cast<int>(InitSection::Image)])
+    {
+        Image::finalize();
+    }
+
+    if (init_flag_[static_cast<int>(InitSection::Gui)])
+    {
+        Gui::finalize();
+    }
+
+    if (init_flag_[static_cast<int>(InitSection::Sdl)])
+    {
+        SDL_Quit();
+    }
+
+    Logger::debug("<end of application>");
+}
+
+static void loop()
+{
+    SDL_Event event;
+    auto running = true;
+
+    while (running)
+    {
+        // pick up all SDL events that occured in this loop
+        while (SDL_PollEvent(&event))
+        {
+            ImGui_ImplSDL2_ProcessEvent(&event);
+            if (event.type == SDL_QUIT)
             {
-                case State::InitInternalData:
-                    InternalPatch::initData();
-                    InternalSetting::initData();
-                    Connector::resetAllConnections();
-                    setNextState(State::ApplyConfig);
-                    break;
-                case State::ApplyConfig:
-                    Config::load(CONFIG_FILE_NAME);
-                    Connector::applyConfig();
-                    setNextState(State::Idle);
-                    break;
-                case State::Idle:
-                    Connector::sendOneTaskMessage();
-                    break;
-                case State::RequestInquiry:
-                    Connector::requestInquiry();
-                    break;
-                case State::RequestGlobal:
-                    Connector::requestGlobalData();
-                    break;
-                case State::SendBankProgChange:
-                    Connector::sendProgChange();
-                    break;
-                case State::RequestSound:
-                    Connector::requestSoundData();
-                    break;
-                case State::EnterSoundMode:
-                    setOperation(Operation::Sound);
-                    if (Connector::isSynthConnected()) setNextState(State::RequestGlobal);
-                    else setNextState(State::Idle);
-                    break;
-                case State::EnterOptionMode:
-                    setOperation(Operation::Option);
-                    if (Connector::isSynthConnected()) setNextState(State::RequestGlobal);
-                    else setNextState(State::Idle);
-                    break;
-                case State::PrepareToExit:
-                    Connector::updateConfig();
-                    running = false;
-                    break;
-                default:
-                    break;
+                setNextState(State::PrepareToExit);
             }
         }
-        catch (RtMidiError& error)
+
+        // processing branches depending on current state
+        try
         {
-#ifdef _DEBUG
-            LOGD << error.getMessage();
-#endif
-            setAppError(StringUtil::format("MIDI error: %s", error.getMessage().c_str()));
+            running = processForCurrentState();
+        }
+        catch (ContinuableException& ce)
+        {
+            Logger::debug(ce);
+            setAppError(ce.getErrorMessage().c_str());
+            setNextState(ce.getNextState());
+        }
+        catch (UncontinuableException& uce)
+        {
+            Logger::error(uce);
+            Gui::showMessageBox(SDL_MESSAGEBOX_ERROR, "Error", uce.getErrorMessage().c_str());
+            throw std::runtime_error("");
         }
         catch (std::exception& error)
         {
-#ifdef _DEBUG
-            LOGD << error.what();
-#endif
-            setAppError(StringUtil::format("General error: %s", error.what()));
+            UncontinuableException uce(error.what(), ERROR_WHEN_STATE_PROCESS);
+            Logger::error(uce);
+            Gui::showMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error by unexpected cause");
+            throw std::runtime_error("");
         }
 
+        // check if state changes in the next loop
         if (getNextState() == State::None)
         {
+            Gui::drawGui();
             try
             {
-                Gui::drawGui();
+                Gui::doReservedFuncs();
+            }
+            catch (ContinuableException& ce)
+            {
+                Logger::debug(ce.what());
+                setAppError(ce.getErrorMessage().c_str());
+                setNextState(ce.getNextState());
             }
             catch (std::exception& error)
             {
-#ifdef _DEBUG
-                LOGD << error.what();
-#endif
-                setAppError(StringUtil::format("Gui error: %s", error.what()));
+                UncontinuableException uce(error.what(), ERROR_WHEN_RESERVED_FUNC);
+                Logger::error(uce);
+                Gui::showMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error by unexpected cause");
+                throw std::runtime_error("");
             }
+            Gui::clearReservedFuncs();
         }
         else
         {
@@ -163,32 +206,18 @@ void loop()
 
 int main(int, char**)
 {
-#ifdef _DEBUG
-    static plog::DebugLogAppender<plog::LogFormatter> debugLogAppender;
-    plog::init<plog::LogFormatter>(plog::debug, StreichfettSse::DEBUG_FILE_NAME.c_str()).addAppender(&debugLogAppender);
-    LOGD << "<beginning of application>";
-#endif
     try
     {
         StreichfettSse::initialize();
+        StreichfettSse::loop();
     }
-    catch (std::exception& e)
+    catch (std::runtime_error&)
     {
-#ifdef _DEBUG
-        LOGD << e.what();
-#endif
-        printf("%s", e.what());
         StreichfettSse::finalize();
         exit(EXIT_FAILURE);
     }
 
-    StreichfettSse::loop();
-
-    // TODO try-catch
     StreichfettSse::finalize();
 
-#ifdef _DEBUG
-    LOGD << "<end of application>";
-#endif
     return 0;
 }

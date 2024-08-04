@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "state.hpp"
 #include "model/sound.hpp"
 
@@ -15,18 +14,23 @@ enum class Page : int
     _COUNT_,
 };
 
-void initialize(const std::string& title, const std::string& version, const std::string& copyright);
+extern std::vector<std::function<void()>> reserved_funcs;
+
+void initialize();
 void finalize() noexcept;
 void drawGui();
+void showMessageBox(Uint32 flags, const char* title, const char* message) noexcept;
+void doReservedFuncs();
+void clearReservedFuncs() noexcept;
 
 // sub modules
-void drawEditPanel(SoundModel::Patch* const cp, SoundModel::Patch* const op);
+void drawEditPanel(SoundModel::Patch& cp, SoundModel::Patch& op);
 void drawOptionPanel();
 #ifdef _DEBUG
 namespace Debug
 {
-void drawDebugMenuBar(const ImVec2 viewport_pos);
-void drawDebugWindows(const int window_w, const int window_h, const State current_state);
+void drawDebugMenuBar(const ImVec2& viewport_pos);
+void drawDebugWindows(int window_w, int window_h, State current_state);
 } // Debug
 #endif
 

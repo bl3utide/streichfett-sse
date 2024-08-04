@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "model/ev.hpp"
 #include "model/sound_const.hpp"
 #include "model/sound_value_util.hpp"
@@ -49,7 +48,7 @@ enum class ParamIndex : int
 };
 
 // DSI: Streichfett
-const std::map<ParamIndex, int> PARAM_CC
+const std::unordered_map<ParamIndex, int> PARAM_CC
 {
                                         // Control Name
     {ParamIndex::Registration, 70},     // String Registration
@@ -67,7 +66,7 @@ const std::map<ParamIndex, int> PARAM_CC
     {ParamIndex::Balance, 82},          // Balance
     {ParamIndex::Animate, 92},          // FX Animate amount
     {ParamIndex::Phaser, 93},           // FX Phaser amount
-    {ParamIndex::Reverb, 94}            // FX Reverb amount
+    {ParamIndex::Reverb, 94},           // FX Reverb amount
 };
 
 // DSI: Streichfett
@@ -114,15 +113,15 @@ struct Patch
 
     Ev reverb{ PNAME_REVERB, 0, 127, 0 };
 
-    Patch()
+    explicit Patch()
+        : patch_name("")
     {
-        patch_name = "";
         init();
     }
 
-    Patch(const char* name)
+    explicit Patch(const char* name)
+        : patch_name(name)
     {
-        patch_name = name;
         init();
     }
 

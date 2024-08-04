@@ -1,16 +1,12 @@
 ﻿#include "common.hpp"
 #include "error.hpp"
 #include "image.hpp"
-#include "compressed/arrayed_font.hpp"
 #include "data/internal_patch.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
-#include "gui/gui_util.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/connector.hpp"
 #ifdef _DEBUG
-#include "logger.hpp"
 #include "midi/connector_debug.hpp"
 #endif
 
@@ -19,25 +15,28 @@ namespace StreichfettSse
 namespace Gui
 {
 
+// public
+std::vector<std::function<void()>> reserved_funcs;
+
 // private
-std::string _app_title;
-std::string _app_version;
-std::string _app_copyright;
-SDL_Window* _window;
-SDL_GLContext _gl_context;
-const int WINDOW_WIDTH = 720;       // DSI: Streichfett
-const int WINDOW_HEIGHT = 560;      // DSI: Streichfett
+std::string app_title_;
+std::string app_version_;
+std::string app_copyright_;
+SDL_Window* window_;
+SDL_GLContext gl_context_;
+const int WINDOW_WIDTH = 720;   // DSI: Streichfett
+const int WINDOW_HEIGHT = 560;  // DSI: Streichfett
 const float UI_MAIN_CONTENT_WIDTH = WINDOW_WIDTH - 64.0f;
 Page _page;
-const char* PAGE_STR[static_cast<int>(Page::_COUNT_)] =
+const std::unordered_map<Page, const char*> PAGE_STR
 {
-    "EDIT",
-    "OPTION"
+    { Page::Edit, "EDIT" },
+    { Page::Option, "OPTION" },
 };
 
-void setUiStyle() noexcept
+static void setUiStyle() noexcept
 {
-    ImGuiStyle* style = &ImGui::GetStyle();
+    auto style = &ImGui::GetStyle();
     style->WindowPadding = ImVec2(6.0f, 6.0f);
     style->WindowRounding = 0.0f;
     style->WindowBorderSize = 0.0f;
@@ -96,7 +95,7 @@ void setUiStyle() noexcept
     style->Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(1.0f, 0.98f, 0.95f, 0.73f);
 }
 
-void drawErrorModal()
+static void drawErrorModal()
 {
     if (has_error)
     {
@@ -106,7 +105,7 @@ void drawErrorModal()
             showing_error_message = true;
         }
 
-        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        const auto center = ImGui::GetMainViewport()->GetCenter();
         ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
 
         if (ImGui::BeginPopupModal("app_error", &showing_error_message,
@@ -114,14 +113,14 @@ void drawErrorModal()
             | ImGuiWindowFlags_NoMove
             | ImGuiWindowFlags_NoTitleBar))
         {
-            ImGui::PushFont((int)Font::OptionItemBold);
+            GuiUtil::PushFont((int)Font::OptionItemBold);
             ImGui::Text("Application error");
             ImGui::PopFont();
             ImGui::Separator();
 
             ImGui::Dummy(ImVec2(400.0f, 10.0f));
 
-            ImGui::PushFont((int)Font::OptionItem);
+            GuiUtil::PushFont((int)Font::OptionItem);
             ImGui::TextWrapped(error_message.c_str());
 
             ImGui::Dummy(ImVec2(400.0f, 10.0f));
@@ -133,7 +132,7 @@ void drawErrorModal()
                 showing_error_message = false;
                 ImGui::CloseCurrentPopup();
             }
-            ImGui::MouseCursorToHand();
+            GuiUtil::MouseCursorToHand();
             ImGui::PopStyleVar();
             ImGui::PopFont();
 
@@ -142,9 +141,9 @@ void drawErrorModal()
     }
 }
 
-void drawAboutModal()
+static void drawAboutModal()
 {
-    ImGuiIO& io = ImGui::GetIO();
+    auto& io = ImGui::GetIO();
     auto modal_window_size = ImVec2(400.0f, 180.0f);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -159,7 +158,7 @@ void drawAboutModal()
         auto modal_window_pos = ImGui::GetCursorScreenPos();
 
         ImGui::Indent(50.0f);
-        ImGui::PushFont((int)Font::Text);
+        GuiUtil::PushFont((int)Font::Text);
         ImGui::Dummy(ImVec2(0.0f, 50.0f));
 
         if (ImGui::BeginTable("about_table", 2))
@@ -172,10 +171,10 @@ void drawAboutModal()
             ImGui::Image((void*)(intptr_t)Image::getTextureId(Image::Texture::Icon), ImVec2(80.0f, 80.0f));
 
             ImGui::TableNextColumn();
-            ImGui::Text(_app_title.c_str());
-            ImGui::Text("version %s", _app_version.c_str());
+            ImGui::Text(app_title_.c_str());
+            ImGui::Text("version %s", app_version_.c_str());
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
-            ImGui::Text(_app_copyright.c_str());
+            ImGui::Text(app_copyright_.c_str());
 
             ImGui::EndTable();
         }
@@ -197,26 +196,26 @@ void drawAboutModal()
     ImGui::PopStyleVar();
 }
 
-void drawHeader(const int window_width)
+static void drawHeader(int window_width)
 {
-    ImGui::PushFont((int)Font::Title);
+    GuiUtil::PushFont((int)Font::Title);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TITLE_TEXT);
-    ImGui::Text(_app_title.c_str());
+    ImGui::Text(app_title_.c_str());
     ImGui::PopStyleColor();
     ImGui::PopFont();
 
     ImGui::SameLine(0.0f, 12.0f);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7.0f);
-    ImGui::PushFont((int)Font::Version);
+    GuiUtil::PushFont((int)Font::Version);
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_VERSION_TEXT);
-    ImGui::Text(_app_version.c_str());
+    ImGui::Text(app_version_.c_str());
     ImGui::PopStyleColor();
     ImGui::PopFont();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 7.0f);
 
     ImGui::SameLine(window_width - 60.0f, 0.0f);
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 6.0f);
-    ImGui::PushFont((int)Font::TextBold);
+    GuiUtil::PushFont((int)Font::TextBold);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8.0f, 3.0f));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
     if (ImGui::Button("?"))
@@ -225,34 +224,41 @@ void drawHeader(const int window_width)
     }
     ImGui::PopStyleVar(2);
     ImGui::PopFont();
-    ImGui::MouseCursorToHand();
+    GuiUtil::MouseCursorToHand();
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 1.0f);
 
     drawAboutModal();
 }
 
 // DSI: Streichfett
-void drawPageSelector()
+static void drawPageSelector()
 {
-    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    auto draw_list = ImGui::GetWindowDrawList();
 
-    ImGui::PushFont((int)Font::TextBold);
+    GuiUtil::PushFont((int)Font::TextBold);
     ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
-    for (int page_i = 0; page_i < static_cast<int>(Page::_COUNT_); ++page_i)
+    for (auto page_i = 0; page_i < static_cast<int>(Page::_COUNT_); ++page_i)
     {
         auto is_current_page = static_cast<int>(_page) == page_i;
 
         ImGui::PushStyleColor(ImGuiCol_Text, is_current_page ? UI_COLOR_TEXT_PAGE_ACTIVE : UI_COLOR_TEXT_PAGE_INACTIVE);
-        if (ImGui::Selectable(PAGE_STR[page_i], is_current_page, 0, ImVec2(80, 20)))
+        if (ImGui::Selectable(PAGE_STR.at(static_cast<Page>(page_i)), is_current_page, 0, ImVec2(80, 20)))
         {
-            _page = static_cast<Page>(page_i);
+            if (!is_current_page)
+            {
+                _page = static_cast<Page>(page_i);
 
-            if (_page == Page::Edit)
-                setNextState(State::EnterSoundMode);
-            else if (_page == Page::Option)
-                setNextState(State::EnterOptionMode);
+                if (_page == Page::Edit)
+                {
+                    setNextState(State::EnterSoundMode);
+                }
+                else if (_page == Page::Option)
+                {
+                    setNextState(State::EnterOptionMode);
+                }
+            }
         }
-        if (!is_current_page) ImGui::MouseCursorToHand();
+        if (!is_current_page) GuiUtil::MouseCursorToHand();
         ImGui::PopStyleColor();
 
         ImVec2 p0 = ImGui::GetItemRectMin();
@@ -267,10 +273,10 @@ void drawPageSelector()
 }
 
 // DSI: Streichfett
-void drawContent()
+static void drawContent()
 {
-    SoundModel::Patch* current_patch = InternalPatch::getCurrentPatch();
-    SoundModel::Patch* original_patch = InternalPatch::getOriginalPatch();
+    auto& current_patch = InternalPatch::getCurrentPatch();
+    auto& original_patch = InternalPatch::getOriginalPatch();
 
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_BASE);
     if (_page == Page::Edit)    drawEditPanel(current_patch, original_patch);
@@ -278,14 +284,14 @@ void drawContent()
     ImGui::PopStyleColor();
 }
 
-void preDraw()
+static void preDraw()
 {
     ImGui_ImplOpenGL2_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 }
 
-void postDraw()
+static void postDraw()
 {
     ImGui::Render();
     glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
@@ -300,14 +306,14 @@ void postDraw()
         ImGui::RenderPlatformWindowsDefault();
         SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
     }
-    SDL_GL_SwapWindow(_window);
+    SDL_GL_SwapWindow(window_);
 }
 
-void initialize(const std::string& title, const std::string& version, const std::string& copyright)
+void initialize()
 {
-    _app_title = title;
-    _app_version = version;
-    _app_copyright = copyright;
+    app_title_ = StringUtil::getExeVersionInfo(StringUtil::FileVersion::ProductName);
+    app_version_ = StringUtil::getExeVersionInfo(StringUtil::FileVersion::ProductVersionMajorOnly);
+    app_copyright_ = StringUtil::getExeVersionInfo(StringUtil::FileVersion::Copyright);
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -317,14 +323,14 @@ void initialize(const std::string& title, const std::string& version, const std:
     SDL_GL_SetAttribute(SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1);
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
-    _window = SDL_CreateWindow(_app_title.c_str(),
+    window_ = SDL_CreateWindow(app_title_.c_str(),
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         SDL_WINDOW_OPENGL);
-    SDL_SetWindowMaximumSize(_window, WINDOW_WIDTH, WINDOW_HEIGHT);
-    SDL_SetWindowMinimumSize(_window, WINDOW_WIDTH, WINDOW_HEIGHT);
-    _gl_context = SDL_GL_CreateContext(_window);
-    SDL_GL_MakeCurrent(_window, _gl_context);
+    SDL_SetWindowMaximumSize(window_, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SDL_SetWindowMinimumSize(window_, WINDOW_WIDTH, WINDOW_HEIGHT);
+    gl_context_ = SDL_GL_CreateContext(window_);
+    SDL_GL_MakeCurrent(window_, gl_context_);
     SDL_GL_SetSwapInterval(1);  // Enable vsync
 
     IMGUI_CHECKVERSION();
@@ -334,11 +340,11 @@ void initialize(const std::string& title, const std::string& version, const std:
 
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigViewportsNoAutoMerge = false;
-    io.ConfigViewportsNoDecoration = false;
+    io.ConfigViewportsNoDecoration = true;
     io.ConfigViewportsNoDefaultParent = false;
     io.ConfigViewportsNoTaskBarIcon = true;
 
-    ImGui_ImplSDL2_InitForOpenGL(_window, _gl_context);
+    ImGui_ImplSDL2_InitForOpenGL(window_, gl_context_);
     ImGui_ImplOpenGL2_Init();
 
     addAllFonts();
@@ -353,20 +359,20 @@ void finalize() noexcept
     ImGui_ImplOpenGL2_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
-    SDL_GL_DeleteContext(_gl_context);
-    SDL_DestroyWindow(_window);
+    SDL_GL_DeleteContext(gl_context_);
+    SDL_DestroyWindow(window_);
 }
 
 void drawGui()
 {
-    State current_state = getState();
+    const auto current_state = getState();
 
     preDraw();
 
     drawErrorModal();
 
     int window_width, window_height;
-    SDL_GetWindowSize(_window, &window_width, &window_height);
+    SDL_GetWindowSize(window_, &window_width, &window_height);
 
     auto vp_pos = ImGui::GetWindowViewport()->WorkPos;
     ImGui::SetNextWindowPos(vp_pos);
@@ -384,9 +390,9 @@ void drawGui()
         ImGui::Dummy(ImVec2(10.0f, 0.0f));
 
         // Beginning of disable screen operation
-        bool is_waiting_store_delay = Connector::isWaitingStoreDelay();
+        const auto is_waiting_store_delay = Connector::isWaitingStoreDelay();
 #ifdef _DEBUG
-        bool is_any_test_sending = Connector::Debug::isAnyTestSending();
+        const auto is_any_test_sending = Connector::Debug::isAnyTestSending();
 #endif
 
         bool disable_page_content = getState() != State::Idle || is_waiting_store_delay
@@ -402,7 +408,7 @@ void drawGui()
         drawPageSelector();
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 1.0f);
 
-        float y = ImGui::GetCursorPosY();
+        auto y = ImGui::GetCursorPosY();
         ImGui::SetNextWindowPos(ImVec2(vp_pos.x + (window_width - UI_MAIN_CONTENT_WIDTH) * 0.5f, vp_pos.y + y));
         ImGui::BeginChild("main", ImVec2(UI_MAIN_CONTENT_WIDTH, -32.0f), true, 0);
         {
@@ -417,7 +423,7 @@ void drawGui()
         ImGui::SetNextWindowPos(ImVec2(vp_pos.x + (window_width - UI_MAIN_CONTENT_WIDTH) * 0.5f, vp_pos.y + y));
         ImGui::BeginChild("annotation", ImVec2(UI_MAIN_CONTENT_WIDTH, 30.0f), true, ImGuiWindowFlags_NoScrollbar);
         {
-            ImGui::PushFont((int)Font::TextBold);
+            GuiUtil::PushFont((int)Font::TextBold);
             ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_ANNOTATION[static_cast<int>(Annotation::getType())]);
             ImGui::Text(Annotation::getText().c_str());
             ImGui::PopStyleColor();
@@ -431,6 +437,24 @@ void drawGui()
 #endif
 
     postDraw();
+}
+
+void showMessageBox(Uint32 flags, const char* title, const char* message) noexcept
+{
+    SDL_ShowSimpleMessageBox(flags, title, message, window_);
+}
+
+void doReservedFuncs()
+{
+    for (auto& func : reserved_funcs)
+    {
+        func();
+    }
+}
+
+void clearReservedFuncs() noexcept
+{
+    reserved_funcs.clear();
 }
 
 } // Gui

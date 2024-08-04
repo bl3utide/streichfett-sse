@@ -1,11 +1,8 @@
 ﻿#include "common.hpp"
-#include "config/config.hpp"
+#include "logger.hpp"
 #include "config/cv.hpp"
 #include "config/reader.hpp"
 #include "config/writer.hpp"
-#ifdef _DEBUG
-#include "logger.hpp"
-#endif
 
 namespace StreichfettSse
 {
@@ -13,135 +10,142 @@ namespace Config
 {
 
 // private
-std::unordered_map<Key, Cv> _cv_by_key;
+std::string config_file_name_;
+std::unordered_map<Key, Cv> cv_by_key_;
 
-const Cv& getCv(const Key key) noexcept
+const Cv& getCv(Key key) noexcept
 {
-    return _cv_by_key.at(key);
+    return cv_by_key_.at(key);
 }
 
-void load(const std::string& ini_file_name) noexcept
+void load() noexcept
 {
     mINI::INIStructure read_is;
-    mINI::INIFile file = mINI::INIFile(ini_file_name);
+    const auto file = mINI::INIFile(config_file_name_);
 
     if (file.read(read_is))
     {
-#ifdef _DEBUG
-        LOGD << "Load config from existing ini file";
-#endif
+        Logger::debug("Load config from existing ini file");
         // ini-file already exists
-        for (int key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
+        for (auto key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
         {
-            Key key = static_cast<Key>(key_i);
-            Reader::iniValueToCv(read_is, _cv_by_key.at(key));
+            const auto key = static_cast<Key>(key_i);
+            Reader::iniValueToCv(read_is, cv_by_key_.at(key));
         }
     }
-#ifdef _DEBUG
     else
     {
-        LOGD << "Ini file does not exists";
+        Logger::debug("Ini file does not exists");
     }
-#endif
 }
 
-void save(const std::string& ini_file_name) noexcept
+void save() noexcept
 {
     mINI::INIStructure write_is;
-    mINI::INIFile file = mINI::INIFile(ini_file_name);
+    const auto file = mINI::INIFile(config_file_name_);
 
-    for (int key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
+    for (auto key_i = 0; key_i < static_cast<int>(Key::_COUNT_); ++key_i)
     {
-        Key key = static_cast<Key>(key_i);
-        Writer::cvToIni(_cv_by_key.at(key), write_is);
+        const auto key = static_cast<Key>(key_i);
+        Writer::cvToIni(cv_by_key_.at(key), write_is);
     }
 
     if (!file.write(write_is, true))
     {
-#ifdef _DEBUG
-        LOGD << "Failed to write config file";
-#endif
+        Logger::debug("Failed to write config file");
     }
 }
 
-const std::string GET_CONFIG_VALUE_TYPE_ERR_TEXT = "Config key '%s' is not %s";
+constexpr std::string_view GET_CONFIG_VALUE_TYPE_ERR_TEXT = "Config key '{0}' is not {1}";
 
 template<typename T>
-const T getConfigValue(const Key key)
+T getConfigValue(Key key)
 {
     throw new std::runtime_error("Unexpected type of Cv");
 }
 
 template<>
-const std::string getConfigValue(const Key key)
+std::string getConfigValue(Key key)
 {
-    Cv& cv = _cv_by_key.at(key);
+    const auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::String)
-        throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
+    {
+        throw new std::runtime_error(std::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
+    }
 
     return cv.cv();
 }
 
 template<>
-const int getConfigValue(const Key key)
+int getConfigValue(Key key)
 {
-    Cv& cv = _cv_by_key.at(key);
+    const auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Int)
-        throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
+    {
+        throw new std::runtime_error(std::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
+    }
 
     return std::stoi(cv.cv());
 }
 
 template<>
-const bool getConfigValue(const Key key)
+bool getConfigValue(Key key)
 {
-    Cv& cv = _cv_by_key.at(key);
+    const auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Bool)
-        throw new std::runtime_error(StringUtil::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
+    {
+        throw new std::runtime_error(std::format(GET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
+    }
 
     return cv.cv() == "1";
 }
 
-const std::string SET_CONFIG_VALUE_TYPE_ERR_TEXT = "The type of config key '%s' is not %s";
+constexpr std::string_view SET_CONFIG_VALUE_TYPE_ERR_TEXT = "The type of config key '{0}' is not {1}";
 
 template<typename T>
-void setConfigValue(const Key key, const T value)
+void setConfigValue(Key key, T value)
 {
     throw new std::runtime_error("Unexpected type of value");
 }
 
 template<>
-void setConfigValue(const Key key, const std::string value)
+void setConfigValue(Key key, std::string value)
 {
-    Cv& cv = _cv_by_key.at(key);
+    auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::String)
-        throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
+    {
+        throw new std::runtime_error(std::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "string"));
+    }
 
     cv.set(value);
 }
 
 template<>
-void setConfigValue(const Key key, const int value)
+void setConfigValue(Key key, int value)
 {
-    Cv& cv = _cv_by_key.at(key);
+    auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Int)
-        throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
+    {
+        throw new std::runtime_error(std::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "int"));
+    }
 
     cv.set(std::to_string(value));
 }
 
 template<>
-void setConfigValue(const Key key, const bool value)
+void setConfigValue(Key key, bool value)
 {
-    Cv& cv = _cv_by_key.at(key);
+    auto& cv = cv_by_key_.at(key);
 
     if (cv.type() != Cv::Type::Bool)
-        throw new std::runtime_error(StringUtil::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
+    {
+        throw new std::runtime_error(std::format(SET_CONFIG_VALUE_TYPE_ERR_TEXT, cv.key_name(), "bool"));
+    }
 
     std::string set_v = value ? "1" : "0";
     cv.set(set_v);
@@ -149,12 +153,14 @@ void setConfigValue(const Key key, const bool value)
 
 void initialize()
 {
+    config_file_name_ = std::format("{}.ini", APP_NAME);
+
     // [Device]
-    _cv_by_key.insert({ Key::SynthInputDevice,   Cv(Section::Device, Key::SynthInputDevice, std::string()) });
-    _cv_by_key.insert({ Key::SynthOutputDevice,  Cv(Section::Device, Key::SynthOutputDevice, std::string()) });
-    _cv_by_key.insert({ Key::KeyboardInputDevice,Cv(Section::Device, Key::KeyboardInputDevice, std::string()) });
-    _cv_by_key.insert({ Key::ForceAdjustMidiCh,  Cv(Section::Device, Key::ForceAdjustMidiCh, true) });
-    _cv_by_key.insert({ Key::SysExDelay,         Cv(Section::Device, Key::SysExDelay, 200, 500, 200) });
+    cv_by_key_.insert({ Key::SynthInputDevice,   Cv(Section::Device, Key::SynthInputDevice, std::string()) });
+    cv_by_key_.insert({ Key::SynthOutputDevice,  Cv(Section::Device, Key::SynthOutputDevice, std::string()) });
+    cv_by_key_.insert({ Key::KeyboardInputDevice,Cv(Section::Device, Key::KeyboardInputDevice, std::string()) });
+    cv_by_key_.insert({ Key::ForceAdjustMidiCh,  Cv(Section::Device, Key::ForceAdjustMidiCh, true) });
+    cv_by_key_.insert({ Key::SysExDelay,         Cv(Section::Device, Key::SysExDelay, 200, 500, 200) });
 }
 
 } // Config

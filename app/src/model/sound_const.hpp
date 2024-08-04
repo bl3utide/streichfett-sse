@@ -7,17 +7,17 @@ namespace SoundModel
 
 const std::vector<std::string> EV_OCTAVE_SWITCH
 {
-    "Base", "Both", "8va"
+    "Base", "Both", "8va",
 };
 
 const std::vector<std::string> EV_ENSEMBLE_EFFECT
 {
-    "Strings", "Strings+Chorus", "Chorus"
+    "Strings", "Strings+Chorus", "Chorus",
 };
 
 const std::vector<std::string> EV_SPLIT_LAYER
 {
-    "Split low", "Layer", "Split high"
+    "Split low", "Layer", "Split high",
 };
 
 const std::vector<std::string> EV_SPLIT_KEY
@@ -149,17 +149,17 @@ const std::vector<std::string> EV_SPLIT_KEY
     "124 E9",
     "125 F9",
     "126 F#9",
-    "127 G9"
+    "127 G9",
 };
 
 const std::vector<std::string> EV_ENVELOPE_MODE
 {
-    "Attack-Release", "Attack-Sustain-Decay"
+    "Attack-Release", "Attack-Sustain-Decay",
 };
 
 const std::vector<std::string> EV_BINARY
 {
-    "off", "on"
+    "off", "on",
 };
 
 } // SoundModel

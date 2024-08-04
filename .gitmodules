@@ -1,9 +1,18 @@
-[submodule "sdl2"]
-	path = sdl2
-	url = https://github.com/bl3utide/iplib-sdl2
-[submodule "imgui"]
-	path = imgui
-	url = https://github.com/bl3utide/iplib-imgui
-[submodule "rtmidi"]
-	path = rtmidi
-	url = https://github.com/bl3utide/iplib-rtmidi
+[submodule "deps/SDL"]
+	path = deps/SDL
+	url = https://github.com/libsdl-org/SDL
+[submodule "deps/imgui"]
+	path = deps/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "deps/rtmidi"]
+	path = deps/rtmidi
+	url = https://github.com/thestk/rtmidi
+[submodule "deps/plog"]
+	path = deps/plog
+	url = https://github.com/SergiusTheBest/plog
+[submodule "deps/mINI"]
+	path = deps/mINI
+	url = https://github.com/metayeti/mINI
+[submodule "deps/stb"]
+	path = deps/stb
+	url = https://github.com/nothings/stb

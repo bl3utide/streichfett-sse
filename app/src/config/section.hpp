@@ -23,8 +23,8 @@ enum class Key : int
     _COUNT_,
 };
 
-extern const char* SECTION_NAMES[static_cast<int>(Section::_COUNT_)];
-extern const char* KEY_NAMES[static_cast<int>(Key::_COUNT_)];
+extern const std::unordered_map<Section, const char*> SECTION_NAMES;
+extern const std::unordered_map<Key, const char*> KEY_NAMES;
 
 } // Config
 } // StreichfettSse

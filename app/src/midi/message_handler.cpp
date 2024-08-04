@@ -2,9 +2,7 @@
 #include "data/internal_patch.hpp"
 #include "data/internal_setting.hpp"
 #include "midi/message_handler.hpp"
-#ifdef _DEBUG
-#include "logger.hpp"
-#endif
+
 namespace StreichfettSse
 {
 namespace MessageHandler
@@ -14,27 +12,28 @@ namespace MessageHandler
 InquiryDump inquiry_dump;
 
 // private
-const Byte MESSAGE_INQUIRY = 0x06;
-const Byte MESSAGE_INQUIRY_REQUEST = 0x01;
-const Byte MESSAGE_INQUIRY_RESPONSE = 0x02;
-const Byte MESSAGE_SOUND_REQUEST = 0x00;                        // DSI: Streichfett
-const Byte MESSAGE_GLOBAL_REQUEST = 0x01;                       // DSI: Streichfett
-const Byte MESSAGE_SOUND_DUMP = 0x10;                           // DSI: Streichfett
-const Byte MESSAGE_GLOBAL_DUMP = 0x11;                          // DSI: Streichfett
-const Byte DEVICE_MANUFACTURER_ID = 0x3E;       // Waldorf
-const Byte DEVICE_FAMILY_CODE = 0x19;           // Streichfett  // DSI: Streichfett
-const Byte SOUND_NUMBER_EDIT_BUFFER = 0x7F;                     // DSI: Streichfett
-const int SOUND_DATA_START_INDEX = 6;                           // DSI: Streichfett
-const int SOUND_DATA_END_INDEX = 29;                            // DSI: Streichfett
-const int GLOBAL_DATA_START_INDEX = 6;                          // DSI: Streichfett
-const int GLOBAL_DATA_END_INDEX = 13;                           // DSI: Streichfett
+const Byte      MESSAGE_INQUIRY = 0x06;
+const Byte      MESSAGE_INQUIRY_REQUEST = 0x01;
+const Byte      MESSAGE_INQUIRY_RESPONSE = 0x02;
+const Byte      MESSAGE_SOUND_REQUEST = 0x00;                       // DSI: Streichfett
+const Byte      MESSAGE_GLOBAL_REQUEST = 0x01;                      // DSI: Streichfett
+const Byte      MESSAGE_SOUND_DUMP = 0x10;                          // DSI: Streichfett
+const Byte      MESSAGE_GLOBAL_DUMP = 0x11;                         // DSI: Streichfett
+const Byte      DEVICE_MANUFACTURER_ID = 0x3E;      // Waldorf
+const Byte      DEVICE_FAMILY_CODE = 0x19;          // Streichfett  // DSI: Streichfett
+const Byte      SOUND_NUMBER_EDIT_BUFFER = 0x7F;                    // DSI: Streichfett
+const size_t    INQUIRY_DUMP_SIZE = 13;                             // DSI: Streichfett
+const int       SOUND_DATA_START_INDEX = 6;                         // DSI: Streichfett
+const int       SOUND_DATA_END_INDEX = 29;                          // DSI: Streichfett
+const int       GLOBAL_DATA_START_INDEX = 6;                        // DSI: Streichfett
+const int       GLOBAL_DATA_END_INDEX = 13;                         // DSI: Streichfett
 
-bool isSysex(const ByteVec& mb) noexcept
+static bool isSysex(const ByteVec& mb) noexcept
 {
     return mb.front() == 0xF0 && mb.back() == 0xF7;
 }
 
-ByteVec getInquiryRequestMessage()
+const ByteVec getInquiryRequestMessage()
 {
     ByteVec req;
     req.clear();
@@ -48,7 +47,7 @@ ByteVec getInquiryRequestMessage()
 }
 
 // DSI: Streichfett
-ByteVec getSoundRequestMessage(const int sound)
+const ByteVec getSoundRequestMessage(int sound)
 {
     ByteVec req;
     req.clear();
@@ -63,7 +62,7 @@ ByteVec getSoundRequestMessage(const int sound)
 }
 
 // DSI: Streichfett
-ByteVec getGlobalRequestMessage()
+const ByteVec getGlobalRequestMessage()
 {
     ByteVec req;
     req.clear();
@@ -77,9 +76,9 @@ ByteVec getGlobalRequestMessage()
     return req;
 }
 
-ByteVec getProgChangeMessage(const int value)
+const ByteVec getProgChangeMessage(int value)
 {
-    const int ch = InternalSetting::getDeviceMidiChannel();
+    const auto ch = InternalSetting::getDeviceMidiChannel();
     Byte order_byte = 0xC0 + static_cast<Byte>(ch);
 
     ByteVec pc;
@@ -90,10 +89,10 @@ ByteVec getProgChangeMessage(const int value)
 }
 
 // DSI: Streichfett
-ByteVec getAllSoundOffMessage()
+const ByteVec getAllSoundOffMessage()
 {
-    const int ch = InternalSetting::getDeviceMidiChannel();
-    Byte order_byte = 0xB0 + static_cast<Byte>(ch);
+    const auto ch = InternalSetting::getDeviceMidiChannel();
+    const Byte order_byte = 0xB0 + static_cast<Byte>(ch);
 
     ByteVec aso;
     aso.clear();
@@ -102,12 +101,12 @@ ByteVec getAllSoundOffMessage()
     return aso;
 }
 
-bool isNoteOff(const ByteVec& mb)
+bool isNoteOff(const ByteVec& mb) noexcept
 {
     return 0x80 <= mb[0] && mb[0] <= 0x8F;
 }
 
-bool isNoteOn(const ByteVec& mb)
+bool isNoteOn(const ByteVec& mb) noexcept
 {
     return 0x90 <= mb[0] && mb[0] <= 0x9F;
 }
@@ -115,6 +114,8 @@ bool isNoteOn(const ByteVec& mb)
 // DSI: Streichfett
 bool checkInquiryDump(const ByteVec& dump)
 {
+    if (dump.size() != INQUIRY_DUMP_SIZE) return false;
+
     if (!isSysex(dump)) return false;
 
     // Universal SysEx Header
@@ -131,59 +132,77 @@ bool checkInquiryDump(const ByteVec& dump)
 
     inquiry_dump.received = true;
     inquiry_dump.device_id = (int)dump[2];
-    inquiry_dump.firmware_version = StringUtil::format("%d.%d", dump[10], dump[11]);
+    inquiry_dump.firmware_version = std::format("{0}.{1}", dump[10], dump[11]);
 
     return true;
 }
 
 // DSI: Streichfett
-void checkDump(const ByteVec& dump, const DumpType type)
+void checkDump(const ByteVec& dump, DumpType type)
 {
     if (!isSysex(dump))
-        throw std::exception("checkDump failed");
+    {
+        throw std::exception("checkDump failed (not SysEx)");
+    }
 
-    // Waldorf Music Manufacturer ID and Device Family Code
-    if (dump[1] != DEVICE_MANUFACTURER_ID || dump[2] != DEVICE_FAMILY_CODE)
-        throw std::exception("checkDump failed");
+    // Waldorf Music Manufacturer ID
+    if (dump[1] != DEVICE_MANUFACTURER_ID)
+    {
+        throw std::exception("checkDump failed (SysEx has incorrect manufacture id)");
+    }
+
+    //  Device Family Code
+    if (dump[2] != DEVICE_FAMILY_CODE)
+    {
+        throw std::exception("checkDump failed (SysEx has incorrect device family code)");
+    }
 
     if (type == DumpType::Sound)
     {
         if (dump[4] != MESSAGE_SOUND_DUMP)
-            throw std::exception("checkDump failed");
+        {
+            throw std::exception("checkDump failed (not sound dump SysEx)");
+        }
     }
     else if (type == DumpType::Global)
     {
         if (dump[4] != MESSAGE_GLOBAL_DUMP)
-            throw std::exception("checkDump failed");
+        {
+            throw std::exception("checkDump failed (not global dump SysEx)");
+        }
     }
     else
     {
-        throw std::exception("checkDump failed");
+        throw std::exception("checkDump failed (unknown dump type specified)");
     }
 }
 
-ByteVec getDataBytesFromDump(const ByteVec& dump, const DumpType type)
+const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type)
 {
     ByteVec data;
     if (type == DumpType::Sound)
     {
-        for (int i = SOUND_DATA_START_INDEX; i <= SOUND_DATA_END_INDEX; ++i)
+        for (auto i = SOUND_DATA_START_INDEX; i <= SOUND_DATA_END_INDEX; ++i)
             data.push_back(dump[i]);
     }
     else if (type == DumpType::Global)
     {
-        for (int i = GLOBAL_DATA_START_INDEX; i <= GLOBAL_DATA_END_INDEX; ++i)
+        for (auto i = GLOBAL_DATA_START_INDEX; i <= GLOBAL_DATA_END_INDEX; ++i)
             data.push_back(dump[i]);
+    }
+    else
+    {
+        throw std::exception("getDataByteFromDump failed (unknown dump type specified)");
     }
 
     return data;
 }
 
 // DSI: Streichfett
-ByteVec getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* const patch)
+const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& patch)
 {
-    ByteVec sound_data = InternalPatch::getDataBytes(patch);
-    int device_id = InternalSetting::getDeviceId();
+    const auto sound_data = InternalPatch::getDataBytes(patch);
+    const auto device_id = InternalSetting::getDeviceId();
 
     ByteVec req;
     req.clear();
@@ -193,16 +212,24 @@ ByteVec getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* c
     req.push_back(static_cast<Byte>(device_id));
     req.push_back(MESSAGE_SOUND_DUMP);
     if (sound == -1)
+    {
         req.push_back(static_cast<Byte>(SOUND_NUMBER_EDIT_BUFFER));
+    }
     else
+    {
         req.push_back(static_cast<Byte>(sound));
-    for (int i = 0; i < sound_data.size(); ++i)
+    }
+    for (auto i = 0; i < sound_data.size(); ++i)
+    {
         req.push_back(sound_data[i]);
+    }
 
     // calculate bytesum
-    int sum = 0;
-    for (int i = 1; i < req.size(); ++i)
+    auto sum = 0;
+    for (auto i = 1; i < req.size(); ++i)
+    {
         sum += req[i];
+    }
     req.push_back(static_cast<Byte>(sum & 0x7F));
     req.push_back(0xF7);
 
@@ -210,24 +237,36 @@ ByteVec getSoundDumpMessageFromPatch(const int sound, const SoundModel::Patch* c
 }
 
 // DSI: Streichfett
-//ByteVec getSoundParameterChangeMessage(const int index, const int value)    // TODO delete toDvFunc
-ByteVec getSoundParameterChangeMessage(const int index, const Byte value)
+const ByteVec getSoundParameterChangeMessage(int index, const Byte& value)
 {
-    // NOTE: For Streichfett, change the parameters with CC
+    // NOTE: For Streichfett, change the parameters with CC.
 
-    const int ch = InternalSetting::getDeviceMidiChannel();
+    const auto ch = InternalSetting::getDeviceMidiChannel();
 
     ByteVec req;
     req.clear();
     req.push_back(0xB0 + static_cast<Byte>(ch));
     req.push_back(static_cast<Byte>(index));
-    //req.push_back(static_cast<Byte>(value)); // TODO delete toDvFunc
     req.push_back(value);
     return req;
 }
 
+const std::string getByteVecString(const ByteVec& bytes)
+{
+    std::stringstream ss;
+
+    for (const auto& byte : bytes)
+    {
+        ss << "0x" << std::uppercase << std::setw(2) << std::hex << static_cast<int>(byte) << " ";
+    }
+
+    const auto str = ss.str();
+
+    return str.substr(0, str.size() - 1);
+}
+
 #ifdef _DEBUG
-std::string getMessageDesc(const ByteVec& data)
+const std::string getMessageDesc(const ByteVec& data)
 {
     std::stringstream ss;
 
@@ -237,50 +276,51 @@ std::string getMessageDesc(const ByteVec& data)
     }
     else if (0x80 <= data[0] && data[0] <= 0x9F)
     {
-        if (data[0] < 0x90)
-            ss << "Note Off";
-        else
-            ss << "Note On";
+        if (data[0] < 0x90) ss << "Note Off";
+        else ss << "Note On";
 
         ss << " <" << static_cast<int>(data[1]) << "> Vel(" << static_cast<int>(data[2]) << ")";
     }
     else if (0xB0 <= data[0] && data[0] <= 0xBF)
     {
-        if (data[1] == 0x00)
-            ss << "Bank Select MSB: " << static_cast<int>(data[2]);
-        else if (data[1] == 0x20)
-            ss << "Bank Select LSB: " << static_cast<int>(data[2]);
-        else if (data[1] == 0x78)
-            ss << "All Sound Off";
-        else if (data[1] == 0x79)
-            ss << "Reset All Controllers";
+        if (data[1] == 0x00)      ss << "Bank Select MSB: " << static_cast<int>(data[2]);
+        else if (data[1] == 0x20) ss << "Bank Select LSB: " << static_cast<int>(data[2]);
+        else if (data[1] == 0x78) ss << "All Sound Off";
+        else if (data[1] == 0x79) ss << "Reset All Controllers";
         else if (data[1] == 0x7A)
         {
             ss << "Local Control";
-            if (data[2] == 0)
-                ss << " Off";
-            else if (data[2] == 127)
-                ss << " On";
-            else
-                ss << " (unknown 3rd byte)";
+            if (data[2] == 0)        ss << " Off";
+            else if (data[2] == 127) ss << " On";
+            else                     ss << " (unknown 3rd byte)";
         }
         else if (data[1] == 0x7B)
+        {
             ss << "All Notes Off";
+        }
         else
+        {
             ss << "Control Change (" << static_cast<int>(data[1]) << "): "
                 << static_cast<int>(data[2]);
+        }
     }
     else if (0xC0 <= data[0] && data[0] <= 0xCF)
+    {
         ss << "Program Change (" << static_cast<int>(data[1]) << ")";
+    }
     else if (data[0] == 0xF0 && data[data.size() - 1] == 0xF7)
     {
         ss << "SysEx: ";
         if (data[3] == MESSAGE_INQUIRY)
         {
             if (data[4] == MESSAGE_INQUIRY_REQUEST)
+            {
                 ss << "Identity Request";
+            }
             else if (data[4] == MESSAGE_INQUIRY_RESPONSE)
+            {
                 ss << "Identity Reply";
+            }
         }
         else if (data[4] == MESSAGE_SOUND_REQUEST)
         {

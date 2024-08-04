@@ -15,7 +15,7 @@ enum class Operation : int
 };
 
 #ifdef _DEBUG
-extern const char* OPERATION_STR[static_cast<int>(Operation::_COUNT_)];
+extern const std::unordered_map<Operation, const char*> OPERATION_STR;
 #endif
 
 Operation getOperation() noexcept;

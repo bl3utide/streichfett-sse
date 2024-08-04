@@ -8,7 +8,7 @@ namespace Config
 namespace Reader
 {
 
-void iniValueToCv(mINI::INIStructure& is, Cv& cv) noexcept;
+void iniValueToCv(const mINI::INIStructure& is, Cv& cv) noexcept;
 
 } // Reader
 } // Config

@@ -61,8 +61,8 @@ ID_ICON                 ICON                    "resource/streichfettsse.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,2,0,0
- PRODUCTVERSION 1,2,0,0
+ FILEVERSION 1,3,0,0
+ PRODUCTVERSION 1,3,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -75,21 +75,21 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "041104b0"
+        BLOCK "040004b0"
         BEGIN
             VALUE "CompanyName", "bl3utide"
             VALUE "FileDescription", "Sound Editor for Waldorf Streichfett"
-            VALUE "FileVersion", "1.2.0.0"
-            VALUE "InternalName", "StreichfettSse.exe"
+            VALUE "FileVersion", "1.3.0.0"
+            VALUE "InternalName", "StreichfettSse"
             VALUE "LegalCopyright", "Copyright (C) 2024 bl3utide"
             VALUE "OriginalFilename", "StreichfettSse.exe"
             VALUE "ProductName", "Streichfett SSE"
-            VALUE "ProductVersion", "1.2.0.0"
+            VALUE "ProductVersion", "1.3.0.0"
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x411, 1200
+        VALUE "Translation", 0x400, 1200
     END
 END
 
