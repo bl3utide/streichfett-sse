@@ -401,8 +401,9 @@ static void drawDebugTabItemTransReceiveLog()
 
 static void drawProcessedWindow()
 {
-    std::unique_lock lock(Connector::Debug::history_mutex);
-    const auto message = Connector::Debug::history_selected;
+    namespace cd = Connector::Debug;
+    std::unique_lock lock(cd::history_mutex);
+    const cd::ProcessedMidiMessage message = cd::history_selected;
     lock.unlock();
 
     ImGui::Begin("processed_detail", &show_processed_message_window_,
