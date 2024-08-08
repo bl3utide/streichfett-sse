@@ -9,7 +9,7 @@ namespace Connector
 // public
 SDL_TimerID waiting_timer;
 CallbackMutex callback_mutex;
-const int MAX_REQUEST_TRY = 5;
+const int MAX_REQUEST_TRY = 5;  // TODO not public const var
 const int TIMEOUT_DURATION_PER_RETRY = 200;
 RequestCounter request_try_count(MAX_REQUEST_TRY);
 
