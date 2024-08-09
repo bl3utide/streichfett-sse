@@ -272,6 +272,73 @@ static void drawDebugTabItemSendTest(State current_state)
             ImGui::BeginDisabled();
         }
 
+        // Target Device Setting for Debug
+        {
+            const auto item_name_width = 60.0f;
+            const auto item_ctrl_width = 400.0f;
+
+            if (ImGui::Button("Device Reload (debug)"))
+            {
+                reserved_funcs.push_back(std::bind(Connector::resetAllConnections));
+            }
+            GuiUtil::MouseCursorToHand();
+
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
+            ImGui::Text("Input");
+            ImGui::SameLine(item_name_width);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+            ImGui::PushItemWidth(item_ctrl_width);
+            if (ImGui::BeginCombo("##Debug Device Input", Connector::synth_input.getPortName().c_str()))
+            {
+                const auto in_name_list_size = Connector::in_name_list.size();
+                for (auto n = 0; n < in_name_list_size; ++n)
+                {
+                    const auto is_selected = n == Connector::synth_input.getPortIndex();
+                    if (n == Connector::key_input.getPortIndex())
+                    {
+                        ImGui::Text("%s [USED]", Connector::in_name_list[n].c_str());
+                    }
+                    else
+                    {
+                        if (ImGui::Selectable(Connector::in_name_list[n].c_str(), is_selected))
+                        {
+                            reserved_funcs.push_back(std::bind(Connector::openSynthInputPort, n, Connector::in_name_list[n]));
+                        }
+                        GuiUtil::MouseCursorToHand();
+                        if (is_selected) ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            GuiUtil::MouseCursorToHand();
+            ImGui::PopItemWidth();
+
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 2.0f);
+            ImGui::Text("Output");
+            ImGui::SameLine(item_name_width);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
+            ImGui::PushItemWidth(item_ctrl_width);
+            if (ImGui::BeginCombo("##Debug Device Output", Connector::synth_output.getPortName().c_str()))
+            {
+                const auto out_name_list_size = Connector::out_name_list.size();
+                for (auto n = 0; n < out_name_list_size; ++n)
+                {
+                    const auto is_selected = n == Connector::synth_output.getPortIndex();
+                    if (ImGui::Selectable(Connector::out_name_list[n].c_str(), is_selected))
+                    {
+                        reserved_funcs.push_back(std::bind(Connector::openSynthOutputPort, n, Connector::out_name_list[n]));
+                    }
+                    GuiUtil::MouseCursorToHand();
+                    if (is_selected) ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+            GuiUtil::MouseCursorToHand();
+            ImGui::PopItemWidth();
+        }
+
+        ImGui::Separator();
+
         for (auto i = 0; i < static_cast<int>(cd::SendTestType::_COUNT_); ++i)
         {
             switch (static_cast<cd::SendTestType>(i))
