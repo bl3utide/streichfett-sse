@@ -237,7 +237,7 @@ const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& p
 }
 
 // DSI: Streichfett
-const ByteVec getSoundParameterChangeMessage(int index, const Byte& value)
+const ByteVec getSoundParameterChangeMessage(int index, Byte value)
 {
     // NOTE: For Streichfett, change the parameters with CC.
 

@@ -20,7 +20,7 @@ static void addTask(const ByteVec& m)
 #endif
 }
 
-void addParamChangedTask(int index, const Byte& value)
+void addParamChangedTask(int index, Byte value)
 {
     if (index != -1)
     {

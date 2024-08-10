@@ -5,7 +5,7 @@ namespace StreichfettSse
 namespace MessageTask
 {
 
-void addParamChangedTask(int index, const Byte& value);
+void addParamChangedTask(int index, Byte value);
 const ByteVec lastTask();
 size_t taskSize() noexcept;
 #ifdef _DEBUG

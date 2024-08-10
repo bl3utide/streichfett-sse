@@ -38,7 +38,7 @@ bool checkInquiryDump(const ByteVec& dump);
 void checkDump(const ByteVec& dump, DumpType type);
 const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type);
 const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& patch);      // DSI: Streichfett
-const ByteVec getSoundParameterChangeMessage(int index, const Byte& value);
+const ByteVec getSoundParameterChangeMessage(int index, Byte value);
 const std::string getByteVecString(const ByteVec& bytes);
 #ifdef _DEBUG
 const std::string getMessageDesc(const ByteVec& data);
