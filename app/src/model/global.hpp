@@ -8,6 +8,7 @@ namespace StreichfettSse
 namespace GlobalModel
 {
 
+// DSI: Streichfett
 #define GPNAME_MIDI_CHANNEL     "MIDI Channel"
 #define GPNAME_TUNING           "Tuning"
 #define GPNAME_TRANSPOSE        "Transpose"
