@@ -60,7 +60,6 @@ public:
 private:
     int v_;
     int upper_limit_;
-
 };
 
 enum class RequestType : int
