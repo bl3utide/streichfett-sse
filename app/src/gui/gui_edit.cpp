@@ -174,18 +174,18 @@ static void drawPatchSelector()
 
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_PATCH_INFO);
     GuiUtil::PushFont((int)Font::PatchInfo);
-    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
+    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     for (auto patch_i = 0; patch_i < 12; ++patch_i)
     {
-        char bb = InternalPatch::getSoundBankChar(patch_i);
-        int bs = InternalPatch::getSoundPatchNumber(patch_i);
+        char bb = InternalPatch::getPatchBankChar(patch_i);
+        int bs = InternalPatch::getPatchSoundNumber(patch_i);
         char buf[4];
         sprintf(buf, "%c%d", bb, bs);
         ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
-        if (ImGui::Selectable(buf, patch_i == sound_addr.sound, 0, ImVec2(40.0f, 20.0f)))
+        if (ImGui::Selectable(buf, patch_i == patch_addr.sound, 0, ImVec2(40.0f, 20.0f)))
         {
-            InternalPatch::setCurrentSoundAddress(patch_i);
+            InternalPatch::setCurrentPatchAddress(patch_i);
             setNextState(State::RequestGlobal);
         }
         ImGui::PopStyleVar();
@@ -212,7 +212,7 @@ static void drawPatchSelector()
         draw_list->AddRectFilled(p0, p1, sel_bg);
         GuiUtil::MouseCursorToHand();
 
-        if (patch_i == sound_addr.sound)
+        if (patch_i == patch_addr.sound)
         {
             draw_list->AddRect(p0, p1, IM_COL32(255, 255, 255, 120));
         }

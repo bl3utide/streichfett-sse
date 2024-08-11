@@ -7,10 +7,10 @@ namespace InternalPatch
 {
 
 // DSI: Streichfett
-struct SoundAddress
+struct PatchAddress
 {
-    explicit SoundAddress() : sound(0) {}
-    explicit SoundAddress(int s) : sound(s) {}
+    explicit PatchAddress() : sound(0) {}
+    explicit PatchAddress(int s) : sound(s) {}
 
     int sound;      // 0-11 normally
 };
@@ -18,10 +18,10 @@ struct SoundAddress
 extern bool current_patch_changed;
 
 void initData() noexcept;
-const SoundAddress& getCurrentSoundAddress() noexcept;
-void setCurrentSoundAddress(int sound) noexcept;  // DSI: Streichfett
-char getSoundBankChar(int sound) noexcept;        // DSI: Streichfett
-int getSoundPatchNumber(int sound) noexcept;      // DSI: Streichfett
+const PatchAddress& getCurrentPatchAddress() noexcept;
+void setCurrentPatchAddress(int sound) noexcept;  // DSI: Streichfett
+char getPatchBankChar(int sound) noexcept;        // DSI: Streichfett
+int getPatchSoundNumber(int sound) noexcept;      // DSI: Streichfett
 SoundModel::Patch& getOriginalPatch() noexcept;
 SoundModel::Patch& getCurrentPatch() noexcept;
 void setPatchFromBytes(SoundModel::Patch& patch, const ByteVec& data);

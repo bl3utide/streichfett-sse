@@ -314,9 +314,9 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
                     Logger::debug("received correct sound dump");
                     requestSuccessful(State::Idle);
 
-                    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
-                    const auto bb = InternalPatch::getSoundBankChar(sound_addr.sound);
-                    const auto bs = InternalPatch::getSoundPatchNumber(sound_addr.sound);
+                    auto& sound_addr = InternalPatch::getCurrentPatchAddress();
+                    const auto bb = InternalPatch::getPatchBankChar(sound_addr.sound);
+                    const auto bs = InternalPatch::getPatchSoundNumber(sound_addr.sound);
                     char buf[64];
                     sprintf(buf, "Sound %c%d loaded.", bb, bs);
                     Annotation::setText(buf, Annotation::Type::General);
@@ -474,10 +474,9 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
 // DSI: Streichfett
 Uint32 storeDelay(Uint32 interval, void* param)
 {
-    InternalPatch::SoundAddress* sound_address_ptr
-        = static_cast<InternalPatch::SoundAddress*>(param);
+    auto patch_address_ptr = static_cast<InternalPatch::PatchAddress*>(param);
 
-    int sound = sound_address_ptr->sound;
+    int sound = patch_address_ptr->sound;
 
     // -1: sent to edit buffer
     if (sound != -1)
@@ -486,8 +485,8 @@ Uint32 storeDelay(Uint32 interval, void* param)
         auto& current = InternalPatch::getCurrentPatch();
         InternalPatch::copyPatchAtoB(current, original);
 
-        const auto bb = InternalPatch::getSoundBankChar(sound);
-        const auto bs = InternalPatch::getSoundPatchNumber(sound);
+        const auto bb = InternalPatch::getPatchBankChar(sound);
+        const auto bs = InternalPatch::getPatchSoundNumber(sound);
         char buf[64];
         sprintf(buf, "The sound has stored to %c%d", bb, bs);
         Annotation::setText(buf, Annotation::Type::General);
@@ -497,8 +496,8 @@ Uint32 storeDelay(Uint32 interval, void* param)
     SDL_RemoveTimer(waiting_timer);
     setWaitingStoreDelay(false);
 
-    delete sound_address_ptr;
-    sound_address_ptr = nullptr;
+    delete patch_address_ptr;
+    patch_address_ptr = nullptr;
 
     return interval;
 }

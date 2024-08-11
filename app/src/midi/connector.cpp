@@ -334,9 +334,9 @@ void requestGlobalData()
 // DSI: Streichfett
 void requestSoundData()
 {
-    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
+    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
 
-    const auto sound_req_sysex = MessageHandler::getSoundRequestMessage(sound_addr.sound);
+    const auto sound_req_sysex = MessageHandler::getSoundRequestMessage(patch_addr.sound);
 
     Logger::debug(std::format("request sound dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
@@ -374,8 +374,8 @@ void requestSoundData()
 // DSI: Streichfett
 void sendSoundDump(bool is_edit_buffer)
 {
-    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
-    const auto sound = is_edit_buffer ? -1 : sound_addr.sound;
+    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
+    const auto sound = is_edit_buffer ? -1 : patch_addr.sound;
     const auto& current_patch = InternalPatch::getCurrentPatch();
 
     const auto sound_dump = MessageHandler::getSoundDumpMessageFromPatch(sound, current_patch);
@@ -396,10 +396,10 @@ void sendSoundDump(bool is_edit_buffer)
         );
     }
 
-    InternalPatch::SoundAddress* sound_address_ptr = new InternalPatch::SoundAddress(sound);
+    auto patch_address_ptr = new InternalPatch::PatchAddress(sound);
 
     // set timer for delay after sending sound dump
-    waiting_timer = SDL_AddTimer(store_delay_duration, Callback::storeDelay, sound_address_ptr);
+    waiting_timer = SDL_AddTimer(store_delay_duration, Callback::storeDelay, patch_address_ptr);
 
 #ifdef _DEBUG
     Debug::addProcessedHistory(true, synth_output.getPortName(), sound_dump);
@@ -409,9 +409,9 @@ void sendSoundDump(bool is_edit_buffer)
 // DSI: Streichfett
 void sendProgChange()
 {
-    auto& sound_addr = InternalPatch::getCurrentSoundAddress();
+    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
 
-    const auto prog_change = MessageHandler::getProgChangeMessage(sound_addr.sound);
+    const auto prog_change = MessageHandler::getProgChangeMessage(patch_addr.sound);
 
     try
     {

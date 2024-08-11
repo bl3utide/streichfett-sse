@@ -10,7 +10,7 @@ namespace InternalPatch
 bool current_patch_changed;
 
 // private
-SoundAddress current_sound_;
+PatchAddress current_sound_;
 SoundModel::Patch original_patch_("original");
 SoundModel::Patch current_patch_("current");
 
@@ -22,24 +22,24 @@ void initData() noexcept
     current_patch_changed = false;
 }
 
-const SoundAddress& getCurrentSoundAddress() noexcept
+const PatchAddress& getCurrentPatchAddress() noexcept
 {
     return current_sound_;
 }
 
-void setCurrentSoundAddress(int sound) noexcept
+void setCurrentPatchAddress(int sound) noexcept
 {
     current_sound_.sound = sound;
 }
 
 // DSI: Streichfett
-char getSoundBankChar(int sound) noexcept
+char getPatchBankChar(int sound) noexcept
 {
     return 'A' + sound / 4;
 }
 
 // DSI: Streichfett
-int getSoundPatchNumber(int sound) noexcept
+int getPatchSoundNumber(int sound) noexcept
 {
     return sound % 4 + 1;
 }
