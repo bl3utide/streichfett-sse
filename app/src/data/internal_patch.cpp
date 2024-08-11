@@ -14,6 +14,7 @@ PatchAddress current_patch_addr_;
 SoundModel::Patch original_patch_("original");
 SoundModel::Patch current_patch_("current");
 
+// DSI: Streichfett
 void initData() noexcept
 {
     current_patch_addr_.sound = 0;
