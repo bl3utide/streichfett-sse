@@ -88,7 +88,6 @@ const ByteVec getProgChangeMessage(int value)
     return pc;
 }
 
-// DSI: Streichfett
 const ByteVec getAllSoundOffMessage()
 {
     const auto ch = InternalSetting::getDeviceMidiChannel();
