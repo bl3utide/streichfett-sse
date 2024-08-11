@@ -314,9 +314,9 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
                     Logger::debug("received correct sound dump");
                     requestSuccessful(State::Idle);
 
-                    auto& sound_addr = InternalPatch::getCurrentPatchAddress();
-                    const auto bb = InternalPatch::getPatchBankChar(sound_addr.sound);
-                    const auto bs = InternalPatch::getPatchSoundNumber(sound_addr.sound);
+                    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
+                    const auto bb = InternalPatch::getPatchBankChar(patch_addr);
+                    const auto bs = InternalPatch::getPatchSoundNumber(patch_addr);
                     char buf[64];
                     sprintf(buf, "Sound %c%d loaded.", bb, bs);
                     Annotation::setText(buf, Annotation::Type::General);

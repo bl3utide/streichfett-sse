@@ -39,9 +39,21 @@ char getPatchBankChar(int sound) noexcept
 }
 
 // DSI: Streichfett
+char getPatchBankChar(const PatchAddress& patch) noexcept
+{
+    return getPatchBankChar(patch.sound);
+}
+
+// DSI: Streichfett
 int getPatchSoundNumber(int sound) noexcept
 {
     return sound % 4 + 1;
+}
+
+// DSI: Streichfett
+int getPatchSoundNumber(const PatchAddress& patch) noexcept
+{
+    return getPatchSoundNumber(patch.sound);
 }
 
 SoundModel::Patch& getOriginalPatch() noexcept

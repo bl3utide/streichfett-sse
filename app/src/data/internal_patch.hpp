@@ -21,7 +21,9 @@ void initData() noexcept;
 const PatchAddress& getCurrentPatchAddress() noexcept;
 void setCurrentPatchAddress(int sound) noexcept;  // DSI: Streichfett
 char getPatchBankChar(int sound) noexcept;        // DSI: Streichfett
+char getPatchBankChar(const PatchAddress& patch) noexcept;
 int getPatchSoundNumber(int sound) noexcept;      // DSI: Streichfett
+int getPatchSoundNumber(const PatchAddress& patch) noexcept;
 SoundModel::Patch& getOriginalPatch() noexcept;
 SoundModel::Patch& getCurrentPatch() noexcept;
 void setPatchFromBytes(SoundModel::Patch& patch, const ByteVec& data);
