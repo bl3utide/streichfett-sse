@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+// DSI: Streichfett
+
 namespace StreichfettSse
 {
 namespace GlobalModel

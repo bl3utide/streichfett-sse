@@ -8,6 +8,7 @@ namespace StreichfettSse
 namespace SoundModel
 {
 
+// DSI: Streichfett
 #define PNAME_REGISTRATION      "Registration"
 #define PNAME_OCTAVE_SWITCH     "Octave Switch"
 #define PNAME_ENSEMBLE_EFFECT   "Ensemble Effect"
@@ -26,6 +27,7 @@ namespace SoundModel
 #define PNAME_PHASER            "Phaser"
 #define PNAME_REVERB            "Reverb"
 
+// DSI: Streichfett
 enum class ParamIndex : int
 {
     Registration = 0,
