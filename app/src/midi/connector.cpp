@@ -255,9 +255,6 @@ void openKeyInputPort(int port_index, const std::string& port_name)
 
 void requestInquiry()
 {
-    MessageHandler::inquiry_dump.received = false;
-
-    // send sysex message to device via midi out device
     const auto confirm_req_sysex = MessageHandler::getInquiryRequestMessage();
 
     Logger::debug(std::format("request inquiry dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
@@ -495,6 +492,7 @@ void setSynthConnected(bool connected) noexcept
     {
         is_synth_connected_ = false;
         Annotation::setText(Annotation::Message::DisconnectedAlert, Annotation::Type::Alert);
+        MessageHandler::inquiry_dump.initialize();
     }
 }
 
