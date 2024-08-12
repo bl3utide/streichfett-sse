@@ -15,8 +15,8 @@ enum class DumpType : int
 // DSI: Streichfett
 struct InquiryDump
 {
-    bool received;
-    int device_id;
+    bool received{};
+    int device_id{};
     std::string firmware_version;
 
     void initialize()
