@@ -212,7 +212,7 @@ const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type)
     }
     else
     {
-        throw std::exception("getDataByteFromDump failed (unknown dump type specified)");
+        throw std::exception("getDataBytesFromDump failed (unknown dump type specified)");
     }
 
     return data;
