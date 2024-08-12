@@ -199,12 +199,16 @@ const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type)
     if (type == DumpType::Sound)
     {
         for (auto i = SOUND_DATA_INDEX_FIRST; i <= SOUND_DATA_INDEX_LAST; ++i)
+        {
             data.push_back(dump[i]);
+        }
     }
     else if (type == DumpType::Global)
     {
         for (auto i = GLOBAL_DATA_INDEX_FIRST; i <= GLOBAL_DATA_INDEX_LAST; ++i)
+        {
             data.push_back(dump[i]);
+        }
     }
     else
     {
