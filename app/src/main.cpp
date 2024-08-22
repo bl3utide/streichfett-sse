@@ -81,7 +81,7 @@ static void initialize()
 
         try
         {
-            Logger::debug("start init Midi");
+            Logger::debug("start init Connector");
             Midi::Connector::initialize();
             init_flag_.set(static_cast<int>(InitSection::Connector));
         }
