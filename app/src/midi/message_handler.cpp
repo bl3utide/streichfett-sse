@@ -49,7 +49,7 @@ static bool isSysex(const ByteVec& mb) noexcept
     return mb.front() == SYSEX_FIRST && mb.back() == SYSEX_LAST;
 }
 
-const ByteVec getInquiryRequestMessage()
+const ByteVec getRequestDeviceInquiryMessage()
 {
     ByteVec req;
     req.clear();
@@ -64,7 +64,7 @@ const ByteVec getInquiryRequestMessage()
 }
 
 // DSI: Streichfett
-const ByteVec getSoundRequestMessage(int sound)
+const ByteVec getRequestSoundMessage(int sound)
 {
     ByteVec req;
     req.clear();
@@ -79,7 +79,7 @@ const ByteVec getSoundRequestMessage(int sound)
 }
 
 // DSI: Streichfett
-const ByteVec getGlobalRequestMessage()
+const ByteVec getRequestGlobalMessage()
 {
     ByteVec req;
     req.clear();
@@ -128,68 +128,98 @@ bool isNoteOn(const ByteVec& mb) noexcept
 }
 
 // DSI: Streichfett
-bool checkInquiryDump(const ByteVec& dump)
+void validateInquiryDump(const ByteVec& dump)
 {
-    if (dump.size() != INQUIRY_DUMP_SIZE) return false;
+    constexpr std::string_view EMFMT = "validateInquiryDump failed ({})";
 
-    if (!isSysex(dump)) return false;
+    if (dump.empty())
+    {
+        throw std::exception(std::format(EMFMT, "empty data").c_str());
+    }
+
+    if (dump.size() != INQUIRY_DUMP_SIZE)
+    {
+        throw std::exception(std::format(EMFMT, "SysEx byte size").c_str());
+    }
+
+    if (!isSysex(dump))
+    {
+        throw std::exception(std::format(EMFMT, "not SysEx").c_str());
+    }
 
     // Universal SysEx Header
-    if (dump[1] != SYSEX_SECOND_UNRT) return false;
+    if (dump[1] != SYSEX_SECOND_UNRT)
+    {
+        throw std::exception(std::format(EMFMT, "not Universal Non-Real Time SysEx").c_str());
+    }
 
     // Device Inquiry Dump
-    if (dump[3] != ORDER_INQUIRY || dump[4] != ORDER_INQUIRY_RESPONSE) return false;
+    if (dump[3] != ORDER_INQUIRY || dump[4] != ORDER_INQUIRY_RESPONSE)
+    {
+        throw std::exception(std::format(EMFMT, "not device inquiry dump SysEx").c_str());
+    }
 
     // Waldorf Music Manufacturer ID
-    if (dump[5] != DEVICE_MANUFACTURER_ID) return false;
+    if (dump[5] != DEVICE_MANUFACTURER_ID)
+    {
+        throw std::exception(std::format(EMFMT, "SysEx has incorrect manufacturer id").c_str());
+    }
 
     // Device Family Code
-    if (dump[6] != DEVICE_FAMILY_CODE) return false;
+    if (dump[6] != DEVICE_FAMILY_CODE)
+    {
+        throw std::exception(std::format(EMFMT, "SysEx has incorrect device family code").c_str());
+    }
 
     inquiry_dump.received = true;
     inquiry_dump.device_id = static_cast<int>(dump[2]);
     inquiry_dump.firmware_version = std::format("{0}.{1}", dump[10], dump[11]);
-
-    return true;
 }
 
 // DSI: Streichfett
-void checkDump(const ByteVec& dump, DumpType type)
+void validateDataDump(const ByteVec& dump, DumpType type)
 {
+    constexpr std::string_view EMFMT = "validateDataDump failed ({})";
+
+    if (dump.empty())
+    {
+        throw std::exception(std::format(EMFMT, "empty data").c_str());
+    }
+
     if (!isSysex(dump))
     {
-        throw std::exception("checkDump failed (not SysEx)");
+        throw std::exception(std::format(EMFMT, "not SysEx").c_str());
     }
 
     // Waldorf Music Manufacturer ID
     if (dump[1] != DEVICE_MANUFACTURER_ID)
     {
-        throw std::exception("checkDump failed (SysEx has incorrect manufacture id)");
+        throw std::exception(std::format(EMFMT, "SysEx has incorrect manufacturer id").c_str());
     }
 
     //  Device Family Code
     if (dump[2] != DEVICE_FAMILY_CODE)
     {
-        throw std::exception("checkDump failed (SysEx has incorrect device family code)");
+        throw std::exception(std::format(EMFMT, "SysEx has incorrect device family code").c_str());
     }
 
     if (type == DumpType::Sound)
     {
         if (dump[4] != ORDER_SOUND_DUMP)
         {
-            throw std::exception("checkDump failed (not sound dump SysEx)");
+            throw std::exception(std::format(EMFMT, "not sound dump SysEx").c_str());
         }
     }
     else if (type == DumpType::Global)
     {
         if (dump[4] != ORDER_GLOBAL_DUMP)
         {
-            throw std::exception("checkDump failed (not global dump SysEx)");
+            throw std::exception(std::format(EMFMT, "not global dump SysEx").c_str());
         }
     }
     else
     {
-        throw std::exception("checkDump failed (unknown dump type specified)");
+        throw std::exception(std::format(EMFMT, "unknown dump type specified").c_str());
     }
 }
 

@@ -10,9 +10,9 @@ namespace Debug
 
 enum class SendTestType : int
 {
-    Inquiry,
-    GlobalDump,
-    SoundDump,
+    DeviceInquiry,
+    Global,
+    Sound,
     _COUNT_,
 };
 

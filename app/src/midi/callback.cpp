@@ -23,7 +23,6 @@ namespace Callback
 enum class ErrorMessageType : int
 {
     Timeout,
-    Empty,
     Incorrect,
     _COUNT_,
 };
@@ -32,26 +31,23 @@ enum class ErrorMessageType : int
 const std::unordered_map<RequestType, std::unordered_map<ErrorMessageType, std::string>> ERROR_MESSAGE
 {
     {
-        RequestType::Confirm,
+        RequestType::DeviceInquiry,
         {
-            { ErrorMessageType::Timeout,    "The confirm sysex request has timed out." },
-            { ErrorMessageType::Empty,      "Received empty confirm dump." },
+            { ErrorMessageType::Timeout,    "The device inquiry request has timed out." },
             { ErrorMessageType::Incorrect,  "You tried to connect to an incorrect device." },
         }
     },
     {
-        RequestType::GlobalDump,
+        RequestType::Global,
         {
-            { ErrorMessageType::Timeout,    "The global dump request has timed out." },
-            { ErrorMessageType::Empty,      "Received empty global dump."},
+            { ErrorMessageType::Timeout,    "The global request has timed out." },
             { ErrorMessageType::Incorrect,  "Incorrect global dump message." },
         }
     },
     {
-        RequestType::SoundDump,
+        RequestType::Sound,
         {
-            { ErrorMessageType::Timeout,    "The sound dump request has timed out." },
-            { ErrorMessageType::Empty,      "Received empty sound dump." },
+            { ErrorMessageType::Timeout,    "The sound request has timed out." },
             { ErrorMessageType::Incorrect,  "Incorrect sound dump message." },
         }
     },
@@ -77,10 +73,11 @@ static void retryOver(
 }
 
 /*******************************************************************************
-    Received confirm response callback
+    Received device inquiry response callback
 *******************************************************************************/
-void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
+void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_data)
 {
+    Logger::debug("callback function exec: receiveDeviceInquiryDump");
     if (callback_mutex.guard.try_lock())
     {
         if (!callback_mutex.is_callback_catched)
@@ -94,49 +91,33 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
             SDL_RemoveTimer(waiting_timer);
             synth_input.cancelCallback();
 
-            if (message->empty())
+            try
             {
-                Logger::debug("received empty confirm dump");
+                // throwable function
+                MessageHandler::validateInquiryDump(*message);
+
+                // received correct dump
+                Logger::debug("received correct inquiry dump");
+                requestSuccessful(State::RequestGlobal);
+            }
+            catch (std::exception& e)
+            {
+                Logger::debug(e.what());
+
+                const auto byte_str = MessageHandler::getByteVecString(*message);
+                Logger::debug(std::format(" >> {}", byte_str));
 
                 if (request_try_count.reachedLimit())
                 {
                     // retry count over
-                    Logger::debug("request count over, the last cause: received empty dump");
-                    retryOver(RequestType::Confirm, ErrorMessageType::Empty);
+                    Logger::debug("request count over, the last cause: received incorrect dump");
+                    retryOver(RequestType::DeviceInquiry, ErrorMessageType::Incorrect);
                 }
                 else
                 {
                     // retry
                     Logger::debug("retry -> request inquiry");
-                    setNextState(State::RequestInquiry, true);
-                }
-            }
-            else
-            {
-                if (MessageHandler::checkInquiryDump(*message))
-                {
-                    // received correct dump
-                    Logger::debug("received correct inquiry dump");
-                    requestSuccessful(State::RequestGlobal);
-                }
-                else
-                {
-                    Logger::debug("checkInquiryDump failed");
-                    const auto byte_str = MessageHandler::getByteVecString(*message);
-                    Logger::debug(std::format(" >> {}", byte_str));
-
-                    if (request_try_count.reachedLimit())
-                    {
-                        // retry count over
-                        Logger::debug("request count over, the last cause: received incorrect dump");
-                        retryOver(RequestType::Confirm, ErrorMessageType::Incorrect);
-                    }
-                    else
-                    {
-                        // retry
-                        Logger::debug("retry -> request inquiry");
-                        setNextState(State::RequestInquiry, true);
-                    }
+                    setNextState(State::RequestDeviceInquiry, true);
                 }
             }
 #ifdef _DEBUG
@@ -145,7 +126,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
         }
         else
         {
-            Logger::debug("receive confirm callback can lock but the other callback already executed");
+            Logger::debug("receive device inquiry dump callback can lock but the other callback already executed");
         }
 
         callback_mutex.guard.unlock();
@@ -153,7 +134,7 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
     else
     {
         // cannot lock
-        Logger::debug("receive confirm callback can not execute the process because of mutex");
+        Logger::debug("receive device inquiry dump callback can not execute the process because of mutex");
     }
 }
 
@@ -161,8 +142,9 @@ void receiveConfirmSysex(double delta_time, ByteVec* message, void* user_data)
     Received global dump response callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data)
+void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
 {
+    Logger::debug("callback function exec: receiveGlobalDump");
     if (callback_mutex.guard.try_lock())
     {
         if (!callback_mutex.is_callback_catched)
@@ -176,66 +158,49 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
             SDL_RemoveTimer(waiting_timer);
             synth_input.cancelCallback();
 
-            if (message->empty())
+            const auto dump_type = MessageHandler::DumpType::Global;
+
+            try
             {
-                Logger::debug("received empty global dump");
+                // throwable function
+                MessageHandler::validateDataDump(*message, dump_type);
+
+                const auto global_data = MessageHandler::getDataBytesFromDump(*message, dump_type);
+                auto& setting = InternalSetting::getGlobalData();
+
+                // throwable function
+                InternalSetting::setSettingFromBytes(setting, global_data);
+
+                // received correct dump
+                Logger::debug("received correct global dump");
+                const auto op = getOperation();
+                if (op == Operation::Sound)
+                {
+                    requestSuccessful(State::SendBankProgChange);
+                }
+                else if (op == Operation::Option)
+                {
+                    requestSuccessful(State::Idle);
+                }
+            }
+            catch (std::exception& e)
+            {
+                Logger::debug(e.what());
+
+                const auto byte_str = MessageHandler::getByteVecString(*message);
+                Logger::debug(std::format(" >> {}", byte_str));
 
                 if (request_try_count.reachedLimit())
                 {
                     // retry count over
-                    Logger::debug("request count over, the last cause: received empty dump");
-                    retryOver(RequestType::GlobalDump, ErrorMessageType::Empty);
+                    Logger::debug("request count over, the last cause: received incorrect dump");
+                    retryOver(RequestType::Global, ErrorMessageType::Incorrect);
                 }
                 else
                 {
                     // retry
                     Logger::debug("retry -> request global");
                     setNextState(State::RequestGlobal, true);
-                }
-            }
-            else
-            {
-                const auto dump_type = MessageHandler::DumpType::Global;
-
-                try
-                {
-                    // throwable function
-                    MessageHandler::checkDump(*message, dump_type);
-
-                    const auto global_data = MessageHandler::getDataBytesFromDump(*message, dump_type);
-                    auto& setting = InternalSetting::getGlobalData();
-
-                    // throwable function
-                    InternalSetting::setSettingFromBytes(setting, global_data);
-
-                    // received correct dump
-                    Logger::debug("received correct global dump");
-                    const auto op = getOperation();
-                    if (op == Operation::Sound)
-                    {
-                        requestSuccessful(State::SendBankProgChange);
-                    }
-                    else if (op == Operation::Option)
-                    {
-                        requestSuccessful(State::Idle);
-                    }
-                }
-                catch (std::exception& e)
-                {
-                    Logger::debug(e.what());
-
-                    if (request_try_count.reachedLimit())
-                    {
-                        // retry count over
-                        Logger::debug("request count over, the last cause: received incorrect dump");
-                        retryOver(RequestType::GlobalDump, ErrorMessageType::Incorrect);
-                    }
-                    else
-                    {
-                        // retry
-                        Logger::debug("retry -> request global");
-                        setNextState(State::RequestGlobal, true);
-                    }
                 }
             }
 #ifdef _DEBUG
@@ -260,8 +225,9 @@ void receiveGlobalDumpSysex(double delta_time, ByteVec* message, void* user_data
     Received sound dump response callback
 *******************************************************************************/
 // DSI: Streichfett
-void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
+void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
 {
+    Logger::debug("callback function exec: receiveSoundDump");
     if (callback_mutex.guard.try_lock())
     {
         if (!callback_mutex.is_callback_catched)
@@ -275,68 +241,51 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
             SDL_RemoveTimer(waiting_timer);
             synth_input.cancelCallback();
 
-            if (message->empty())
+            const auto dump_type = MessageHandler::DumpType::Sound;
+
+            try
             {
-                Logger::debug("received empty sound dump");
+                // throwable function
+                MessageHandler::validateDataDump(*message, dump_type);
+
+                const auto sound_data =
+                    MessageHandler::getDataBytesFromDump(*message, dump_type);
+                auto& original = InternalPatch::getOriginalPatch();
+                auto& current = InternalPatch::getCurrentPatch();
+
+                // throwable function
+                InternalPatch::setPatchFromBytes(original, sound_data);
+                InternalPatch::copyPatchAtoB(original, current);
+
+                // received correct dump
+                Logger::debug("received correct sound dump");
+                requestSuccessful(State::Idle);
+
+                auto& patch_addr = InternalPatch::getCurrentPatchAddress();
+                const auto bb = InternalPatch::getPatchBankChar(patch_addr);
+                const auto bs = InternalPatch::getPatchSoundNumber(patch_addr);
+                char buf[64];
+                sprintf(buf, "Sound %c%d loaded.", bb, bs);
+                Annotation::setText(buf, Annotation::Type::General);
+            }
+            catch (std::exception& e)
+            {
+                Logger::debug(e.what());
+
+                const auto byte_str = MessageHandler::getByteVecString(*message);
+                Logger::debug(std::format(" >> {}", byte_str));
 
                 if (request_try_count.reachedLimit())
                 {
                     // retry count over
-                    Logger::debug("request count over, the last cause: received empty dump");
-                    retryOver(RequestType::SoundDump, ErrorMessageType::Empty, false);
+                    Logger::debug("request count over, the last cause: received incorrect dump");
+                    retryOver(RequestType::Sound, ErrorMessageType::Incorrect, false);
                 }
                 else
                 {
                     // retry
                     Logger::debug("retry -> request sound");
                     setNextState(State::RequestSound, true);
-                }
-            }
-            else
-            {
-                const auto dump_type = MessageHandler::DumpType::Sound;
-
-                try
-                {
-                    // throwable function
-                    MessageHandler::checkDump(*message, dump_type);
-
-                    const auto sound_data =
-                        MessageHandler::getDataBytesFromDump(*message, dump_type);
-                    auto& original = InternalPatch::getOriginalPatch();
-                    auto& current = InternalPatch::getCurrentPatch();
-
-                    // throwable function
-                    InternalPatch::setPatchFromBytes(original, sound_data);
-                    InternalPatch::copyPatchAtoB(original, current);
-
-                    // received correct dump
-                    Logger::debug("received correct sound dump");
-                    requestSuccessful(State::Idle);
-
-                    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
-                    const auto bb = InternalPatch::getPatchBankChar(patch_addr);
-                    const auto bs = InternalPatch::getPatchSoundNumber(patch_addr);
-                    char buf[64];
-                    sprintf(buf, "Sound %c%d loaded.", bb, bs);
-                    Annotation::setText(buf, Annotation::Type::General);
-                }
-                catch (std::exception& e)
-                {
-                    Logger::debug(e.what());
-
-                    if (request_try_count.reachedLimit())
-                    {
-                        // retry count over
-                        Logger::debug("request count over, the last cause: received incorrect dump");
-                        retryOver(RequestType::SoundDump, ErrorMessageType::Incorrect, false);
-                    }
-                    else
-                    {
-                        // retry
-                        Logger::debug("retry -> request sound");
-                        setNextState(State::RequestSound, true);
-                    }
                 }
             }
 #ifdef _DEBUG
@@ -362,7 +311,7 @@ void receiveSoundDumpSysex(double delta_time, ByteVec* message, void* user_data)
 *******************************************************************************/
 Uint32 timeout(Uint32 interval, void* param)
 {
-    //std::string err_message = *static_cast<std::string*>(param);
+    Logger::debug("callback function exec: timeout");
     if (callback_mutex.guard.try_lock())
     {
         if (!callback_mutex.is_callback_catched)
@@ -386,17 +335,17 @@ Uint32 timeout(Uint32 interval, void* param)
             else
             {
                 // retry
-                if (req_type == RequestType::Confirm)
+                if (req_type == RequestType::DeviceInquiry)
                 {
                     Logger::debug("retry -> request inquiry");
-                    setNextState(State::RequestInquiry, true);
+                    setNextState(State::RequestDeviceInquiry, true);
                 }
-                else if (req_type == RequestType::GlobalDump)
+                else if (req_type == RequestType::Global)
                 {
                     Logger::debug("retry -> request global");
                     setNextState(State::RequestGlobal, true);
                 }
-                else if (req_type == RequestType::SoundDump)
+                else if (req_type == RequestType::Sound)
                 {
                     Logger::debug("retry -> request sound");
                     setNextState(State::RequestSound, true);

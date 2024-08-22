@@ -210,7 +210,7 @@ void openSynthInputPort(int port_index, const std::string& port_name)
     if (synth_output.isPortOpen())
     {
         setSynthConnected(true);
-        setNextState(State::RequestInquiry);
+        setNextState(State::RequestDeviceInquiry);
     }
 }
 
@@ -231,7 +231,7 @@ void openSynthOutputPort(int port_index, const std::string& port_name)
     if (synth_input.isPortOpen())
     {
         setSynthConnected(true);
-        setNextState(State::RequestInquiry);
+        setNextState(State::RequestDeviceInquiry);
     }
 }
 
@@ -253,15 +253,15 @@ void openKeyInputPort(int port_index, const std::string& port_name)
     key_input.ignoreTypes(false, false, false);
 }
 
-void requestInquiry()
+void requestDeviceInquiry()
 {
-    const auto confirm_req_sysex = MessageHandler::getInquiryRequestMessage();
+    const auto req_sysex = MessageHandler::getRequestDeviceInquiryMessage();
 
     Logger::debug(std::format("request inquiry dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
     try
     {
-        synth_output.sendMessage(confirm_req_sysex);
+        synth_output.sendMessage(req_sysex);
     }
     catch (RtMidiError& error)
     {
@@ -276,30 +276,30 @@ void requestInquiry()
 
     ++request_try_count;
     callback_mutex.is_callback_catched = false;
-    RequestType* req_type_ptr = new RequestType(RequestType::Confirm);
+    RequestType* req_type_ptr = new RequestType(RequestType::DeviceInquiry);
 
     // then receive result message in callback function
-    synth_input.setCallback(Callback::receiveConfirmSysex, req_type_ptr);
+    synth_input.setCallback(Callback::receiveDeviceInquiryDump, req_type_ptr);
     synth_input.ignoreTypes(false, false, false);
 
     // set timer for connection timeout
     waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
 
-    setNextState(State::WaitingConfirm);
+    setNextState(State::WaitingDeviceInquiryDump);
 #ifdef _DEBUG
-    Debug::addProcessedHistory(true, synth_output.getPortName(), confirm_req_sysex);
+    Debug::addProcessedHistory(true, synth_output.getPortName(), req_sysex);
 #endif
 }
 
-void requestGlobalData()
+void requestGlobal()
 {
-    const auto global_req_sysex = MessageHandler::getGlobalRequestMessage();
+    const auto req_sysex = MessageHandler::getRequestGlobalMessage();
 
     Logger::debug(std::format("request global dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
     try
     {
-        synth_output.sendMessage(global_req_sysex);
+        synth_output.sendMessage(req_sysex);
     }
     catch (RtMidiError& error)
     {
@@ -314,32 +314,32 @@ void requestGlobalData()
 
     ++request_try_count;
     callback_mutex.is_callback_catched = false;
-    RequestType* req_type_ptr = new RequestType(RequestType::GlobalDump);
+    RequestType* req_type_ptr = new RequestType(RequestType::Global);
 
-    synth_input.setCallback(Callback::receiveGlobalDumpSysex, req_type_ptr);
+    synth_input.setCallback(Callback::receiveGlobalDump, req_type_ptr);
     synth_input.ignoreTypes(false, false, false);
 
     // set timer for connection timeout
     waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
 
-    setNextState(State::WaitingGlobal);
+    setNextState(State::WaitingGlobalDump);
 #ifdef _DEBUG
-    Debug::addProcessedHistory(true, synth_output.getPortName(), global_req_sysex);
+    Debug::addProcessedHistory(true, synth_output.getPortName(), req_sysex);
 #endif
 }
 
 // DSI: Streichfett
-void requestSoundData()
+void requestSound()
 {
     auto& patch_addr = InternalPatch::getCurrentPatchAddress();
 
-    const auto sound_req_sysex = MessageHandler::getSoundRequestMessage(patch_addr.sound);
+    const auto req_sysex = MessageHandler::getRequestSoundMessage(patch_addr.sound);
 
     Logger::debug(std::format("request sound dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
     try
     {
-        synth_output.sendMessage(sound_req_sysex);
+        synth_output.sendMessage(req_sysex);
     }
     catch (RtMidiError& error)
     {
@@ -354,17 +354,17 @@ void requestSoundData()
 
     ++request_try_count;
     callback_mutex.is_callback_catched = false;
-    RequestType* req_type_ptr = new RequestType(RequestType::SoundDump);
+    RequestType* req_type_ptr = new RequestType(RequestType::Sound);
 
-    synth_input.setCallback(Callback::receiveSoundDumpSysex, req_type_ptr);
+    synth_input.setCallback(Callback::receiveSoundDump, req_type_ptr);
     synth_input.ignoreTypes(false, false, false);
 
     // set timer for connection timeout
     waiting_timer = SDL_AddTimer(TIMEOUT_DURATION_PER_RETRY, Callback::timeout, req_type_ptr);
 
-    setNextState(State::WaitingSound);
+    setNextState(State::WaitingSoundDump);
 #ifdef _DEBUG
-    Debug::addProcessedHistory(true, synth_output.getPortName(), sound_req_sysex);
+    Debug::addProcessedHistory(true, synth_output.getPortName(), req_sysex);
 #endif
 }
 

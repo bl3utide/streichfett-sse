@@ -16,21 +16,21 @@ namespace StreichfettSse
 #ifdef _DEBUG
 const std::unordered_map<State, const char*> STATE_STR
 {
-    { State::InitInternalData,      "InitInternalData" },
-    { State::ApplyConfig,           "ApplyConfig" },
-    { State::Idle,                  "Idle" },
-    { State::RequestInquiry,        "RequestInquiry" },
-    { State::WaitingConfirm,        "WaitingConfirm" },
-    { State::RequestGlobal,         "RequestGlobal" },
-    { State::WaitingGlobal,         "WaitingGlobal" },
-    { State::SendBankProgChange,    "SendBankProgChange" },
-    { State::RequestSound,          "RequestSound" },
-    { State::WaitingSound,          "WaitingSound" },
-    { State::EnterSoundMode,        "EnterSoundMode" },
-    { State::EnterOptionMode,       "EnterOptionMode" },
-    { State::WaitingSendDelay,      "WaitingSendDelay" },
-    { State::PrepareToExit,         "PrepareToExit" },
-    { State::None,                  "None" },
+    { State::InitInternalData,          "InitInternalData" },
+    { State::ApplyConfig,               "ApplyConfig" },
+    { State::Idle,                      "Idle" },
+    { State::RequestDeviceInquiry,      "RequestDeviceInquiry" },
+    { State::WaitingDeviceInquiryDump,  "WaitingDeviceInquiryDump" },
+    { State::RequestGlobal,             "RequestGlobal" },
+    { State::WaitingGlobalDump,         "WaitingGlobalDump" },
+    { State::SendBankProgChange,        "SendBankProgChange" },
+    { State::RequestSound,              "RequestSound" },
+    { State::WaitingSoundDump,          "WaitingSoundDump" },
+    { State::EnterSoundMode,            "EnterSoundMode" },
+    { State::EnterOptionMode,           "EnterOptionMode" },
+    { State::WaitingSendDelay,          "WaitingSendDelay" },
+    { State::PrepareToExit,             "PrepareToExit" },
+    { State::None,                      "None" },
 };
 #endif
 
@@ -62,17 +62,17 @@ bool processForCurrentState()
     case State::Idle:
         Connector::sendOneTaskMessage();
         break;
-    case State::RequestInquiry:
-        Connector::requestInquiry();
+    case State::RequestDeviceInquiry:
+        Connector::requestDeviceInquiry();
         break;
     case State::RequestGlobal:
-        Connector::requestGlobalData();
+        Connector::requestGlobal();
         break;
     case State::SendBankProgChange:
         Connector::sendProgChange();
         break;
     case State::RequestSound:
-        Connector::requestSoundData();
+        Connector::requestSound();
         break;
     case State::EnterSoundMode:
         setOperation(Operation::Sound);

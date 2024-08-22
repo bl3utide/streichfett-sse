@@ -27,15 +27,15 @@ struct InquiryDump
 
 extern InquiryDump inquiry_dump;
 
-const ByteVec getInquiryRequestMessage();
-const ByteVec getSoundRequestMessage(int sound);  // DSI: Streichfett
-const ByteVec getGlobalRequestMessage();
+const ByteVec getRequestDeviceInquiryMessage();
+const ByteVec getRequestSoundMessage(int sound);  // DSI: Streichfett
+const ByteVec getRequestGlobalMessage();
 const ByteVec getProgChangeMessage(int value);
 const ByteVec getAllSoundOffMessage();
 bool isNoteOff(const ByteVec& mb) noexcept;
 bool isNoteOn(const ByteVec& mb) noexcept;
-bool checkInquiryDump(const ByteVec& dump);
-void checkDump(const ByteVec& dump, DumpType type);
+void validateInquiryDump(const ByteVec& dump);
+void validateDataDump(const ByteVec& dump, DumpType type);
 const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type);
 const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& patch);      // DSI: Streichfett
 const ByteVec getSoundParameterChangeMessage(int index, Byte value);

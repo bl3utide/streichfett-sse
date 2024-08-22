@@ -28,22 +28,10 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
     {
         switch (*type_ptr)
         {
-            case SendTestType::Inquiry:
-                if (MessageHandler::checkInquiryDump(*message))
-                {
-                    send_test.at(type) = SendTestResult::Ok;
-                    send_test_failed_cause.at(type) = SendTestFailedCause::None;
-                }
-                else
-                {
-                    send_test.at(type) = SendTestResult::Failed;
-                    send_test_failed_cause.at(type) = SendTestFailedCause::IncorrectMessage;
-                }
-                break;
-            case SendTestType::GlobalDump:
+            case SendTestType::DeviceInquiry:
                 try
                 {
-                    MessageHandler::checkDump(*message, MessageHandler::DumpType::Global);
+                    MessageHandler::validateInquiryDump(*message);
                     send_test.at(type) = SendTestResult::Ok;
                     send_test_failed_cause.at(type) = SendTestFailedCause::None;
                 }
@@ -53,10 +41,23 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
                     send_test_failed_cause.at(type) = SendTestFailedCause::IncorrectMessage;
                 }
                 break;
-            case SendTestType::SoundDump:
+            case SendTestType::Global:
                 try
                 {
-                    MessageHandler::checkDump(*message, MessageHandler::DumpType::Sound);
+                    MessageHandler::validateDataDump(*message, MessageHandler::DumpType::Global);
+                    send_test.at(type) = SendTestResult::Ok;
+                    send_test_failed_cause.at(type) = SendTestFailedCause::None;
+                }
+                catch (std::exception&)
+                {
+                    send_test.at(type) = SendTestResult::Failed;
+                    send_test_failed_cause.at(type) = SendTestFailedCause::IncorrectMessage;
+                }
+                break;
+            case SendTestType::Sound:
+                try
+                {
+                    MessageHandler::validateDataDump(*message, MessageHandler::DumpType::Sound);
                     send_test.at(type) = SendTestResult::Ok;
                     send_test_failed_cause.at(type) = SendTestFailedCause::None;
                 }

@@ -343,24 +343,24 @@ static void drawDebugTabItemSendTest(State current_state)
         {
             switch (static_cast<cd::SendTestType>(i))
             {
-                case cd::SendTestType::Inquiry:
+                case cd::SendTestType::DeviceInquiry:
                     if (ImGui::Button("MIDI Identity Inquiry"))
                     {
-                        reserved_funcs.push_back(std::bind(cd::sendTest, cd::SendTestType::Inquiry));
+                        reserved_funcs.push_back(std::bind(cd::sendTest, cd::SendTestType::DeviceInquiry));
                     }
                     GuiUtil::MouseCursorToHand();
                     break;
-                case cd::SendTestType::GlobalDump:
+                case cd::SendTestType::Global:
                     if (ImGui::Button("Request Global Dump"))
                     {
-                        reserved_funcs.push_back(std::bind(cd::sendTest, cd::SendTestType::GlobalDump));
+                        reserved_funcs.push_back(std::bind(cd::sendTest, cd::SendTestType::Global));
                     }
                     GuiUtil::MouseCursorToHand();
                     break;
-                case cd::SendTestType::SoundDump:
+                case cd::SendTestType::Sound:
                     if (ImGui::Button("Request Sound Dump"))
                     {
-                        reserved_funcs.push_back(std::bind(cd::sendTest, cd::SendTestType::SoundDump));
+                        reserved_funcs.push_back(std::bind(cd::sendTest, cd::SendTestType::Sound));
                     }
                     GuiUtil::MouseCursorToHand();
                     break;

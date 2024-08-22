@@ -64,9 +64,9 @@ private:
 
 enum class RequestType : int
 {
-    Confirm = 0,
-    GlobalDump,
-    SoundDump,
+    DeviceInquiry = 0,
+    Global,
+    Sound,
     _COUNT_,
 };
 

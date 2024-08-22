@@ -61,16 +61,16 @@ void sendTest(SendTestType type)
 
     switch (type)
     {
-        case SendTestType::Inquiry:
-            request = MessageHandler::getInquiryRequestMessage();
+        case SendTestType::DeviceInquiry:
+            request = MessageHandler::getRequestDeviceInquiryMessage();
             break;
-        case SendTestType::GlobalDump:
-            request = MessageHandler::getGlobalRequestMessage();
+        case SendTestType::Global:
+            request = MessageHandler::getRequestGlobalMessage();
             break;
-        case SendTestType::SoundDump:
+        case SendTestType::Sound:
         {
             auto& patch_addr = InternalPatch::getCurrentPatchAddress();
-            request = MessageHandler::getSoundRequestMessage(patch_addr.sound);
+            request = MessageHandler::getRequestSoundMessage(patch_addr.sound);
         }
             break;
         default:
@@ -104,9 +104,9 @@ void sendTest(SendTestType type)
 bool isAnyTestSending() noexcept
 {
     return
-        send_test.at(SendTestType::Inquiry) == SendTestResult::WaitReceive ||
-        send_test.at(SendTestType::GlobalDump) == SendTestResult::WaitReceive ||
-        send_test.at(SendTestType::SoundDump) == SendTestResult::WaitReceive;
+        send_test.at(SendTestType::DeviceInquiry) == SendTestResult::WaitReceive ||
+        send_test.at(SendTestType::Global) == SendTestResult::WaitReceive ||
+        send_test.at(SendTestType::Sound) == SendTestResult::WaitReceive;
 }
 
 } // Debug
