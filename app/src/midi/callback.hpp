@@ -2,7 +2,7 @@
 
 namespace StreichfettSse
 {
-namespace Connector
+namespace Midi
 {
 namespace Callback
 {
@@ -16,5 +16,5 @@ Uint32 storeDelay(Uint32 interval, void* param);
 Uint32 sendDelay(Uint32 interval, void* param);
 
 } // Callback
-} // Connector
+} // Midi
 } // StreichfettSse

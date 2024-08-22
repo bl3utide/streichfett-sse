@@ -46,46 +46,48 @@ void initState() noexcept
 
 bool processForCurrentState()
 {
+    namespace c = Midi::Connector;
+
     switch (state_)
     {
     case State::InitInternalData:
         InternalPatch::initData();
         InternalSetting::initData();
-        Connector::resetAllConnections();
+        c::resetAllConnections();
         setNextState(State::ApplyConfig);
         break;
     case State::ApplyConfig:
         Config::load();
-        Connector::applyConfig();
+        c::applyConfig();
         setNextState(State::Idle);
         break;
     case State::Idle:
-        Connector::sendOneTaskMessage();
+        c::sendOneTaskMessage();
         break;
     case State::RequestDeviceInquiry:
-        Connector::requestDeviceInquiry();
+        c::requestDeviceInquiry();
         break;
     case State::RequestGlobal:
-        Connector::requestGlobal();
+        c::requestGlobal();
         break;
     case State::SendBankProgChange:
-        Connector::sendProgChange();
+        c::sendProgChange();
         break;
     case State::RequestSound:
-        Connector::requestSound();
+        c::requestSound();
         break;
     case State::EnterSoundMode:
         setOperation(Operation::Sound);
-        if (Connector::isSynthConnected()) setNextState(State::RequestGlobal);
+        if (c::isSynthConnected()) setNextState(State::RequestGlobal);
         else setNextState(State::Idle);
         break;
     case State::EnterOptionMode:
         setOperation(Operation::Option);
-        if (Connector::isSynthConnected()) setNextState(State::RequestGlobal);
+        if (c::isSynthConnected()) setNextState(State::RequestGlobal);
         else setNextState(State::Idle);
         break;
     case State::PrepareToExit:
-        Connector::updateConfig();
+        c::updateConfig();
         return false;
         break;
     default:

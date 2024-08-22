@@ -2,8 +2,40 @@
 
 namespace StreichfettSse
 {
-namespace Connector
+namespace Midi
 {
+
+// ------------ common ------------
+const Byte SYSEX_FIRST = 0xF0;
+const Byte SYSEX_LAST = 0xF7;
+const Byte SYSEX_SECOND_UNRT = 0x7E;
+const Byte DEVICE_ID_OMNI = 0x7F;
+const Byte MIDI_NOTE_OFF = 0x80;
+const Byte MIDI_NOTE_ON = 0x90;
+const Byte MIDI_CC = 0xB0;
+const Byte MIDI_PC = 0xC0;
+const Byte MAX_CH_OFFSET = 0x0F;
+// ------------ order ------------
+// DSI: Streichfett
+const Byte ORDER_INQUIRY = 0x06;
+const Byte ORDER_INQUIRY_REQUEST = 0x01;
+const Byte ORDER_INQUIRY_RESPONSE = 0x02;
+const Byte ORDER_SOUND_REQUEST = 0x00;
+const Byte ORDER_SOUND_DUMP = 0x10;
+const Byte ORDER_GLOBAL_REQUEST = 0x01;
+const Byte ORDER_GLOBAL_DUMP = 0x11;
+// ------------ parameter ------------
+// DSI: Streichfett
+const Byte DEVICE_MANUFACTURER_ID = 0x3E;     // Waldorf
+const Byte DEVICE_FAMILY_CODE = 0x19;     // Streichfett
+const Byte SOUND_EDIT_BUFFER = 0x7F;
+// ------------ data ------------
+// DSI: Streichfett
+const size_t INQUIRY_DUMP_SIZE = 13;
+const int SOUND_DATA_INDEX_FIRST = 6;
+const int SOUND_DATA_INDEX_LAST = 29;
+const int GLOBAL_DATA_INDEX_FIRST = 6;
+const int GLOBAL_DATA_INDEX_LAST = 13;
 
 struct CallbackMutex
 {
@@ -78,5 +110,5 @@ extern const int TIMEOUT_DURATION_PER_RETRY;
 void setWaitingStoreDelay(bool is_waiting_store_delay) noexcept;
 bool isWaitingStoreDelay() noexcept;
 
-} // Connector
+} // Midi
 } // StreichfettSse

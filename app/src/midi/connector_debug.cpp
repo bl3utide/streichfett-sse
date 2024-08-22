@@ -10,6 +10,8 @@
 
 namespace StreichfettSse
 {
+namespace Midi
+{
 namespace Connector
 {
 namespace Debug
@@ -92,11 +94,11 @@ void sendTest(SendTestType type)
 
     auto type_ptr = new SendTestType(type);
 
-    synth_input.setCallback(Callback::receiveTestSysex, type_ptr);
+    synth_input.setCallback(Callback::Debug::receiveTestSysex, type_ptr);
     synth_input.ignoreTypes(false, false, false);
 
     // set timer for connection timeout
-    waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::timeoutTest, type_ptr);
+    waiting_timer = SDL_AddTimer(TIMEOUT_DURATION, Callback::Debug::timeoutTest, type_ptr);
 
     addProcessedHistory(true, synth_output.getPortName(), request);
 }
@@ -111,5 +113,6 @@ bool isAnyTestSending() noexcept
 
 } // Debug
 } // Connector
+} // Midi
 } // StreichfettSse
 #endif

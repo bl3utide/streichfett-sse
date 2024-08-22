@@ -390,9 +390,9 @@ void drawGui()
         ImGui::Dummy(ImVec2(10.0f, 0.0f));
 
         // Beginning of disable screen operation
-        const auto is_waiting_store_delay = Connector::isWaitingStoreDelay();
+        const auto is_waiting_store_delay = Midi::isWaitingStoreDelay();
 #ifdef _DEBUG
-        const auto is_any_test_sending = Connector::Debug::isAnyTestSending();
+        const auto is_any_test_sending = Midi::Connector::Debug::isAnyTestSending();
 #endif
 
         bool disable_page_content = getState() != State::Idle || is_waiting_store_delay

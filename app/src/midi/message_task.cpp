@@ -3,6 +3,8 @@
 
 namespace StreichfettSse
 {
+namespace Midi
+{
 namespace MessageTask
 {
 
@@ -50,4 +52,5 @@ size_t largestTaskSizeEver() noexcept
 #endif
 
 } // MessageTask
+} // Midi
 } // StreichfettSse

@@ -67,7 +67,7 @@ static void setWheelControl(Ev& v, int param_index)
     {
         if (io.MouseWheel > 0) ++v;
         if (io.MouseWheel < 0) --v;
-        MessageTask::addParamChangedTask(param_index, v.toDv());
+        Midi::MessageTask::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
         InternalPatch::current_patch_changed = true;
     }
@@ -87,7 +87,7 @@ static void drawParamValueContextMenu(const char* label,
         if (ImGui::Selectable("Revert to the original value"))
         {
             v = original_v;
-            MessageTask::addParamChangedTask(param_index, v.toDv());
+            Midi::MessageTask::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
@@ -96,7 +96,7 @@ static void drawParamValueContextMenu(const char* label,
         if (ImGui::Selectable("Reset to the initial value"))
         {
             v.setDefault();
-            MessageTask::addParamChangedTask(param_index, v.toDv());
+            Midi::MessageTask::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
@@ -120,7 +120,7 @@ static void drawSlider(const char* label, int label_index, float label_width, fl
         label_width, control_width, changed_from_org, UI_COLOR_PARAM_CHANGED,
         &v, display_format))
     {
-        MessageTask::addParamChangedTask(param_index, v.toDv());
+        Midi::MessageTask::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
         InternalPatch::current_patch_changed = true;
     }
@@ -150,7 +150,7 @@ static void drawCombo(const char* label, int label_index, float label_width, flo
             {
                 v = n;
                 int send_value = v.ev();
-                MessageTask::addParamChangedTask(param_index, send_value);
+                Midi::MessageTask::addParamChangedTask(param_index, send_value);
                 Annotation::clearText();
                 InternalPatch::current_patch_changed = true;
             }
@@ -243,7 +243,7 @@ static void drawPatchOperators(SoundModel::Patch& cp)
     }
     if (ImGui::Button("Send Sound Dump"))
     {
-        reserved_funcs.push_back(std::bind(Connector::sendSoundDump, false));
+        reserved_funcs.push_back(std::bind(Midi::Connector::sendSoundDump, false));
     }
     GuiUtil::MouseCursorToHand();
     if (!current_patch_changed) ImGui::EndDisabled();
@@ -264,7 +264,7 @@ static void drawPatchOperators(SoundModel::Patch& cp)
         if (ImGui::Selectable("Initialize All Parameters"))
         {
             cp.init();
-            reserved_funcs.push_back(std::bind(Connector::sendSoundDump, true));
+            reserved_funcs.push_back(std::bind(Midi::Connector::sendSoundDump, true));
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
         }
@@ -275,7 +275,7 @@ static void drawPatchOperators(SoundModel::Patch& cp)
     ImGui::SameLine(0.0f, 365.0f);
     if (ImGui::Button("All Sound Off"))
     {
-        reserved_funcs.push_back(std::bind(Connector::sendAllSoundOff));
+        reserved_funcs.push_back(std::bind(Midi::Connector::sendAllSoundOff));
         Annotation::clearText();
     }
     GuiUtil::MouseCursorToHand();
@@ -398,7 +398,7 @@ static void drawPatchParameters(SoundModel::Patch& cp, SoundModel::Patch& op)
 
 void drawEditPanel(SoundModel::Patch& cp, SoundModel::Patch& op)
 {
-    bool is_synth_connected = Connector::isSynthConnected();
+    bool is_synth_connected = Midi::Connector::isSynthConnected();
 
     if (!is_synth_connected) ImGui::BeginDisabled();
     ImGui::Dummy(ImVec2(10.0f, 10.0f));

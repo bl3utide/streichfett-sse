@@ -96,36 +96,40 @@ static void popDebugStyles() noexcept
 
 static void drawDebugTabItemGeneral()
 {
+    namespace c = Midi::Connector;
+    namespace mh = Midi::MessageHandler;
+    namespace mt = Midi::MessageTask;
+
     if (ImGui::BeginTabItem("General"))
     {
         Operation op = getOperation();
         ImGui::Text("%-24s: [%d]%s", "request order",
             op, OPERATION_STR.at(op));
-        ImGui::Text("%-24s: %s", "is_synth_connected", Connector::isSynthConnected() ? "Yes" : "No");
+        ImGui::Text("%-24s: %s", "is_synth_connected", c::isSynthConnected() ? "Yes" : "No");
         ImGui::Text("%-24s: %-4s [%2d]%s", "synth input port",
-            Connector::synth_input.isPortOpen() ? "open" : "-",
-            Connector::synth_input.getPortIndex(),
-            Connector::synth_input.getPortName().c_str());
+            c::synth_input.isPortOpen() ? "open" : "-",
+            c::synth_input.getPortIndex(),
+            c::synth_input.getPortName().c_str());
         ImGui::Text("%-24s: %-4s [%2d]%s", "synth output port",
-            Connector::synth_output.isPortOpen() ? "open" : "-",
-            Connector::synth_output.getPortIndex(),
-            Connector::synth_output.getPortName().c_str());
+            c::synth_output.isPortOpen() ? "open" : "-",
+            c::synth_output.getPortIndex(),
+            c::synth_output.getPortName().c_str());
         ImGui::Text("%-24s: %-4s [%2d]%s", "keyboard input port",
-            Connector::key_input.isPortOpen() ? "open" : "-",
-            Connector::key_input.getPortIndex(),
-            Connector::key_input.getPortName().c_str());
+            c::key_input.isPortOpen() ? "open" : "-",
+            c::key_input.getPortIndex(),
+            c::key_input.getPortName().c_str());
         ImGui::Text("%-24s", "last connected port index");
-        ImGui::Text(" %-23s: %d", "synth input", Connector::synth_input.getLastConnectedPortIndex());
-        ImGui::Text(" %-23s: %d", "synth output", Connector::synth_output.getLastConnectedPortIndex());
-        ImGui::Text(" %-23s: %d", "keyboard input", Connector::key_input.getLastConnectedPortIndex());
+        ImGui::Text(" %-23s: %d", "synth input", c::synth_input.getLastConnectedPortIndex());
+        ImGui::Text(" %-23s: %d", "synth output", c::synth_output.getLastConnectedPortIndex());
+        ImGui::Text(" %-23s: %d", "keyboard input", c::key_input.getLastConnectedPortIndex());
         ImGui::Text("%-24s", "last failed port index");
-        ImGui::Text(" %-23s: %d", "synth input", Connector::synth_input.getLastFailedPortIndex());
-        ImGui::Text(" %-23s: %d", "synth output", Connector::synth_output.getLastFailedPortIndex());
-        ImGui::Text(" %-23s: %d", "keyboard input", Connector::key_input.getLastFailedPortIndex());
-        if (MessageHandler::inquiry_dump.received)
+        ImGui::Text(" %-23s: %d", "synth input", c::synth_input.getLastFailedPortIndex());
+        ImGui::Text(" %-23s: %d", "synth output", c::synth_output.getLastFailedPortIndex());
+        ImGui::Text(" %-23s: %d", "keyboard input", c::key_input.getLastFailedPortIndex());
+        if (Midi::MessageHandler::inquiry_dump.received)
         {
-            ImGui::Text("%-24s: %d", "inquired device id", MessageHandler::inquiry_dump.device_id);
-            ImGui::Text("%-24s: %s", "inquired device ver", MessageHandler::inquiry_dump.firmware_version.c_str());
+            ImGui::Text("%-24s: %d", "inquired device id", mh::inquiry_dump.device_id);
+            ImGui::Text("%-24s: %s", "inquired device ver", mh::inquiry_dump.firmware_version.c_str());
         }
         else
         {
@@ -134,7 +138,7 @@ static void drawDebugTabItemGeneral()
 
         ImGui::Separator(); //--------------------------------------------------
 
-        ImGui::Text("%-24s: %d(max %d)", "task size", MessageTask::taskSize(), MessageTask::largestTaskSizeEver());
+        ImGui::Text("%-24s: %d(max %d)", "task size", mt::taskSize(), mt::largestTaskSizeEver());
 
         ImGui::EndTabItem();
     }
@@ -264,7 +268,8 @@ static void drawDebugTabItemSendTest(State current_state)
 {
     if (ImGui::BeginTabItem("Send Test"))
     {
-        namespace cd = Connector::Debug;
+        namespace c = Midi::Connector;
+        namespace cd = Midi::Connector::Debug;
 
         bool is_any_test_sending = cd::isAnyTestSending();
         if (current_state != State::Idle || is_any_test_sending)
@@ -279,7 +284,7 @@ static void drawDebugTabItemSendTest(State current_state)
 
             if (ImGui::Button("Device Reload (debug)"))
             {
-                reserved_funcs.push_back(std::bind(Connector::resetAllConnections));
+                reserved_funcs.push_back(std::bind(c::resetAllConnections));
             }
             GuiUtil::MouseCursorToHand();
 
@@ -288,21 +293,21 @@ static void drawDebugTabItemSendTest(State current_state)
             ImGui::SameLine(item_name_width);
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
             ImGui::PushItemWidth(item_ctrl_width);
-            if (ImGui::BeginCombo("##Debug Device Input", Connector::synth_input.getPortName().c_str()))
+            if (ImGui::BeginCombo("##Debug Device Input", c::synth_input.getPortName().c_str()))
             {
-                const auto in_name_list_size = Connector::in_name_list.size();
+                const auto in_name_list_size = c::in_name_list.size();
                 for (auto n = 0; n < in_name_list_size; ++n)
                 {
-                    const auto is_selected = n == Connector::synth_input.getPortIndex();
-                    if (n == Connector::key_input.getPortIndex())
+                    const auto is_selected = n == c::synth_input.getPortIndex();
+                    if (n == c::key_input.getPortIndex())
                     {
-                        ImGui::Text("%s [USED]", Connector::in_name_list[n].c_str());
+                        ImGui::Text("%s [USED]", c::in_name_list[n].c_str());
                     }
                     else
                     {
-                        if (ImGui::Selectable(Connector::in_name_list[n].c_str(), is_selected))
+                        if (ImGui::Selectable(c::in_name_list[n].c_str(), is_selected))
                         {
-                            reserved_funcs.push_back(std::bind(Connector::openSynthInputPort, n, Connector::in_name_list[n]));
+                            reserved_funcs.push_back(std::bind(c::openSynthInputPort, n, c::in_name_list[n]));
                         }
                         GuiUtil::MouseCursorToHand();
                         if (is_selected) ImGui::SetItemDefaultFocus();
@@ -318,15 +323,15 @@ static void drawDebugTabItemSendTest(State current_state)
             ImGui::SameLine(item_name_width);
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 2.0f);
             ImGui::PushItemWidth(item_ctrl_width);
-            if (ImGui::BeginCombo("##Debug Device Output", Connector::synth_output.getPortName().c_str()))
+            if (ImGui::BeginCombo("##Debug Device Output", c::synth_output.getPortName().c_str()))
             {
-                const auto out_name_list_size = Connector::out_name_list.size();
+                const auto out_name_list_size = c::out_name_list.size();
                 for (auto n = 0; n < out_name_list_size; ++n)
                 {
-                    const auto is_selected = n == Connector::synth_output.getPortIndex();
-                    if (ImGui::Selectable(Connector::out_name_list[n].c_str(), is_selected))
+                    const auto is_selected = n == c::synth_output.getPortIndex();
+                    if (ImGui::Selectable(c::out_name_list[n].c_str(), is_selected))
                     {
-                        reserved_funcs.push_back(std::bind(Connector::openSynthOutputPort, n, Connector::out_name_list[n]));
+                        reserved_funcs.push_back(std::bind(c::openSynthOutputPort, n, c::out_name_list[n]));
                     }
                     GuiUtil::MouseCursorToHand();
                     if (is_selected) ImGui::SetItemDefaultFocus();
@@ -410,7 +415,7 @@ static void drawDebugTabItemSendTest(State current_state)
 
 static void drawDebugTabItemTransReceiveLog()
 {
-    namespace cd = Connector::Debug;
+    namespace cd = Midi::Connector::Debug;
 
     if (ImGui::BeginTabItem("Transmitted/Received Log"))
     {
@@ -468,7 +473,7 @@ static void drawDebugTabItemTransReceiveLog()
 
 static void drawProcessedWindow()
 {
-    namespace cd = Connector::Debug;
+    namespace cd = Midi::Connector::Debug;
     std::unique_lock lock(cd::history_mutex);
     const cd::ProcessedMidiMessage message = cd::history_selected;
     lock.unlock();

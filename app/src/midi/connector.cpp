@@ -16,6 +16,8 @@
 
 namespace StreichfettSse
 {
+namespace Midi
+{
 namespace Connector
 {
 
@@ -497,4 +499,5 @@ void setSynthConnected(bool connected) noexcept
 }
 
 } // Connector
+} // Midi
 } // StreichfettSse

@@ -3,6 +3,8 @@
 
 namespace StreichfettSse
 {
+namespace Midi
+{
 namespace Connector
 {
 
@@ -33,4 +35,5 @@ bool isSynthConnected() noexcept;
 void setSynthConnected(bool connected) noexcept;
 
 } // Connector
+} // Midi
 } // StreichfettSse

@@ -3,7 +3,7 @@
 
 namespace StreichfettSse
 {
-namespace Connector
+namespace Midi
 {
 
 Connection::Connection()
@@ -160,5 +160,5 @@ void OutputConnection::sendMessage(const ByteVec& message) const
     dynamic_cast<RtMidiOut*>(rtmidi)->sendMessage(&message);
 }
 
-} // Connector
+} // Midi
 } // StreichfettSse

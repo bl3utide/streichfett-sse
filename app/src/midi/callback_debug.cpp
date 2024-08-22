@@ -7,87 +7,91 @@
 
 namespace StreichfettSse
 {
-namespace Connector
-{
-namespace Debug
+namespace Midi
 {
 namespace Callback
+{
+namespace Debug
 {
 
 void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
 {
-    auto* type_ptr = static_cast<SendTestType*>(user_data);
+    namespace cd = Connector::Debug;
+
+    auto* type_ptr = static_cast<cd::SendTestType*>(user_data);
     auto type = *type_ptr;
 
     if (message->empty())
     {
-        send_test.at(type) = SendTestResult::Failed;
-        send_test_failed_cause.at(type) = SendTestFailedCause::EmptyResponse;
+        cd::send_test.at(type) = cd::SendTestResult::Failed;
+        cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::EmptyResponse;
     }
     else
     {
         switch (*type_ptr)
         {
-            case SendTestType::DeviceInquiry:
+            case cd::SendTestType::DeviceInquiry:
                 try
                 {
                     MessageHandler::validateInquiryDump(*message);
-                    send_test.at(type) = SendTestResult::Ok;
-                    send_test_failed_cause.at(type) = SendTestFailedCause::None;
+                    cd::send_test.at(type) = cd::SendTestResult::Ok;
+                    cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::None;
                 }
                 catch (std::exception&)
                 {
-                    send_test.at(type) = SendTestResult::Failed;
-                    send_test_failed_cause.at(type) = SendTestFailedCause::IncorrectMessage;
+                    cd::send_test.at(type) = cd::SendTestResult::Failed;
+                    cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::IncorrectMessage;
                 }
                 break;
-            case SendTestType::Global:
+            case cd::SendTestType::Global:
                 try
                 {
                     MessageHandler::validateDataDump(*message, MessageHandler::DumpType::Global);
-                    send_test.at(type) = SendTestResult::Ok;
-                    send_test_failed_cause.at(type) = SendTestFailedCause::None;
+                    cd::send_test.at(type) = cd::SendTestResult::Ok;
+                    cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::None;
                 }
                 catch (std::exception&)
                 {
-                    send_test.at(type) = SendTestResult::Failed;
-                    send_test_failed_cause.at(type) = SendTestFailedCause::IncorrectMessage;
+                    cd::send_test.at(type) = cd::SendTestResult::Failed;
+                    cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::IncorrectMessage;
                 }
                 break;
-            case SendTestType::Sound:
+            case cd::SendTestType::Sound:
                 try
                 {
                     MessageHandler::validateDataDump(*message, MessageHandler::DumpType::Sound);
-                    send_test.at(type) = SendTestResult::Ok;
-                    send_test_failed_cause.at(type) = SendTestFailedCause::None;
+                    cd::send_test.at(type) = cd::SendTestResult::Ok;
+                    cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::None;
                 }
                 catch (std::exception&)
                 {
-                    send_test.at(type) = SendTestResult::Failed;
-                    send_test_failed_cause.at(type) = SendTestFailedCause::IncorrectMessage;
+                    cd::send_test.at(type) = cd::SendTestResult::Failed;
+                    cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::IncorrectMessage;
                 }
                 break;
         }
     }
 
-    synth_input.cancelCallback();
+    Connector::synth_input.cancelCallback();
     SDL_RemoveTimer(waiting_timer);
 
     delete type_ptr;
     type_ptr = nullptr;
 
-    addProcessedHistory(false, synth_input.getPortName(), *message);
+    cd::addProcessedHistory(false, Connector::synth_input.getPortName(), *message);
 }
 
 Uint32 timeoutTest(Uint32 interval, void* param)
 {
-    auto* type_ptr = static_cast<SendTestType*>(param);
+    namespace cd = Connector::Debug;
+
+    auto* type_ptr = static_cast<cd::SendTestType*>(param);
     auto type = *type_ptr;
 
-    synth_input.cancelCallback();
+    Connector::synth_input.cancelCallback();
     SDL_RemoveTimer(waiting_timer);
-    send_test.at(type) = SendTestResult::Failed;
-    send_test_failed_cause.at(type) = SendTestFailedCause::RequestTimeout;
+    cd::send_test.at(type) = cd::SendTestResult::Failed;
+    cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::RequestTimeout;
 
     delete type_ptr;
     type_ptr = nullptr;
@@ -95,8 +99,8 @@ Uint32 timeoutTest(Uint32 interval, void* param)
     return interval;
 }
 
-} // Callback
 } // Debug
-} // Connector
+} // Callback
+} // Midi
 } // StreichfettSse
 #endif

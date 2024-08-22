@@ -3,6 +3,8 @@
 
 namespace StreichfettSse
 {
+namespace Midi
+{
 namespace Connector
 {
 namespace Debug
@@ -65,9 +67,9 @@ struct ProcessedMidiMessage
         data = d;
 
         list_title = std::format("{0} {1} {2}",
-            transmitted ? "T" : "R",
-            timestamp,
-            description);
+                                 transmitted ? "T" : "R",
+                                 timestamp,
+                                 description);
     }
 };
 extern std::vector<ProcessedMidiMessage> history;
@@ -81,5 +83,6 @@ bool isAnyTestSending() noexcept;
 
 } // Debug
 } // Connector
+} // Midi
 } // StreichfettSse
 #endif

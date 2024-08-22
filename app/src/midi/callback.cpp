@@ -15,7 +15,7 @@
 
 namespace StreichfettSse
 {
-namespace Connector
+namespace Midi
 {
 namespace Callback
 {
@@ -67,7 +67,7 @@ static void retryOver(
     setAppError(ERROR_MESSAGE.at(req_type).at(mes_type));
     setNextState(State::Idle, true);
 
-    if (set_disconnected) setSynthConnected(false);
+    if (set_disconnected) Connector::setSynthConnected(false);
 
     request_try_count.reset();
 }
@@ -89,7 +89,7 @@ void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_da
 
             callback_mutex.is_callback_catched = true;
             SDL_RemoveTimer(waiting_timer);
-            synth_input.cancelCallback();
+            Connector::synth_input.cancelCallback();
 
             try
             {
@@ -121,7 +121,7 @@ void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_da
                 }
             }
 #ifdef _DEBUG
-            Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
+            Connector::Debug::addProcessedHistory(false, Connector::synth_input.getPortName(), *message);
 #endif
         }
         else
@@ -156,7 +156,7 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
 
             callback_mutex.is_callback_catched = true;
             SDL_RemoveTimer(waiting_timer);
-            synth_input.cancelCallback();
+            Connector::synth_input.cancelCallback();
 
             const auto dump_type = MessageHandler::DumpType::Global;
 
@@ -204,7 +204,7 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
                 }
             }
 #ifdef _DEBUG
-            Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
+            Connector::Debug::addProcessedHistory(false, Connector::synth_input.getPortName(), *message);
 #endif
         }
         else
@@ -239,7 +239,7 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
 
             callback_mutex.is_callback_catched = true;
             SDL_RemoveTimer(waiting_timer);
-            synth_input.cancelCallback();
+            Connector::synth_input.cancelCallback();
 
             const auto dump_type = MessageHandler::DumpType::Sound;
 
@@ -289,7 +289,7 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
                 }
             }
 #ifdef _DEBUG
-            Debug::addProcessedHistory(false, synth_input.getPortName(), *message);
+            Connector::Debug::addProcessedHistory(false, Connector::synth_input.getPortName(), *message);
 #endif
         }
         else
@@ -324,7 +324,7 @@ Uint32 timeout(Uint32 interval, void* param)
 
             callback_mutex.is_callback_catched = true;
             SDL_RemoveTimer(waiting_timer);
-            synth_input.cancelCallback();
+            Connector::synth_input.cancelCallback();
 
             if (request_try_count.reachedLimit())
             {
@@ -374,7 +374,7 @@ Uint32 timeout(Uint32 interval, void* param)
 // DSI: Streichfett
 void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_data)
 {
-    if (isSynthConnected() &&
+    if (Connector::isSynthConnected() &&
         (MessageHandler::isNoteOff(*message) || MessageHandler::isNoteOn(*message)))
     {
         ByteVec send_message;
@@ -407,7 +407,7 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
 
         try
         {
-            synth_output.sendMessage(send_message);
+            Connector::synth_output.sendMessage(send_message);
         }
         catch (RtMidiError& error)
         {
@@ -466,5 +466,5 @@ Uint32 sendDelay(Uint32 interval, void* param)
 }
 
 } // Callback
-} // Connector
+} // Midi
 } // StreichfettSse

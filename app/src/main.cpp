@@ -81,8 +81,8 @@ static void initialize()
 
         try
         {
-            Logger::debug("start init Connector");
-            Connector::initialize();
+            Logger::debug("start init Midi");
+            Midi::Connector::initialize();
             init_flag_.set(static_cast<int>(InitSection::Connector));
         }
         catch (RtMidiError& e)
@@ -107,7 +107,7 @@ static void finalize() noexcept
 
     if (init_flag_[static_cast<int>(InitSection::Connector)])
     {
-        Connector::finalize();
+        Midi::Connector::finalize();
     }
 
     if (init_flag_[static_cast<int>(InitSection::Image)])

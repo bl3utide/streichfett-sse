@@ -3,7 +3,7 @@
 
 namespace StreichfettSse
 {
-namespace Connector
+namespace Midi
 {
 
 // public
@@ -26,5 +26,5 @@ bool isWaitingStoreDelay() noexcept
     return waiting_store_delay_;
 }
 
-} // Connector
+} // Midi
 } // StreichfettSse

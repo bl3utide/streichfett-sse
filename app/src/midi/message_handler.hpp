@@ -3,6 +3,8 @@
 
 namespace StreichfettSse
 {
+namespace Midi
+{
 namespace MessageHandler
 {
 
@@ -45,4 +47,5 @@ const std::string getMessageDesc(const ByteVec& data);
 #endif
 
 } // MessageHandler
+} // Midi
 } // StreichfettSse

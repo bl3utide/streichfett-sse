@@ -2,7 +2,7 @@
 
 namespace StreichfettSse
 {
-namespace Connector
+namespace Midi
 {
 
 class Connection
@@ -56,5 +56,5 @@ public:
     void sendMessage(const ByteVec& message) const;
 };
 
-} // Connector
+} // Midi
 } // StreichfettSse

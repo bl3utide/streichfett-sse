@@ -82,6 +82,8 @@ void drawOptionItemValue(const T& v, bool displayable = false)
 
 static void drawOptionGroupConnections()
 {
+    namespace c = Midi::Connector;
+
     GuiUtil::BeginGroupPanel("Connections", ImVec2(440.0f, 200.0f));
     {
         drawOptionItem("Synth Input Device");
@@ -89,22 +91,22 @@ static void drawOptionGroupConnections()
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushItemWidth(220.0f);
-        if (ImGui::BeginCombo("##SYNTH IN", Connector::synth_input.getPortName().c_str()))
+        if (ImGui::BeginCombo("##SYNTH IN", c::synth_input.getPortName().c_str()))
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
-            const auto in_name_list_size = Connector::in_name_list.size();
+            const auto in_name_list_size = c::in_name_list.size();
             for (auto n = 0; n < in_name_list_size; ++n)
             {
-                const auto is_selected = n == Connector::synth_input.getPortIndex();
-                if (n == Connector::key_input.getPortIndex())
+                const auto is_selected = n == c::synth_input.getPortIndex();
+                if (n == c::key_input.getPortIndex())
                 {
-                    GuiUtil::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
+                    GuiUtil::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", c::in_name_list[n].c_str());
                 }
                 else
                 {
-                    if (ImGui::Selectable(Connector::in_name_list[n].c_str(), is_selected))
+                    if (ImGui::Selectable(c::in_name_list[n].c_str(), is_selected))
                     {
-                        reserved_funcs.push_back(std::bind(Connector::openSynthInputPort, n, Connector::in_name_list[n]));
+                        reserved_funcs.push_back(std::bind(c::openSynthInputPort, n, c::in_name_list[n]));
                     }
                     GuiUtil::MouseCursorToHand();
                     if (is_selected) ImGui::SetItemDefaultFocus();
@@ -119,7 +121,7 @@ static void drawOptionGroupConnections()
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.0f, 4.0f));
         if (ImGui::ImageButton((void*)(intptr_t)Image::getTextureId(Image::Texture::Reload), ImVec2(14.0f, 14.0f)))
         {
-            reserved_funcs.push_back(std::bind(Connector::resetAllConnections));
+            reserved_funcs.push_back(std::bind(c::resetAllConnections));
         }
         GuiUtil::MouseCursorToHand();
         ImGui::PopStyleVar(3);
@@ -130,16 +132,16 @@ static void drawOptionGroupConnections()
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushItemWidth(220.0f);
-        if (ImGui::BeginCombo("##SYNTH OUT", Connector::synth_output.getPortName().c_str()))
+        if (ImGui::BeginCombo("##SYNTH OUT", c::synth_output.getPortName().c_str()))
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
-            const auto out_name_list_size = Connector::out_name_list.size();
+            const auto out_name_list_size = c::out_name_list.size();
             for (auto n = 0; n < out_name_list_size; ++n)
             {
-                const auto is_selected = n == Connector::synth_output.getPortIndex();
-                if (ImGui::Selectable(Connector::out_name_list[n].c_str(), is_selected))
+                const auto is_selected = n == c::synth_output.getPortIndex();
+                if (ImGui::Selectable(c::out_name_list[n].c_str(), is_selected))
                 {
-                    reserved_funcs.push_back(std::bind(Connector::openSynthOutputPort, n, Connector::out_name_list[n]));
+                    reserved_funcs.push_back(std::bind(c::openSynthOutputPort, n, c::out_name_list[n]));
                 }
                 GuiUtil::MouseCursorToHand();
                 if (is_selected) ImGui::SetItemDefaultFocus();
@@ -157,22 +159,22 @@ static void drawOptionGroupConnections()
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushItemWidth(220.0f);
-        if (ImGui::BeginCombo("##KEY IN", Connector::key_input.getPortName().c_str()))
+        if (ImGui::BeginCombo("##KEY IN", c::key_input.getPortName().c_str()))
         {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, 8.0f));
-            const auto in_name_list_size = Connector::in_name_list.size();
+            const auto in_name_list_size = c::in_name_list.size();
             for (auto n = 0; n < in_name_list_size; ++n)
             {
-                const auto is_selected = n == Connector::key_input.getPortIndex();
-                if (n == Connector::synth_input.getPortIndex())
+                const auto is_selected = n == c::key_input.getPortIndex();
+                if (n == c::synth_input.getPortIndex())
                 {
-                    GuiUtil::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", Connector::in_name_list[n].c_str());
+                    GuiUtil::TextColoredU32(UI_COLOR_TEXT_DEV_USED, "[USED] %s", c::in_name_list[n].c_str());
                 }
                 else
                 {
-                    if (ImGui::Selectable(Connector::in_name_list[n].c_str(), is_selected))
+                    if (ImGui::Selectable(c::in_name_list[n].c_str(), is_selected))
                     {
-                        reserved_funcs.push_back(std::bind(Connector::openKeyInputPort, n, Connector::in_name_list[n]));
+                        reserved_funcs.push_back(std::bind(c::openKeyInputPort, n, c::in_name_list[n]));
                     }
                     GuiUtil::MouseCursorToHand();
                     if (is_selected) ImGui::SetItemDefaultFocus();
@@ -190,7 +192,7 @@ static void drawOptionGroupConnections()
         GuiUtil::PushFont((int)Font::OptionItem);
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
-        ImGui::Checkbox("##FORCE MIDI CH", &Connector::force_adjust_midi_channel);
+        ImGui::Checkbox("##FORCE MIDI CH", &c::force_adjust_midi_channel);
         GuiUtil::MouseCursorToHand();
         ImGui::PopStyleVar(2);
         ImGui::PopFont();
@@ -200,7 +202,7 @@ static void drawOptionGroupConnections()
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(12.0f, ITEM_SPACING_Y));
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, ITEM_PADDING_Y));
         ImGui::PushItemWidth(160.0f);
-        ImGui::SliderInt("##SysEx Delay", &Connector::store_delay_duration, 200, 500);
+        ImGui::SliderInt("##SysEx Delay", &c::store_delay_duration, 200, 500);
         ImGui::PopItemWidth();
         GuiUtil::MouseCursorToHand();
         ImGui::PopStyleVar(2);
@@ -214,7 +216,7 @@ static void drawOptionGroupDeviceSettingInfo()
 {
     GuiUtil::BeginGroupPanel("Device Setting Info", ImVec2(320.0f, 200.0f));
     {
-        const auto displayable_synth_info = Connector::isSynthConnected();
+        const auto displayable_synth_info = Midi::Connector::isSynthConnected();
 
         drawOptionItem("Synth Device");
         ImGui::PushStyleColor(ImGuiCol_Text, displayable_synth_info ? UI_COLOR_TEXT_CONNECTED : UI_COLOR_TEXT_DISCONNECTED);
@@ -229,7 +231,7 @@ static void drawOptionGroupDeviceSettingInfo()
         ImGui::PopStyleColor();
 
         drawOptionItem("Firmware Version");
-        drawOptionItemValue(MessageHandler::inquiry_dump.firmware_version.c_str(), displayable_synth_info && MessageHandler::inquiry_dump.received);
+        drawOptionItemValue(Midi::MessageHandler::inquiry_dump.firmware_version.c_str(), displayable_synth_info && Midi::MessageHandler::inquiry_dump.received);
 
         const auto& global = InternalSetting::getGlobalData();
         drawOptionItem("Device ID");
