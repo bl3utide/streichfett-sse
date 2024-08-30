@@ -9,6 +9,7 @@
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
 #include "midi/erstwhile_message_handler.hpp"
+#include "midi/message_creator.h"
 #include "midi/task_list.hpp"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
@@ -259,8 +260,8 @@ void openKeyInputPort(int port_index, const std::string& port_name)
 
 void requestDeviceInquiry()
 {
-    // TODO message_creatorからリクエストを作成
-    const auto req_sysex = ErstwhileMessageHandler::getRequestDeviceInquiryMessage();
+    RequestDeviceInquiryCreator creator;
+    const auto req_sysex = creator.create();
 
     Logger::debug(std::format("request inquiry dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 

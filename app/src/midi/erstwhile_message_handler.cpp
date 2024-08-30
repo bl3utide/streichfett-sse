@@ -19,6 +19,7 @@ namespace ErstwhileMessageHandler
 //    return mb.front() == SYSEX_FIRST && mb.back() == SYSEX_LAST;
 //}
 
+/*
 const ByteVec getRequestDeviceInquiryMessage()
 {
     ByteVec req;
@@ -32,6 +33,7 @@ const ByteVec getRequestDeviceInquiryMessage()
     req.push_back(SYSEX_LAST);
     return req;
 }
+*/
 
 // DSI: Streichfett
 const ByteVec getRequestSoundMessage(int sound)

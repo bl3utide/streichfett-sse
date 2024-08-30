@@ -7,6 +7,7 @@
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
 #include "midi/erstwhile_message_handler.hpp"
+#include "midi/message_creator.h"
 
 namespace StreichfettSse
 {
@@ -64,7 +65,10 @@ void sendTest(SendTestType type)
     switch (type)
     {
         case SendTestType::DeviceInquiry:
-            request = ErstwhileMessageHandler::getRequestDeviceInquiryMessage();
+        {
+            RequestDeviceInquiryCreator creator;
+            request = creator.create();
+        }
             break;
         case SendTestType::Global:
             request = ErstwhileMessageHandler::getRequestGlobalMessage();
