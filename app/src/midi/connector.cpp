@@ -8,8 +8,8 @@
 #include "midi/midi_common.hpp"
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
-#include "midi/message_task.hpp"
 #include "midi/erstwhile_message_handler.hpp"
+#include "midi/task_list.hpp"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
 #endif
@@ -461,9 +461,9 @@ void sendAllSoundOff()
 
 void sendOneTaskMessage()
 {
-    if (MessageTask::taskSize() > 0)
+    if (TaskList::taskSize() > 0)
     {
-        const auto message = MessageTask::lastTask();
+        const auto message = TaskList::lastTask();
 
         try
         {

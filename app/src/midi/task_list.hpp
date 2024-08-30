@@ -4,7 +4,7 @@ namespace StreichfettSse
 {
 namespace Midi
 {
-namespace MessageTask
+namespace TaskList
 {
 
 void addParamChangedTask(int index, Byte value);
@@ -14,6 +14,6 @@ size_t taskSize() noexcept;
 size_t largestTaskSizeEver() noexcept;
 #endif
 
-} // MessageTask
+} // TaskList
 } // Midi
 } // StreichfettSse

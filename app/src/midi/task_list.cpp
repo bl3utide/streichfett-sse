@@ -1,11 +1,11 @@
 ﻿#include "common.hpp"
-#include "midi/message_handler.hpp"
+#include "midi/erstwhile_message_handler.hpp"
 
 namespace StreichfettSse
 {
 namespace Midi
 {
-namespace MessageTask
+namespace TaskList
 {
 
 // private
@@ -26,7 +26,7 @@ void addParamChangedTask(int index, Byte value)
 {
     if (index != -1)
     {
-        addTask(MessageHandler::getSoundParameterChangeMessage(index, value));
+        addTask(ErstwhileMessageHandler::getSoundParameterChangeMessage(index, value));
     }
 }
 
@@ -51,6 +51,6 @@ size_t largestTaskSizeEver() noexcept
 }
 #endif
 
-} // MessageTask
+} // TaskList
 } // Midi
 } // StreichfettSse

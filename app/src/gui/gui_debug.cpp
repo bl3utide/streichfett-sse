@@ -13,7 +13,7 @@
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
 #include "midi/message_handler.hpp"
-#include "midi/message_task.hpp"
+#include "midi/task_list.hpp"
 #include "logger.hpp"
 
 namespace StreichfettSse
@@ -98,7 +98,7 @@ static void drawDebugTabItemGeneral()
 {
     namespace c = Midi::Connector;
     namespace mh = Midi::MessageHandler;
-    namespace mt = Midi::MessageTask;
+    namespace mt = Midi::TaskList;
 
     if (ImGui::BeginTabItem("General"))
     {

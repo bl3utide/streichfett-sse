@@ -4,7 +4,7 @@
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
 #include "midi/connector.hpp"
-#include "midi/message_task.hpp"
+#include "midi/task_list.hpp"
 
 namespace ImGui
 {
@@ -67,7 +67,7 @@ static void setWheelControl(Ev& v, int param_index)
     {
         if (io.MouseWheel > 0) ++v;
         if (io.MouseWheel < 0) --v;
-        Midi::MessageTask::addParamChangedTask(param_index, v.toDv());
+        Midi::TaskList::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
         InternalPatch::current_patch_changed = true;
     }
@@ -87,7 +87,7 @@ static void drawParamValueContextMenu(const char* label,
         if (ImGui::Selectable("Revert to the original value"))
         {
             v = original_v;
-            Midi::MessageTask::addParamChangedTask(param_index, v.toDv());
+            Midi::TaskList::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
@@ -96,7 +96,7 @@ static void drawParamValueContextMenu(const char* label,
         if (ImGui::Selectable("Reset to the initial value"))
         {
             v.setDefault();
-            Midi::MessageTask::addParamChangedTask(param_index, v.toDv());
+            Midi::TaskList::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
             InternalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
@@ -120,7 +120,7 @@ static void drawSlider(const char* label, int label_index, float label_width, fl
         label_width, control_width, changed_from_org, UI_COLOR_PARAM_CHANGED,
         &v, display_format))
     {
-        Midi::MessageTask::addParamChangedTask(param_index, v.toDv());
+        Midi::TaskList::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
         InternalPatch::current_patch_changed = true;
     }
@@ -150,7 +150,7 @@ static void drawCombo(const char* label, int label_index, float label_width, flo
             {
                 v = n;
                 int send_value = v.ev();
-                Midi::MessageTask::addParamChangedTask(param_index, send_value);
+                Midi::TaskList::addParamChangedTask(param_index, send_value);
                 Annotation::clearText();
                 InternalPatch::current_patch_changed = true;
             }
