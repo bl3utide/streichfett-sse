@@ -7,6 +7,7 @@ namespace Midi
 {
 
 // public
+DeviceInquiryResult inquiry_result;
 SDL_TimerID waiting_timer;
 CallbackMutex callback_mutex;
 const int MAX_REQUEST_TRY = 5;  // TODO not public const var

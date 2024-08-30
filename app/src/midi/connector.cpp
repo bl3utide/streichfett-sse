@@ -96,6 +96,7 @@ void initialize()
     store_delay_duration = 200;
     is_synth_connected_ = false;
 
+    inquiry_result = DeviceInquiryResult();
     setWaitingStoreDelay(false);
 
 #ifdef _DEBUG
@@ -500,7 +501,7 @@ void setSynthConnected(bool connected) noexcept
     {
         is_synth_connected_ = false;
         Annotation::setText(Annotation::Message::DisconnectedAlert, Annotation::Type::Alert);
-        MessageHandler::inquiry_dump.initialize();
+        Midi::inquiry_result.initialize();
     }
 }
 

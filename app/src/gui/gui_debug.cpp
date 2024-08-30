@@ -10,9 +10,9 @@
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
+#include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
-#include "midi/message_handler.hpp"
 #include "midi/task_list.hpp"
 #include "logger.hpp"
 
@@ -97,7 +97,6 @@ static void popDebugStyles() noexcept
 static void drawDebugTabItemGeneral()
 {
     namespace c = Midi::Connector;
-    namespace mh = Midi::MessageHandler;
     namespace mt = Midi::TaskList;
 
     if (ImGui::BeginTabItem("General"))
@@ -126,10 +125,10 @@ static void drawDebugTabItemGeneral()
         ImGui::Text(" %-23s: %d", "synth input", c::synth_input.getLastFailedPortIndex());
         ImGui::Text(" %-23s: %d", "synth output", c::synth_output.getLastFailedPortIndex());
         ImGui::Text(" %-23s: %d", "keyboard input", c::key_input.getLastFailedPortIndex());
-        if (Midi::MessageHandler::inquiry_dump.received)
+        if (Midi::inquiry_result.isReceived())
         {
-            ImGui::Text("%-24s: %d", "inquired device id", mh::inquiry_dump.device_id);
-            ImGui::Text("%-24s: %s", "inquired device ver", mh::inquiry_dump.firmware_version.c_str());
+            ImGui::Text("%-24s: %d", "inquired device id", Midi::inquiry_result.getDeviceId());
+            ImGui::Text("%-24s: %s", "inquired device ver", Midi::inquiry_result.getFirmwareVersion().c_str());
         }
         else
         {

@@ -4,8 +4,8 @@
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
+#include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
-#include "midi/message_handler.hpp"
 #include "model/global.hpp"
 
 namespace StreichfettSse
@@ -231,7 +231,7 @@ static void drawOptionGroupDeviceSettingInfo()
         ImGui::PopStyleColor();
 
         drawOptionItem("Firmware Version");
-        drawOptionItemValue(Midi::MessageHandler::inquiry_dump.firmware_version.c_str(), displayable_synth_info && Midi::MessageHandler::inquiry_dump.received);
+        drawOptionItemValue(Midi::inquiry_result.getFirmwareVersion().c_str(), displayable_synth_info && Midi::inquiry_result.isReceived());
 
         const auto& global = InternalSetting::getGlobalData();
         drawOptionItem("Device ID");
