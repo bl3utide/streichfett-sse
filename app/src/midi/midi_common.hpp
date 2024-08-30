@@ -32,10 +32,12 @@ const Byte SOUND_EDIT_BUFFER        = 0x7F;
 // ------------ data ------------
 // DSI: Streichfett
 const size_t INQUIRY_DUMP_SIZE      = 13;
-const int SOUND_DATA_INDEX_FIRST    = 6;
-const int SOUND_DATA_INDEX_LAST     = 29;
+const size_t GLOBAL_DUMP_SIZE       = 16;
+const size_t SOUND_DUMP_SIZE        = 32;
 const int GLOBAL_DATA_INDEX_FIRST   = 6;
 const int GLOBAL_DATA_INDEX_LAST    = 13;
+const int SOUND_DATA_INDEX_FIRST    = 6;
+const int SOUND_DATA_INDEX_LAST     = 29;
 
 // DSI: Streichfett
 class DeviceInquiryResult

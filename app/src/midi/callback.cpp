@@ -9,6 +9,7 @@
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/erstwhile_message_handler.hpp"
+#include "midi/message_handler.h"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
 #endif
@@ -93,8 +94,13 @@ void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_da
 
             try
             {
+                auto handler = DeviceInquiryDumpHandler(*message);
+
                 // throwable function
-                MessageHandler::validateInquiryDump(*message);
+                handler.validate();
+
+                // apply the result of inquiry dump locally
+                inquiry_result = handler.getResult();
 
                 // received correct dump
                 Logger::debug("received correct inquiry dump");
@@ -158,14 +164,15 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
             SDL_RemoveTimer(waiting_timer);
             Connector::synth_input.cancelCallback();
 
-            const auto dump_type = MessageHandler::DumpType::Global;
-
             try
             {
-                // throwable function
-                MessageHandler::validateDataDump(*message, dump_type);
+                // TODO 動作検証
+                GlobalDumpHandler handler(*message);
 
-                const auto global_data = MessageHandler::getDataBytesFromDump(*message, dump_type);
+                // throwable
+                handler.validate();
+                const auto global_data = handler.getDataBytes();
+
                 auto& setting = InternalSetting::getGlobalData();
 
                 // throwable function
@@ -241,15 +248,15 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
             SDL_RemoveTimer(waiting_timer);
             Connector::synth_input.cancelCallback();
 
-            const auto dump_type = MessageHandler::DumpType::Sound;
-
             try
             {
-                // throwable function
-                MessageHandler::validateDataDump(*message, dump_type);
+                // TODO 動作検証
+                SoundDumpHandler handler(*message);
 
-                const auto sound_data =
-                    MessageHandler::getDataBytesFromDump(*message, dump_type);
+                // throwable
+                handler.validate();
+                const auto sound_data = handler.getDataBytes();
+
                 auto& original = InternalPatch::getOriginalPatch();
                 auto& current = InternalPatch::getCurrentPatch();
 

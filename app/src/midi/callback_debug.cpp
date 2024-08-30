@@ -3,7 +3,7 @@
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
-#include "midi/message_handler.hpp"
+#include "midi/message_handler.h"
 
 namespace StreichfettSse
 {
@@ -33,7 +33,8 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
             case cd::SendTestType::DeviceInquiry:
                 try
                 {
-                    MessageHandler::validateInquiryDump(*message);
+                    auto handler = DeviceInquiryDumpHandler(*message);
+                    handler.validate();
                     cd::send_test.at(type) = cd::SendTestResult::Ok;
                     cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::None;
                 }
@@ -46,7 +47,8 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
             case cd::SendTestType::Global:
                 try
                 {
-                    MessageHandler::validateDataDump(*message, MessageHandler::DumpType::Global);
+                    auto handler = GlobalDumpHandler(*message);
+                    handler.validate();
                     cd::send_test.at(type) = cd::SendTestResult::Ok;
                     cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::None;
                 }
@@ -59,7 +61,8 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
             case cd::SendTestType::Sound:
                 try
                 {
-                    MessageHandler::validateDataDump(*message, MessageHandler::DumpType::Sound);
+                    auto handler = SoundDumpHandler(*message);
+                    handler.validate();
                     cd::send_test.at(type) = cd::SendTestResult::Ok;
                     cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::None;
                 }
