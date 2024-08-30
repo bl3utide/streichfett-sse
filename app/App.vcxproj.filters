@@ -45,7 +45,7 @@
     <ClCompile Include="src\midi\connector.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\midi\message_handler.cpp">
+    <ClCompile Include="src\midi\erstwhile_message_handler.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\midi\message_task.cpp">
@@ -140,7 +140,7 @@
     <ClInclude Include="src\midi\connector.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\midi\message_handler.hpp">
+    <ClInclude Include="src\midi\erstwhile_message_handler.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\midi\message_task.hpp">

@@ -133,6 +133,7 @@
     <ClCompile Include="src\midi\connector_debug.cpp" />
     <ClCompile Include="src\midi\message_handler.cpp" />
     <ClCompile Include="src\midi\message_task.cpp" />
+    <ClCompile Include="src\midi\erstwhile_message_handler.cpp" />
     <ClCompile Include="src\operation.cpp" />
     <ClCompile Include="src\state.cpp" />
   </ItemGroup>
@@ -164,6 +165,7 @@
     <ClInclude Include="src\midi\connector_debug.hpp" />
     <ClInclude Include="src\midi\message_handler.hpp" />
     <ClInclude Include="src\midi\message_task.hpp" />
+    <ClInclude Include="src\midi\erstwhile_message_handler.hpp" />
     <ClInclude Include="src\model\ev.hpp" />
     <ClInclude Include="src\model\global_const.hpp" />
     <ClInclude Include="src\model\global.hpp" />

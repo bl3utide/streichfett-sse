@@ -8,8 +8,8 @@
 #include "midi/midi_common.hpp"
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
-#include "midi/message_handler.hpp"
 #include "midi/message_task.hpp"
+#include "midi/erstwhile_message_handler.hpp"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
 #endif
@@ -257,7 +257,8 @@ void openKeyInputPort(int port_index, const std::string& port_name)
 
 void requestDeviceInquiry()
 {
-    const auto req_sysex = MessageHandler::getRequestDeviceInquiryMessage();
+    // TODO message_creatorからリクエストを作成
+    const auto req_sysex = ErstwhileMessageHandler::getRequestDeviceInquiryMessage();
 
     Logger::debug(std::format("request inquiry dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
@@ -295,7 +296,8 @@ void requestDeviceInquiry()
 
 void requestGlobal()
 {
-    const auto req_sysex = MessageHandler::getRequestGlobalMessage();
+    // TODO message_creatorからリクエストを作成
+    const auto req_sysex = ErstwhileMessageHandler::getRequestGlobalMessage();
 
     Logger::debug(std::format("request global dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
@@ -335,7 +337,8 @@ void requestSound()
 {
     auto& patch_addr = InternalPatch::getCurrentPatchAddress();
 
-    const auto req_sysex = MessageHandler::getRequestSoundMessage(patch_addr.sound);
+    // TODO message_creatorからリクエストを作成
+    const auto req_sysex = ErstwhileMessageHandler::getRequestSoundMessage(patch_addr.sound);
 
     Logger::debug(std::format("request sound dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 
@@ -377,7 +380,8 @@ void sendSoundDump(bool is_edit_buffer)
     const auto sound = is_edit_buffer ? -1 : patch_addr.sound;
     const auto& current_patch = InternalPatch::getCurrentPatch();
 
-    const auto sound_dump = MessageHandler::getSoundDumpMessageFromPatch(sound, current_patch);
+    // TODO 別のモジュールから作成(ErstwhileMessageHandler廃止のため)
+    const auto sound_dump = ErstwhileMessageHandler::getSoundDumpMessageFromPatch(sound, current_patch);
 
     try
     {
@@ -410,7 +414,8 @@ void sendProgChange()
 {
     auto& patch_addr = InternalPatch::getCurrentPatchAddress();
 
-    const auto prog_change = MessageHandler::getProgChangeMessage(patch_addr.sound);
+    // TODO message_creatorからリクエストを作成
+    const auto prog_change = ErstwhileMessageHandler::getProgChangeMessage(patch_addr.sound);
 
     try
     {
@@ -434,7 +439,8 @@ void sendProgChange()
 
 void sendAllSoundOff()
 {
-    const auto all_sound_off = MessageHandler::getAllSoundOffMessage();
+    // TODO message_creatorからリクエストを作成
+    const auto all_sound_off = ErstwhileMessageHandler::getAllSoundOffMessage();
 
     try
     {

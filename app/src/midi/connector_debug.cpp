@@ -6,7 +6,7 @@
 #include "midi/callback_debug.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
-#include "midi/message_handler.hpp"
+#include "midi/erstwhile_message_handler.hpp"
 
 namespace StreichfettSse
 {
@@ -39,7 +39,7 @@ void addProcessedHistory(bool transmitted, const std::string& device_name, const
         << '.' << std::setfill('0') << std::setw(3) << now_ms.count();
     const auto timestamp = now_ss.str();
 
-    const auto description = MessageHandler::getMessageDesc(data);
+    const auto description = ErstwhileMessageHandler::getMessageDesc(data);
 
     std::unique_lock lock(history_mutex);
     history.emplace_back(ProcessedMidiMessage(timestamp, transmitted, device_name, description, data));
@@ -64,15 +64,15 @@ void sendTest(SendTestType type)
     switch (type)
     {
         case SendTestType::DeviceInquiry:
-            request = MessageHandler::getRequestDeviceInquiryMessage();
+            request = ErstwhileMessageHandler::getRequestDeviceInquiryMessage();
             break;
         case SendTestType::Global:
-            request = MessageHandler::getRequestGlobalMessage();
+            request = ErstwhileMessageHandler::getRequestGlobalMessage();
             break;
         case SendTestType::Sound:
         {
             auto& patch_addr = InternalPatch::getCurrentPatchAddress();
-            request = MessageHandler::getRequestSoundMessage(patch_addr.sound);
+            request = ErstwhileMessageHandler::getRequestSoundMessage(patch_addr.sound);
         }
             break;
         default:

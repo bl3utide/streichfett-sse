@@ -8,7 +8,7 @@
 #include "data/internal_setting.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
-#include "midi/message_handler.hpp"
+#include "midi/erstwhile_message_handler.hpp"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
 #endif
@@ -104,7 +104,7 @@ void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_da
             {
                 Logger::debug(e.what());
 
-                const auto byte_str = MessageHandler::getByteVecString(*message);
+                const auto byte_str = ErstwhileMessageHandler::getByteVecString(*message);
                 Logger::debug(std::format(" >> {}", byte_str));
 
                 if (request_try_count.reachedLimit())
@@ -187,7 +187,7 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
             {
                 Logger::debug(e.what());
 
-                const auto byte_str = MessageHandler::getByteVecString(*message);
+                const auto byte_str = ErstwhileMessageHandler::getByteVecString(*message);
                 Logger::debug(std::format(" >> {}", byte_str));
 
                 if (request_try_count.reachedLimit())
@@ -272,7 +272,7 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
             {
                 Logger::debug(e.what());
 
-                const auto byte_str = MessageHandler::getByteVecString(*message);
+                const auto byte_str = ErstwhileMessageHandler::getByteVecString(*message);
                 Logger::debug(std::format(" >> {}", byte_str));
 
                 if (request_try_count.reachedLimit())
@@ -375,13 +375,13 @@ Uint32 timeout(Uint32 interval, void* param)
 void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_data)
 {
     if (Connector::isSynthConnected() &&
-        (MessageHandler::isNoteOff(*message) || MessageHandler::isNoteOn(*message)))
+        (ErstwhileMessageHandler::isNoteOff(*message) || ErstwhileMessageHandler::isNoteOn(*message)))
     {
         ByteVec send_message;
         if (Connector::force_adjust_midi_channel)
         {
             const auto ch = InternalSetting::getDeviceMidiChannel();
-            if (MessageHandler::isNoteOff(*message))
+            if (ErstwhileMessageHandler::isNoteOff(*message))
             {
                 send_message =
                 {
