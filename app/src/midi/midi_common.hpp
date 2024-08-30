@@ -94,8 +94,10 @@ public:
     {
     }
 
-    RequestCounter() = delete;
-    RequestCounter(const RequestCounter& rhs) = delete;
+    explicit RequestCounter()
+        : v_(0), upper_limit_(0)
+    {
+    }
 
     void reset() noexcept
     {
