@@ -166,7 +166,6 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
 
             try
             {
-                // TODO 動作検証
                 GlobalDumpHandler handler(*message);
 
                 // throwable
@@ -250,7 +249,6 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
 
             try
             {
-                // TODO 動作検証
                 SoundDumpHandler handler(*message);
 
                 // throwable
