@@ -97,6 +97,7 @@ void initialize()
     is_synth_connected_ = false;
 
     inquiry_result = DeviceInquiryResult();
+    request_try_count = RequestCounter(MAX_REQUEST_TRY);
     setWaitingStoreDelay(false);
 
 #ifdef _DEBUG

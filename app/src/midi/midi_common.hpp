@@ -147,6 +147,7 @@ extern DeviceInquiryResult inquiry_result;
 extern SDL_TimerID waiting_timer;
 extern CallbackMutex callback_mutex;
 extern RequestCounter request_try_count;
+extern const int MAX_REQUEST_TRY;
 extern const int TIMEOUT_DURATION_PER_RETRY;
 
 void setWaitingStoreDelay(bool is_waiting_store_delay) noexcept;

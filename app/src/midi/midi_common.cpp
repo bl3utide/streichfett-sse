@@ -10,9 +10,9 @@ namespace Midi
 DeviceInquiryResult inquiry_result;
 SDL_TimerID waiting_timer;
 CallbackMutex callback_mutex;
-const int MAX_REQUEST_TRY = 5;  // TODO not public const var
+RequestCounter request_try_count;
+const int MAX_REQUEST_TRY = 5;
 const int TIMEOUT_DURATION_PER_RETRY = 200;
-RequestCounter request_try_count(MAX_REQUEST_TRY);
 
 // private
 bool waiting_store_delay_;      // store delay check
