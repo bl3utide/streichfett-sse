@@ -121,6 +121,7 @@
     <ClCompile Include="src\gui\gui_debug.cpp" />
     <ClCompile Include="src\gui\gui_edit.cpp" />
     <ClCompile Include="src\gui\gui_option.cpp" />
+    <ClCompile Include="src\midi\message_creator.cpp" />
     <ClCompile Include="src\midi\message_handler.cpp" />
     <ClCompile Include="src\util\gui_util.cpp" />
     <ClCompile Include="src\image.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="src\gui\gui_font.hpp" />
     <ClInclude Include="src\gui\gui.hpp" />
     <ClInclude Include="src\gui\gui_color.hpp" />
+    <ClInclude Include="src\midi\message_creator.h" />
     <ClInclude Include="src\midi\message_handler.h" />
     <ClInclude Include="src\util\gui_util.hpp" />
     <ClInclude Include="src\image.hpp" />
