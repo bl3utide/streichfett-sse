@@ -299,8 +299,8 @@ void requestDeviceInquiry()
 
 void requestGlobal()
 {
-    // TODO message_creatorからリクエストを作成
-    const auto req_sysex = ErstwhileMessageHandler::getRequestGlobalMessage();
+    RequestGlobalCreator creator;
+    const auto req_sysex = creator.create();
 
     Logger::debug(std::format("request global dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 

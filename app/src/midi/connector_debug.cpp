@@ -71,7 +71,10 @@ void sendTest(SendTestType type)
         }
             break;
         case SendTestType::Global:
-            request = ErstwhileMessageHandler::getRequestGlobalMessage();
+        {
+            RequestGlobalCreator creator;
+            request = creator.create();
+        }
             break;
         case SendTestType::Sound:
         {

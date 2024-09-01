@@ -19,7 +19,7 @@ namespace ErstwhileMessageHandler
 // TODO move -> message_generator
 //const ByteVec getRequestDeviceInquiryMessage();
 const ByteVec getRequestSoundMessage(int sound);  // DSI: Streichfett
-const ByteVec getRequestGlobalMessage();
+//const ByteVec getRequestGlobalMessage();
 const ByteVec getProgChangeMessage(int value);
 const ByteVec getAllSoundOffMessage();
 // TODO move -> ?

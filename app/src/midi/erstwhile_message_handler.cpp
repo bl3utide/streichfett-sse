@@ -51,19 +51,19 @@ const ByteVec getRequestSoundMessage(int sound)
 }
 
 // DSI: Streichfett
-const ByteVec getRequestGlobalMessage()
-{
-    ByteVec req;
-    req.clear();
-    req.push_back(SYSEX_FIRST);
-    req.push_back(DEVICE_MANUFACTURER_ID);
-    req.push_back(DEVICE_FAMILY_CODE);
-    req.push_back(DEVICE_ID_OMNI);
-    req.push_back(ORDER_GLOBAL_REQUEST);
-    req.push_back(0x00);    // Reserved
-    req.push_back(SYSEX_LAST);
-    return req;
-}
+//const ByteVec getRequestGlobalMessage()
+//{
+//    ByteVec req;
+//    req.clear();
+//    req.push_back(SYSEX_FIRST);
+//    req.push_back(DEVICE_MANUFACTURER_ID);
+//    req.push_back(DEVICE_FAMILY_CODE);
+//    req.push_back(DEVICE_ID_OMNI);
+//    req.push_back(ORDER_GLOBAL_REQUEST);
+//    req.push_back(0x00);    // Reserved
+//    req.push_back(SYSEX_LAST);
+//    return req;
+//}
 
 const ByteVec getProgChangeMessage(int value)
 {
