@@ -28,6 +28,7 @@ public:
     SysExMessageCreator(SysExMessageCreator&&) = delete;
     SysExMessageCreator& operator=(const SysExMessageCreator&) = delete;
     SysExMessageCreator& operator=(SysExMessageCreator&&) = delete;
+
 protected:
     SysExMessageCreator() {}
 };
