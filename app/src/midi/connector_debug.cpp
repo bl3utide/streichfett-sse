@@ -79,7 +79,8 @@ void sendTest(SendTestType type)
         case SendTestType::Sound:
         {
             auto& patch_addr = InternalPatch::getCurrentPatchAddress();
-            request = ErstwhileMessageHandler::getRequestSoundMessage(patch_addr.sound);
+            RequestSoundCreator creator(patch_addr.sound);
+            request = creator.create();
         }
             break;
         default:

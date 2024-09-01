@@ -340,8 +340,8 @@ void requestSound()
 {
     auto& patch_addr = InternalPatch::getCurrentPatchAddress();
 
-    // TODO message_creatorからリクエストを作成
-    const auto req_sysex = ErstwhileMessageHandler::getRequestSoundMessage(patch_addr.sound);
+    RequestSoundCreator creator(patch_addr.sound);
+    const auto req_sysex = creator.create();
 
     Logger::debug(std::format("request sound dump [try count: {0}/{1}]", request_try_count.v() + 1, request_try_count.max()));
 

@@ -36,19 +36,19 @@ const ByteVec getRequestDeviceInquiryMessage()
 */
 
 // DSI: Streichfett
-const ByteVec getRequestSoundMessage(int sound)
-{
-    ByteVec req;
-    req.clear();
-    req.push_back(SYSEX_FIRST);
-    req.push_back(DEVICE_MANUFACTURER_ID);
-    req.push_back(DEVICE_FAMILY_CODE);
-    req.push_back(DEVICE_ID_OMNI);
-    req.push_back(ORDER_SOUND_REQUEST);
-    req.push_back(static_cast<Byte>(sound));
-    req.push_back(SYSEX_LAST);
-    return req;
-}
+//const ByteVec getRequestSoundMessage(int sound)
+//{
+//    ByteVec req;
+//    req.clear();
+//    req.push_back(SYSEX_FIRST);
+//    req.push_back(DEVICE_MANUFACTURER_ID);
+//    req.push_back(DEVICE_FAMILY_CODE);
+//    req.push_back(DEVICE_ID_OMNI);
+//    req.push_back(ORDER_SOUND_REQUEST);
+//    req.push_back(static_cast<Byte>(sound));
+//    req.push_back(SYSEX_LAST);
+//    return req;
+//}
 
 // DSI: Streichfett
 //const ByteVec getRequestGlobalMessage()
