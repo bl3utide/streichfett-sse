@@ -77,17 +77,17 @@ const ByteVec getRequestDeviceInquiryMessage()
 //    return pc;
 //}
 
-const ByteVec getAllSoundOffMessage()
-{
-    const auto ch = InternalSetting::getDeviceMidiChannel();
-    const Byte order_byte = MIDI_CC + static_cast<Byte>(ch);
-
-    ByteVec aso;
-    aso.clear();
-    aso.push_back(order_byte);
-    aso.push_back(static_cast<Byte>(0x78));
-    return aso;
-}
+//const ByteVec getAllSoundOffMessage()
+//{
+//    const auto ch = InternalSetting::getDeviceMidiChannel();
+//    const Byte order_byte = MIDI_CC + static_cast<Byte>(ch);
+//
+//    ByteVec aso;
+//    aso.clear();
+//    aso.push_back(order_byte);
+//    aso.push_back(static_cast<Byte>(0x78));
+//    return aso;
+//}
 
 bool isNoteOff(const ByteVec& mb) noexcept
 {

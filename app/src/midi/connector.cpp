@@ -445,8 +445,10 @@ void sendProgChange()
 
 void sendAllSoundOff()
 {
-    // TODO message_creatorからリクエストを作成
-    const auto all_sound_off = ErstwhileMessageHandler::getAllSoundOffMessage();
+    const auto ch = InternalSetting::getDeviceMidiChannel();
+    AllSoundOffCreator creator(ch);
+
+    const auto all_sound_off = creator.create();
 
     try
     {
