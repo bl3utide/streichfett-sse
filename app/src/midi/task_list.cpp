@@ -1,5 +1,6 @@
 ﻿#include "common.hpp"
-#include "midi/erstwhile_message_handler.hpp"
+#include "data/internal_setting.hpp"
+#include "midi/msg/channel_message_creator.h"
 
 namespace StreichfettSse
 {
@@ -22,11 +23,15 @@ static void addTask(const ByteVec& m)
 #endif
 }
 
+// DSI: Streichfett
 void addParamChangedTask(int index, Byte value)
 {
     if (index != -1)
     {
-        addTask(ErstwhileMessageHandler::getSoundParameterChangeMessage(index, value));
+        const auto ch = InternalSetting::getDeviceMidiChannel();
+        ControlChangeCreator creator(ch, index, value);
+        const auto control_change = creator.create();
+        addTask(control_change);
     }
 }
 

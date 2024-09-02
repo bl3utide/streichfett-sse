@@ -262,19 +262,19 @@ const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& p
 }
 
 // DSI: Streichfett
-const ByteVec getSoundParameterChangeMessage(int index, Byte value)
-{
-    // NOTE: For Streichfett, change the parameters with CC.
-
-    const auto ch = InternalSetting::getDeviceMidiChannel();
-
-    ByteVec req;
-    req.clear();
-    req.push_back(MIDI_CC + static_cast<Byte>(ch));
-    req.push_back(static_cast<Byte>(index));
-    req.push_back(value);
-    return req;
-}
+//const ByteVec getSoundParameterChangeMessage(int index, Byte value)
+//{
+//    // NOTE: For Streichfett, change the parameters with CC.
+//
+//    const auto ch = InternalSetting::getDeviceMidiChannel();
+//
+//    ByteVec req;
+//    req.clear();
+//    req.push_back(MIDI_CC + static_cast<Byte>(ch));
+//    req.push_back(static_cast<Byte>(index));
+//    req.push_back(value);
+//    return req;
+//}
 
 const std::string getByteVecString(const ByteVec& bytes)
 {

@@ -30,7 +30,7 @@ bool isNoteOn(const ByteVec& mb) noexcept;
 //const ByteVec getDataBytesFromDump(const ByteVec& dump, DumpType type);
 // TODO move -> message_generator
 const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& patch);      // DSI: Streichfett
-const ByteVec getSoundParameterChangeMessage(int index, Byte value);
+//const ByteVec getSoundParameterChangeMessage(int index, Byte value);
 // TODO move -> message_stringizer
 const std::string getByteVecString(const ByteVec& bytes);
 #ifdef _DEBUG
