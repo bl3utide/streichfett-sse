@@ -1,6 +1,6 @@
 ﻿#include "common.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/message_creator.h"
+#include "midi/msg/sysex_message_creator.h"
 
 namespace StreichfettSse
 {
@@ -46,26 +46,6 @@ const ByteVec RequestSoundCreator::create() const
     m.push_back(static_cast<Byte>(sound_));
     m.push_back(SYSEX_LAST);
     return m;
-}
-
-const ByteVec ProgramChangeCreator::create() const
-{
-    Byte order_byte = MIDI_PC + static_cast<Byte>(ch_);
-
-    ByteVec pc;
-    pc.push_back(order_byte);
-    pc.push_back(static_cast<Byte>(value_));
-    return pc;
-}
-
-const ByteVec AllSoundOffCreator::create() const
-{
-    const Byte order_byte = MIDI_CC + static_cast<Byte>(ch_);
-
-    ByteVec aso;
-    aso.push_back(order_byte);
-    aso.push_back(static_cast<Byte>(0x78));
-    return aso;
 }
 
 } // Midi
