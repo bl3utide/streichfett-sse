@@ -5,11 +5,13 @@
 #include "state.hpp"
 #include "config/config.hpp"
 #include "data/internal_patch.hpp"
+#include "data/internal_setting.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
 #include "midi/erstwhile_message_handler.hpp"
-#include "midi/message_creator.h"
+#include "midi/msg/channel_message_creator.h"
+#include "midi/msg/sysex_message_creator.h"
 #include "midi/task_list.hpp"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
@@ -415,10 +417,11 @@ void sendSoundDump(bool is_edit_buffer)
 // DSI: Streichfett
 void sendProgChange()
 {
+    const auto ch = InternalSetting::getDeviceMidiChannel();
     auto& patch_addr = InternalPatch::getCurrentPatchAddress();
 
-    // TODO message_creatorからリクエストを作成
-    const auto prog_change = ErstwhileMessageHandler::getProgChangeMessage(patch_addr.sound);
+    ProgramChangeCreator creator(ch, patch_addr.sound);
+    const auto prog_change = creator.create();
 
     try
     {

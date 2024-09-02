@@ -65,17 +65,17 @@ const ByteVec getRequestDeviceInquiryMessage()
 //    return req;
 //}
 
-const ByteVec getProgChangeMessage(int value)
-{
-    const auto ch = InternalSetting::getDeviceMidiChannel();
-    Byte order_byte = MIDI_PC + static_cast<Byte>(ch);
-
-    ByteVec pc;
-    pc.clear();
-    pc.push_back(order_byte);
-    pc.push_back(static_cast<Byte>(value));
-    return pc;
-}
+//const ByteVec getProgChangeMessage(int value)
+//{
+//    const auto ch = InternalSetting::getDeviceMidiChannel();
+//    Byte order_byte = MIDI_PC + static_cast<Byte>(ch);
+//
+//    ByteVec pc;
+//    pc.clear();
+//    pc.push_back(order_byte);
+//    pc.push_back(static_cast<Byte>(value));
+//    return pc;
+//}
 
 const ByteVec getAllSoundOffMessage()
 {
