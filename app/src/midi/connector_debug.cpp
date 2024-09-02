@@ -7,7 +7,7 @@
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
 #include "midi/erstwhile_message_handler.hpp"
-#include "midi/message_creator.h"
+#include "midi/msg/sysex_message_creator.h"
 
 namespace StreichfettSse
 {
