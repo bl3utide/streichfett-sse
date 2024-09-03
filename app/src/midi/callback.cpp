@@ -9,7 +9,7 @@
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/erstwhile_message_handler.hpp"
-#include "midi/message_handler.h"
+#include "midi/msg/message_handler.h"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
 #endif
