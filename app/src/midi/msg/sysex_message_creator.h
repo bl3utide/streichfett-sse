@@ -7,7 +7,7 @@ namespace StreichfettSse
 namespace Midi
 {
 
-class SysExMessageCreator : MessageCreator
+class SysExMessageCreator : public MessageCreator
 {
 public:
     virtual ~SysExMessageCreator() {}
@@ -20,7 +20,7 @@ protected:
     SysExMessageCreator() {}
 };
 
-class RequestDeviceInquiryCreator final : SysExMessageCreator
+class RequestDeviceInquiryCreator final : public SysExMessageCreator
 {
 public:
     explicit RequestDeviceInquiryCreator() {}
@@ -32,7 +32,7 @@ public:
     RequestDeviceInquiryCreator& operator=(RequestDeviceInquiryCreator&&) = delete;
 };
 
-class RequestGlobalCreator final : SysExMessageCreator
+class RequestGlobalCreator final : public SysExMessageCreator
 {
 public:
     explicit RequestGlobalCreator() {}
@@ -45,7 +45,7 @@ public:
 };
 
 // DSI: Streichfett
-class RequestSoundCreator final : SysExMessageCreator
+class RequestSoundCreator final : public SysExMessageCreator
 {
 public:
     explicit RequestSoundCreator(int sound)

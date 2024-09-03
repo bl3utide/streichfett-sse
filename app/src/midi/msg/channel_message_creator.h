@@ -7,7 +7,7 @@ namespace StreichfettSse
 namespace Midi
 {
 
-class ChannelMessageCreator : MessageCreator
+class ChannelMessageCreator : public MessageCreator
 {
 public:
     virtual ~ChannelMessageCreator() {}
@@ -26,7 +26,7 @@ protected:
     int ch_;
 };
 
-class ControlChangeCreator final : ChannelMessageCreator
+class ControlChangeCreator final : public ChannelMessageCreator
 {
 public:
     explicit ControlChangeCreator(int midi_ch, int cc, int value)
@@ -46,7 +46,7 @@ private:
     int value_;
 };
 
-class ProgramChangeCreator final : ChannelMessageCreator
+class ProgramChangeCreator final : public ChannelMessageCreator
 {
 public:
     explicit ProgramChangeCreator(int midi_ch, int value)
@@ -65,7 +65,7 @@ private:
     int value_;
 };
 
-class AllSoundOffCreator final : ChannelMessageCreator
+class AllSoundOffCreator final : public ChannelMessageCreator
 {
 public:
     explicit AllSoundOffCreator(int midi_ch)
