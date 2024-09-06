@@ -5,20 +5,20 @@ namespace StreichfettSse
 namespace Midi
 {
 
-class MessageHandler
+class MidiMessage
 {
 public:
-    explicit MessageHandler(const ByteVec& message)
+    explicit MidiMessage(const ByteVec& message)
         : mbytes(message)
     {
     }
-    virtual ~MessageHandler() {}
+    virtual ~MidiMessage() {}
 
-    MessageHandler() = delete;
-    MessageHandler(const MessageHandler&) = delete;
-    MessageHandler(MessageHandler&&) = delete;
-    MessageHandler& operator=(const MessageHandler&) = delete;
-    MessageHandler& operator=(MessageHandler&&) = delete;
+    MidiMessage() = delete;
+    MidiMessage(const MidiMessage&) = delete;
+    MidiMessage(MidiMessage&&) = delete;
+    MidiMessage& operator=(const MidiMessage&) = delete;
+    MidiMessage& operator=(MidiMessage&&) = delete;
 
 protected:
     ByteVec mbytes;
@@ -48,10 +48,10 @@ public:
     MidiMsgHandler& operator=(MidiMsgHandler&&) = delete;
 };
 
-class MidiMsgStringizer final : public MessageHandler
+class MidiMsgStringizer final : public MidiMessage
 {
     explicit MidiMsgStringizer(const ByteVec& message)
-        : MessageHandler(message)
+        : MidiMessage(message)
     {
     }
 
@@ -67,11 +67,11 @@ class MidiMsgStringizer final : public MessageHandler
     MidiMsgStringizer& operator=(MidiMsgStringizer&&) = delete;
 };
 
-class DumpHandler : public MessageHandler
+class DumpHandler : public MidiMessage
 {
 public:
     explicit DumpHandler(const ByteVec& message, const std::string& name)
-        : MessageHandler(message), is_validated_(false), name_(name)
+        : MidiMessage(message), is_validated_(false), name_(name)
     {
     }
     virtual ~DumpHandler() {}
