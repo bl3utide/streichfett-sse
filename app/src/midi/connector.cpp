@@ -10,8 +10,8 @@
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
 #include "midi/erstwhile_message_handler.hpp"
-#include "midi/msg/channel_message_creator.h"
-#include "midi/msg/sysex_message_creator.h"
+#include "midi/message_creator/channel_message_creator.h"
+#include "midi/message_creator/sysex_message_creator.h"
 #include "midi/task_list.hpp"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"

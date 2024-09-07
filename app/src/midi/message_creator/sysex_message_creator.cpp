@@ -1,7 +1,7 @@
 ﻿#include "common.hpp"
 #include "model/sound.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/msg/sysex_message_creator.h"
+#include "midi/message_creator/sysex_message_creator.h"
 
 namespace StreichfettSse
 {

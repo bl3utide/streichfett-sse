@@ -1,6 +1,6 @@
 ﻿#include "common.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/msg/channel_message_creator.h"
+#include "midi/message_creator/channel_message_creator.h"
 
 namespace StreichfettSse
 {

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "midi/msg/message_creator.h"
+#include "midi/message_creator/message_creator.h"
 
 namespace StreichfettSse
 {
