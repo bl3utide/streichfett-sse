@@ -5,13 +5,50 @@ namespace StreichfettSse
 namespace Midi
 {
 
+enum class MsgType : int
+{
+    // Channel-Voice
+    NoteOn,
+    NoteOff,
+    PolyphonicKeyPressure,
+    ControlChange,
+    ProgramChange,
+    ChannelPressure,
+    PitchBendChange,
+
+    // Channel-Mode
+    AllSoundOff,
+    ResetAllController,
+    LocalControl,
+    AllNotesOff,
+    OmniOff,
+    OmniOn,
+    MonophonicOn,
+    PolyphonicOn,
+
+    // System-Common
+    SystemExclusive,
+    QuarterFrame,
+    SongPositionPointer,
+    SongSelect,
+    TuneRequest,
+    EndOfExclusive,
+
+    // System-Realtime
+    TimingClock,
+    Start,
+    Continue,
+    Stop,
+    ActiveSense,
+    Reset,
+
+    _UNDEFINED_,
+};
+
 class MidiMessage
 {
 public:
-    explicit MidiMessage(const ByteVec& message)
-        : mbytes(message)
-    {
-    }
+    explicit MidiMessage(const ByteVec& message);
     virtual ~MidiMessage() {}
 
     MidiMessage() = delete;
@@ -20,32 +57,13 @@ public:
     MidiMessage& operator=(const MidiMessage&) = delete;
     MidiMessage& operator=(MidiMessage&&) = delete;
 
+    MsgType type() const noexcept { return type_; }
+
 protected:
     ByteVec mbytes;
-};
 
-enum class MidiMsg : int
-{
-    NoteOff,
-    NoteOn,
-    Other,
-    _COUNT_,
-};
-class MidiMsgHandler : public MessageHandler
-{
-public:
-    explicit MidiMsgHandler(const ByteVec& message)
-        : MessageHandler(message)
-    {
-    }
-
-    const MidiMsg getType() const noexcept;
-
-    MidiMsgHandler() = delete;
-    MidiMsgHandler(const MidiMsgHandler&) = delete;
-    MidiMsgHandler(MidiMsgHandler&&) = delete;
-    MidiMsgHandler& operator=(const MidiMsgHandler&) = delete;
-    MidiMsgHandler& operator=(MidiMsgHandler&&) = delete;
+private:
+    MsgType type_;
 };
 
 class MidiMsgStringizer final : public MidiMessage
