@@ -64,5 +64,19 @@ private:
     int sound_;
 };
 
+class SoundDumpCreator final : public SysExMessageCreator
+{
+public:
+    explicit SoundDumpCreator(int sound, const SoundModel::Patch& patch)
+        : sound_(sound), patch_(patch)
+    {
+    }
+    const ByteVec create() const override;
+
+private:
+    SoundModel::Patch patch_;
+    int sound_;
+};
+
 } // Midi
 } // StreichfettSse

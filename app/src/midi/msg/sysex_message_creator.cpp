@@ -1,4 +1,5 @@
 ﻿#include "common.hpp"
+#include "model/sound.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/msg/sysex_message_creator.h"
 
@@ -46,6 +47,12 @@ const ByteVec RequestSoundCreator::create() const
     m.push_back(static_cast<Byte>(sound_));
     m.push_back(SYSEX_LAST);
     return m;
+}
+
+const ByteVec SoundDumpCreator::create() const
+{
+    // TODO impl
+    return ByteVec();
 }
 
 } // Midi
