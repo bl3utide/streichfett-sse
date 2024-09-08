@@ -9,7 +9,7 @@
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/erstwhile_message_handler.hpp"
-#include "midi/msg/message_handler.h"
+#include "midi/msg/dump_message.h"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
 #endif
@@ -94,7 +94,7 @@ void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_da
 
             try
             {
-                auto handler = DeviceInquiryDumpHandler(*message);
+                auto handler = DeviceInquiryDumpMessage(*message);
 
                 // throwable function
                 handler.validate();
@@ -166,7 +166,7 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
 
             try
             {
-                GlobalDumpHandler handler(*message);
+                GlobalDumpMessage handler(*message);
 
                 // throwable
                 handler.validate();
@@ -249,7 +249,7 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
 
             try
             {
-                SoundDumpHandler handler(*message);
+                SoundDumpMessage handler(*message);
 
                 // throwable
                 handler.validate();
