@@ -116,25 +116,25 @@ private:
     std::string name_;
 };
 
-class DataDumpHandler : public DumpMessage
+class DataDumpMessage : public DumpMessage
 {
 public:
-    explicit DataDumpHandler(const ByteVec& message,
+    explicit DataDumpMessage(const ByteVec& message,
                              const std::string& name,
                              int data_index_first, int data_index_last)
         : DumpMessage(message, name),
         di_first_(data_index_first), di_last_(data_index_last)
     {
     }
-    virtual ~DataDumpHandler() {}
+    virtual ~DataDumpMessage() {}
 
     const ByteVec getDataBytes() const;
 
-    DataDumpHandler() = delete;
-    DataDumpHandler(const DataDumpHandler&) = delete;
-    DataDumpHandler(DataDumpHandler&&) = delete;
-    DataDumpHandler& operator=(const DataDumpHandler&) = delete;
-    DataDumpHandler& operator=(DataDumpHandler&&) = delete;
+    DataDumpMessage() = delete;
+    DataDumpMessage(const DataDumpMessage&) = delete;
+    DataDumpMessage(DataDumpMessage&&) = delete;
+    DataDumpMessage& operator=(const DataDumpMessage&) = delete;
+    DataDumpMessage& operator=(DataDumpMessage&&) = delete;
 
 protected:
     void validateDataSysEx() const;
@@ -144,10 +144,10 @@ private:
     int di_last_;
 };
 
-class DeviceInquiryDumpHandler final : public DumpMessage
+class DeviceInquiryDumpMessage final : public DumpMessage
 {
 public:
-    explicit DeviceInquiryDumpHandler(const ByteVec& device_inquiry_dump)
+    explicit DeviceInquiryDumpMessage(const ByteVec& device_inquiry_dump)
         : DumpMessage(device_inquiry_dump, "Device Inquiry Dump")
     {
     }
@@ -155,52 +155,51 @@ public:
     void validate() override;
     const DeviceInquiryResult getResult() const;
 
-    DeviceInquiryDumpHandler() = delete;
-    DeviceInquiryDumpHandler(const DeviceInquiryDumpHandler&) = delete;
-    DeviceInquiryDumpHandler(DeviceInquiryDumpHandler&&) = delete;
-    DeviceInquiryDumpHandler& operator=(const DeviceInquiryDumpHandler&) = delete;
-    DeviceInquiryDumpHandler& operator=(DeviceInquiryDumpHandler&&) = delete;
+    DeviceInquiryDumpMessage() = delete;
+    DeviceInquiryDumpMessage(const DeviceInquiryDumpMessage&) = delete;
+    DeviceInquiryDumpMessage(DeviceInquiryDumpMessage&&) = delete;
+    DeviceInquiryDumpMessage& operator=(const DeviceInquiryDumpMessage&) = delete;
+    DeviceInquiryDumpMessage& operator=(DeviceInquiryDumpMessage&&) = delete;
 };
 
-class GlobalDumpHandler final : public DataDumpHandler
+class GlobalDumpMessage final : public DataDumpMessage
 {
     static_assert(GLOBAL_DATA_INDEX_LAST < GLOBAL_DUMP_SIZE);
 
 public:
-    explicit GlobalDumpHandler(const ByteVec& global_dump)
-        : DataDumpHandler(global_dump, "Global Dump",
+    explicit GlobalDumpMessage(const ByteVec& global_dump)
+        : DataDumpMessage(global_dump, "Global Dump",
                           GLOBAL_DATA_INDEX_FIRST, GLOBAL_DATA_INDEX_LAST)
     {
     }
 
     void validate() override;
 
-    GlobalDumpHandler() = delete;
-    GlobalDumpHandler(const GlobalDumpHandler&) = delete;
-    GlobalDumpHandler(GlobalDumpHandler&&) = delete;
-    GlobalDumpHandler& operator=(const GlobalDumpHandler&) = delete;
-    GlobalDumpHandler& operator=(GlobalDumpHandler&&) = delete;
+    GlobalDumpMessage() = delete;
+    GlobalDumpMessage(const GlobalDumpMessage&) = delete;
+    GlobalDumpMessage(GlobalDumpMessage&&) = delete;
+    GlobalDumpMessage& operator=(const GlobalDumpMessage&) = delete;
+    GlobalDumpMessage& operator=(GlobalDumpMessage&&) = delete;
 };
 
-
-class SoundDumpHandler final : public DataDumpHandler
+class SoundDumpMessage final : public DataDumpMessage
 {
     static_assert(SOUND_DATA_INDEX_LAST < SOUND_DUMP_SIZE);
 
 public:
-    explicit SoundDumpHandler(const ByteVec& sound_dump)
-        : DataDumpHandler(sound_dump, "Sound Dump",
+    explicit SoundDumpMessage(const ByteVec& sound_dump)
+        : DataDumpMessage(sound_dump, "Sound Dump",
                              SOUND_DATA_INDEX_FIRST, SOUND_DATA_INDEX_LAST)
     {
     }
 
     void validate() override;
 
-    SoundDumpHandler() = delete;
-    SoundDumpHandler(const SoundDumpHandler&) = delete;
-    SoundDumpHandler(SoundDumpHandler&&) = delete;
-    SoundDumpHandler& operator=(const SoundDumpHandler&) = delete;
-    SoundDumpHandler& operator=(SoundDumpHandler&&) = delete;
+    SoundDumpMessage() = delete;
+    SoundDumpMessage(const SoundDumpMessage&) = delete;
+    SoundDumpMessage(SoundDumpMessage&&) = delete;
+    SoundDumpMessage& operator=(const SoundDumpMessage&) = delete;
+    SoundDumpMessage& operator=(SoundDumpMessage&&) = delete;
 };
 
 } // Midi

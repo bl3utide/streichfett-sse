@@ -65,7 +65,7 @@ void DumpMessage::validateSysEx() const
     if (!isSysEx()) fail("not SysEx");
 }
 
-const ByteVec DataDumpHandler::getDataBytes() const
+const ByteVec DataDumpMessage::getDataBytes() const
 {
     checkValidated();
 
@@ -80,7 +80,7 @@ const ByteVec DataDumpHandler::getDataBytes() const
 }
 
 // DSI: Streichfett
-void DataDumpHandler::validateDataSysEx() const
+void DataDumpMessage::validateDataSysEx() const
 {
     validateSysEx();
 
@@ -98,7 +98,7 @@ void DataDumpHandler::validateDataSysEx() const
 }
 
 // DSI: Streichfett
-void DeviceInquiryDumpHandler::validate()
+void DeviceInquiryDumpMessage::validate()
 {
     validateSysEx();
 
@@ -135,7 +135,7 @@ void DeviceInquiryDumpHandler::validate()
 }
 
 // DSI: Streichfett
-const DeviceInquiryResult DeviceInquiryDumpHandler::getResult() const
+const DeviceInquiryResult DeviceInquiryDumpMessage::getResult() const
 {
     checkValidated();
 
@@ -145,7 +145,7 @@ const DeviceInquiryResult DeviceInquiryDumpHandler::getResult() const
 }
 
 // DSI: Streichfett
-void GlobalDumpHandler::validate()
+void GlobalDumpMessage::validate()
 {
     validateDataSysEx();
 
@@ -163,7 +163,7 @@ void GlobalDumpHandler::validate()
 }
 
 // DSI: Streichfett
-void SoundDumpHandler::validate()
+void SoundDumpMessage::validate()
 {
     validateDataSysEx();
 
