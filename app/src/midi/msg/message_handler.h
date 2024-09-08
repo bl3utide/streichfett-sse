@@ -60,6 +60,7 @@ public:
     MsgType type() const noexcept { return type_; }
 
 protected:
+    bool empty() const noexcept;
     ByteVec mbytes;
 
 private:

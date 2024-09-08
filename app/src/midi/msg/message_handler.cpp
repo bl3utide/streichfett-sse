@@ -28,6 +28,11 @@ MidiMessage::MidiMessage(const ByteVec& message)
     type_ = getMsgType(mbytes[0]);
 }
 
+bool MidiMessage::empty() const noexcept
+{
+    return mbytes.empty();
+}
+
 void DumpHandler::fail(std::string_view cause_desc) const
 {
     throw std::exception(std::format("{1} failed: {2)", name_, cause_desc).c_str());
@@ -55,7 +60,7 @@ bool DumpHandler::isSysEx() const noexcept
 
 void DumpHandler::validateSysEx() const
 {
-    if (mbytes.empty()) fail("empty data");
+    if (empty()) fail("empty data");
 
     if (!isSysEx()) fail("not SysEx");
 }
