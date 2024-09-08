@@ -67,9 +67,9 @@ private:
     MsgType type_;
 };
 
-class MidiMsgStringizer final : public MidiMessage
+class MessageStringizer final : public MidiMessage
 {
-    explicit MidiMsgStringizer(const ByteVec& message)
+    explicit MessageStringizer(const ByteVec& message)
         : MidiMessage(message)
     {
     }
@@ -79,11 +79,11 @@ class MidiMsgStringizer final : public MidiMessage
     const std::string toString() const noexcept;
     const std::string describe() const noexcept;
 
-    MidiMsgStringizer() = delete;
-    MidiMsgStringizer(const MidiMsgStringizer&) = delete;
-    MidiMsgStringizer(MidiMsgStringizer&&) = delete;
-    MidiMsgStringizer& operator=(const MidiMsgStringizer&) = delete;
-    MidiMsgStringizer& operator=(MidiMsgStringizer&&) = delete;
+    MessageStringizer() = delete;
+    MessageStringizer(const MessageStringizer&) = delete;
+    MessageStringizer(MessageStringizer&&) = delete;
+    MessageStringizer& operator=(const MessageStringizer&) = delete;
+    MessageStringizer& operator=(MessageStringizer&&) = delete;
 };
 
 class DumpHandler : public MidiMessage
