@@ -33,32 +33,32 @@ bool MidiMessage::empty() const noexcept
     return mbytes.empty();
 }
 
-void DumpHandler::fail(std::string_view cause_desc) const
+void DumpMessage::fail(std::string_view cause_desc) const
 {
     throw std::exception(std::format("{1} failed: {2)", name_, cause_desc).c_str());
 }
 
-void DumpHandler::checkValidated() const
+void DumpMessage::checkValidated() const
 {
     if (!is_validated_) failCauseNotValidated();
 }
 
-void DumpHandler::setValidated() noexcept
+void DumpMessage::setValidated() noexcept
 {
     is_validated_ = true;
 }
 
-void DumpHandler::failCauseNotValidated() const
+void DumpMessage::failCauseNotValidated() const
 {
     fail("not validated yet");
 }
 
-bool DumpHandler::isSysEx() const noexcept
+bool DumpMessage::isSysEx() const noexcept
 {
     return mbytes.front() == SYSEX_FIRST && mbytes.back() == SYSEX_LAST;
 }
 
-void DumpHandler::validateSysEx() const
+void DumpMessage::validateSysEx() const
 {
     if (empty()) fail("empty data");
 

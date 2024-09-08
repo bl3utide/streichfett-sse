@@ -86,22 +86,22 @@ class MessageStringizer final : public MidiMessage
     MessageStringizer& operator=(MessageStringizer&&) = delete;
 };
 
-class DumpHandler : public MidiMessage
+class DumpMessage : public MidiMessage
 {
 public:
-    explicit DumpHandler(const ByteVec& message, const std::string& name)
+    explicit DumpMessage(const ByteVec& message, const std::string& name)
         : MidiMessage(message), is_validated_(false), name_(name)
     {
     }
-    virtual ~DumpHandler() {}
+    virtual ~DumpMessage() {}
 
     virtual void validate() = 0;
 
-    DumpHandler() = delete;
-    DumpHandler(const DumpHandler&) = delete;
-    DumpHandler(DumpHandler&&) = delete;
-    DumpHandler& operator=(const DumpHandler&) = delete;
-    DumpHandler& operator=(DumpHandler&&) = delete;
+    DumpMessage() = delete;
+    DumpMessage(const DumpMessage&) = delete;
+    DumpMessage(DumpMessage&&) = delete;
+    DumpMessage& operator=(const DumpMessage&) = delete;
+    DumpMessage& operator=(DumpMessage&&) = delete;
 
 protected:
     void fail(std::string_view cause_desc) const;
@@ -116,13 +116,13 @@ private:
     std::string name_;
 };
 
-class DataDumpHandler : public DumpHandler
+class DataDumpHandler : public DumpMessage
 {
 public:
     explicit DataDumpHandler(const ByteVec& message,
                              const std::string& name,
                              int data_index_first, int data_index_last)
-        : DumpHandler(message, name),
+        : DumpMessage(message, name),
         di_first_(data_index_first), di_last_(data_index_last)
     {
     }
@@ -144,11 +144,11 @@ private:
     int di_last_;
 };
 
-class DeviceInquiryDumpHandler final : public DumpHandler
+class DeviceInquiryDumpHandler final : public DumpMessage
 {
 public:
     explicit DeviceInquiryDumpHandler(const ByteVec& device_inquiry_dump)
-        : DumpHandler(device_inquiry_dump, "Device Inquiry Dump")
+        : DumpMessage(device_inquiry_dump, "Device Inquiry Dump")
     {
     }
 
