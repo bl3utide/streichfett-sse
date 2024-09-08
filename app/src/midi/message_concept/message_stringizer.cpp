@@ -1,6 +1,6 @@
 ﻿#include "common.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/msg/message_stringizer.h"
+#include "midi/message_concept/message_stringizer.h"
 
 namespace StreichfettSse
 {

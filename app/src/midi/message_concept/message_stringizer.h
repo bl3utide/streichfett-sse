@@ -1,16 +1,16 @@
 ﻿#pragma once
 
-#include "midi/msg/message_handler.h"
+#include "midi/message_concept/message_concept.h"
 
 namespace StreichfettSse
 {
 namespace Midi
 {
 
-class MessageStringizer final : public MidiMessage
+class MessageStringizer final : public MessageConcept
 {
     explicit MessageStringizer(const ByteVec& message)
-        : MidiMessage(message)
+        : MessageConcept(message)
     {
     }
 

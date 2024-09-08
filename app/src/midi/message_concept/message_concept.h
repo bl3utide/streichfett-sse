@@ -45,17 +45,17 @@ enum class MsgType : int
     _UNDEFINED_,
 };
 
-class MidiMessage
+class MessageConcept
 {
 public:
-    explicit MidiMessage(const ByteVec& message);
-    virtual ~MidiMessage() {}
+    explicit MessageConcept(const ByteVec& message);
+    virtual ~MessageConcept() {}
 
-    MidiMessage() = delete;
-    MidiMessage(const MidiMessage&) = delete;
-    MidiMessage(MidiMessage&&) = delete;
-    MidiMessage& operator=(const MidiMessage&) = delete;
-    MidiMessage& operator=(MidiMessage&&) = delete;
+    MessageConcept() = delete;
+    MessageConcept(const MessageConcept&) = delete;
+    MessageConcept(MessageConcept&&) = delete;
+    MessageConcept& operator=(const MessageConcept&) = delete;
+    MessageConcept& operator=(MessageConcept&&) = delete;
 
     MsgType type() const noexcept { return type_; }
 

@@ -1,17 +1,17 @@
 ﻿#pragma once
 
-#include "midi/msg/message_handler.h"
+#include "midi/message_concept/message_concept.h"
 
 namespace StreichfettSse
 {
 namespace Midi
 {
 
-class DumpMessage : public MidiMessage
+class DumpMessage : public MessageConcept
 {
 public:
     explicit DumpMessage(const ByteVec& message, const std::string& name)
-        : MidiMessage(message), is_validated_(false), name_(name)
+        : MessageConcept(message), is_validated_(false), name_(name)
     {
     }
     virtual ~DumpMessage() {}

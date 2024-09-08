@@ -1,6 +1,6 @@
 ﻿#include "common.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/msg/message_handler.h"
+#include "midi/message_concept/message_concept.h"
 
 namespace StreichfettSse
 {
@@ -22,13 +22,13 @@ static MsgType getMsgType(Byte b) noexcept
     return MsgType::_UNDEFINED_;
 }
 
-MidiMessage::MidiMessage(const ByteVec& message)
+MessageConcept::MessageConcept(const ByteVec& message)
     : mbytes(message)
 {
     type_ = getMsgType(mbytes[0]);
 }
 
-bool MidiMessage::empty() const noexcept
+bool MessageConcept::empty() const noexcept
 {
     return mbytes.empty();
 }

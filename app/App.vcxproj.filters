@@ -102,7 +102,7 @@
     <ClCompile Include="src\midi\connection.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\midi\msg\message_handler.cpp">
+    <ClCompile Include="src\midi\message_concept\message_concept.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\midi\message_creator\channel_message_creator.cpp">
@@ -111,10 +111,10 @@
     <ClCompile Include="src\midi\message_creator\sysex_message_creator.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\midi\msg\dump_message.cpp">
+    <ClCompile Include="src\midi\message_concept\dump_message.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\midi\msg\message_stringizer.cpp">
+    <ClCompile Include="src\midi\message_concept\message_stringizer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -230,7 +230,7 @@
     <ClInclude Include="src\midi\connection.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\midi\msg\message_handler.h">
+    <ClInclude Include="src\midi\message_concept\message_concept.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\midi\message_creator\message_creator.h">
@@ -242,10 +242,10 @@
     <ClInclude Include="src\midi\message_creator\channel_message_creator.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\midi\msg\dump_message.h">
+    <ClInclude Include="src\midi\message_concept\dump_message.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\midi\msg\message_stringizer.h">
+    <ClInclude Include="src\midi\message_concept\message_stringizer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
