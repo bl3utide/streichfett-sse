@@ -3,7 +3,7 @@
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
-#include "midi/message_concept/dump_message.h"
+#include "midi/message_entity/dump_message.h"
 
 namespace StreichfettSse
 {

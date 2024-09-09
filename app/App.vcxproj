@@ -122,10 +122,10 @@
     <ClCompile Include="src\gui\gui_edit.cpp" />
     <ClCompile Include="src\gui\gui_option.cpp" />
     <ClCompile Include="src\midi\message_creator\channel_message_creator.cpp" />
-    <ClCompile Include="src\midi\message_concept\dump_message.cpp" />
-    <ClCompile Include="src\midi\message_concept\message_concept.cpp" />
+    <ClCompile Include="src\midi\message_entity\dump_message.cpp" />
+    <ClCompile Include="src\midi\message_entity\message_entity.cpp" />
     <ClCompile Include="src\midi\message_creator\sysex_message_creator.cpp" />
-    <ClCompile Include="src\midi\message_concept\message_stringizer.cpp" />
+    <ClCompile Include="src\midi\message_entity\message_stringizer.cpp" />
     <ClCompile Include="src\util\gui_util.cpp" />
     <ClCompile Include="src\image.cpp" />
     <ClCompile Include="src\logger.cpp" />
@@ -159,10 +159,10 @@
     <ClInclude Include="src\gui\gui_color.hpp" />
     <ClInclude Include="src\midi\message_creator\channel_message_creator.h" />
     <ClInclude Include="src\midi\message_creator\message_creator.h" />
-    <ClInclude Include="src\midi\message_concept\dump_message.h" />
-    <ClInclude Include="src\midi\message_concept\message_concept.h" />
+    <ClInclude Include="src\midi\message_entity\dump_message.h" />
+    <ClInclude Include="src\midi\message_entity\message_entity.h" />
     <ClInclude Include="src\midi\message_creator\sysex_message_creator.h" />
-    <ClInclude Include="src\midi\message_concept\message_stringizer.h" />
+    <ClInclude Include="src\midi\message_entity\message_stringizer.h" />
     <ClInclude Include="src\util\gui_util.hpp" />
     <ClInclude Include="src\image.hpp" />
     <ClInclude Include="src\logger.hpp" />

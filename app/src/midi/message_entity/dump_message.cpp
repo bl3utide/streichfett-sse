@@ -1,6 +1,6 @@
 ﻿#include "common.hpp"
 #include "midi/midi_common.hpp"
-#include "midi/message_concept/dump_message.h"
+#include "midi/message_entity/dump_message.h"
 
 namespace StreichfettSse
 {
