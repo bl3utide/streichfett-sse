@@ -30,5 +30,5 @@ void setPatchFromBytes(SoundModel::Patch& patch, const ByteVec& data);
 const ByteVec getDataBytes(const SoundModel::Patch& patch) noexcept;
 void copyPatchAtoB(const SoundModel::Patch& a, SoundModel::Patch& b) noexcept;
 
-} // InternalPatch
+} // LocalPatch
 } // StreichfettSse

@@ -160,5 +160,5 @@ void copyPatchAtoB(const SoundModel::Patch& a, SoundModel::Patch& b) noexcept
     b.reverb = a.reverb;
 }
 
-} // InternalPatch
+} // LocalPatch
 } // StreichfettSse
