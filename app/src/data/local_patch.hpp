@@ -3,7 +3,7 @@
 
 namespace StreichfettSse
 {
-namespace InternalPatch
+namespace LocalPatch
 {
 
 // DSI: Streichfett

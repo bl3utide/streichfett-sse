@@ -1,6 +1,6 @@
 ﻿#include "common.hpp"
-#include "data/internal_patch.hpp"
-#include "data/internal_setting.hpp"
+#include "data/local_patch.hpp"
+#include "data/local_setting.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/erstwhile_message_handler.hpp"
 
@@ -226,8 +226,8 @@ bool isNoteOn(const ByteVec& mb) noexcept
 // DSI: Streichfett
 const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& patch)
 {
-    const auto sound_data = InternalPatch::getDataBytes(patch);
-    const auto device_id = InternalSetting::getDeviceId();
+    const auto sound_data = LocalPatch::getDataBytes(patch);
+    const auto device_id = LocalSetting::getDeviceId();
 
     ByteVec req;
     req.clear();

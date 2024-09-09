@@ -57,10 +57,10 @@
     <ClCompile Include="src\operation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\data\internal_patch.cpp">
+    <ClCompile Include="src\data\local_patch.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\data\internal_setting.cpp">
+    <ClCompile Include="src\data\local_setting.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\gui\gui_edit.cpp">
@@ -188,10 +188,10 @@
     <ClInclude Include="src\model\global_const.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\data\internal_patch.hpp">
+    <ClInclude Include="src\data\local_patch.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\data\internal_setting.hpp">
+    <ClInclude Include="src\data\local_setting.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\gui_font.hpp">

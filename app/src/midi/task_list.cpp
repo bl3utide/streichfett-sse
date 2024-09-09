@@ -1,5 +1,5 @@
 ﻿#include "common.hpp"
-#include "data/internal_setting.hpp"
+#include "data/local_setting.hpp"
 #include "midi/message_creator/channel_message_creator.h"
 
 namespace StreichfettSse
@@ -28,7 +28,7 @@ void addParamChangedTask(int index, Byte value)
 {
     if (index != -1)
     {
-        const auto ch = InternalSetting::getDeviceMidiChannel();
+        const auto ch = LocalSetting::getDeviceMidiChannel();
         ControlChangeCreator creator(ch, index, value);
         const auto control_change = creator.create();
         addTask(control_change);

@@ -4,8 +4,8 @@
 #include "logger.hpp"
 #include "state.hpp"
 #include "config/config.hpp"
-#include "data/internal_patch.hpp"
-#include "data/internal_setting.hpp"
+#include "data/local_patch.hpp"
+#include "data/local_setting.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
@@ -340,7 +340,7 @@ void requestGlobal()
 // DSI: Streichfett
 void requestSound()
 {
-    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
+    auto& patch_addr = LocalPatch::getCurrentPatchAddress();
 
     RequestSoundCreator creator(patch_addr.sound);
     const auto req_sysex = creator.create();
@@ -381,9 +381,9 @@ void requestSound()
 // DSI: Streichfett
 void sendSoundDump(bool is_edit_buffer)
 {
-    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
+    auto& patch_addr = LocalPatch::getCurrentPatchAddress();
     const auto sound = is_edit_buffer ? -1 : patch_addr.sound;
-    const auto& current_patch = InternalPatch::getCurrentPatch();
+    const auto& current_patch = LocalPatch::getCurrentPatch();
 
     // TODO 別のモジュールから作成(ErstwhileMessageHandler廃止のため)
     const auto sound_dump = ErstwhileMessageHandler::getSoundDumpMessageFromPatch(sound, current_patch);
@@ -404,7 +404,7 @@ void sendSoundDump(bool is_edit_buffer)
         );
     }
 
-    auto patch_address_ptr = new InternalPatch::PatchAddress(sound);
+    auto patch_address_ptr = new LocalPatch::PatchAddress(sound);
 
     // set timer for delay after sending sound dump
     waiting_timer = SDL_AddTimer(store_delay_duration, Callback::storeDelay, patch_address_ptr);
@@ -417,8 +417,8 @@ void sendSoundDump(bool is_edit_buffer)
 // DSI: Streichfett
 void sendProgChange()
 {
-    const auto ch = InternalSetting::getDeviceMidiChannel();
-    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
+    const auto ch = LocalSetting::getDeviceMidiChannel();
+    auto& patch_addr = LocalPatch::getCurrentPatchAddress();
 
     ProgramChangeCreator creator(ch, patch_addr.sound);
     const auto prog_change = creator.create();
@@ -445,7 +445,7 @@ void sendProgChange()
 
 void sendAllSoundOff()
 {
-    const auto ch = InternalSetting::getDeviceMidiChannel();
+    const auto ch = LocalSetting::getDeviceMidiChannel();
     AllSoundOffCreator creator(ch);
 
     const auto all_sound_off = creator.create();

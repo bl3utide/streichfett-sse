@@ -1,6 +1,6 @@
 ﻿#include "common.hpp"
 #include "image.hpp"
-#include "data/internal_setting.hpp"
+#include "data/local_setting.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
@@ -233,7 +233,7 @@ static void drawOptionGroupDeviceSettingInfo()
         drawOptionItem("Firmware Version");
         drawOptionItemValue(Midi::inquiry_result.getFirmwareVersion().c_str(), displayable_synth_info && Midi::inquiry_result.isReceived());
 
-        const auto& global = InternalSetting::getGlobalData();
+        const auto& global = LocalSetting::getGlobalData();
         drawOptionItem("Device ID");
         drawOptionItemValue(global.device_id, displayable_synth_info);
         drawOptionItem("MIDI Channel");

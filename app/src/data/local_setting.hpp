@@ -3,7 +3,7 @@
 
 namespace StreichfettSse
 {
-namespace InternalSetting
+namespace LocalSetting
 {
 
 void initData() noexcept;
@@ -12,5 +12,5 @@ void setSettingFromBytes(GlobalModel::Global& global, const ByteVec& data);
 int getDeviceMidiChannel() noexcept;
 int getDeviceId() noexcept;
 
-} // InternalSetting
+} // LocalSetting
 } // StreichfettSse

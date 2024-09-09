@@ -1,7 +1,7 @@
 ﻿#include "common.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
-#include "data/internal_patch.hpp"
+#include "data/local_patch.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/callback_debug.hpp"
 #include "midi/connector.hpp"
@@ -78,7 +78,7 @@ void sendTest(SendTestType type)
             break;
         case SendTestType::Sound:
         {
-            auto& patch_addr = InternalPatch::getCurrentPatchAddress();
+            auto& patch_addr = LocalPatch::getCurrentPatchAddress();
             RequestSoundCreator creator(patch_addr.sound);
             request = creator.create();
         }

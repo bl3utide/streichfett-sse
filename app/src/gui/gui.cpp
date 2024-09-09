@@ -1,7 +1,7 @@
 ﻿#include "common.hpp"
 #include "error.hpp"
 #include "image.hpp"
-#include "data/internal_patch.hpp"
+#include "data/local_patch.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
@@ -275,8 +275,8 @@ static void drawPageSelector()
 // DSI: Streichfett
 static void drawContent()
 {
-    auto& current_patch = InternalPatch::getCurrentPatch();
-    auto& original_patch = InternalPatch::getOriginalPatch();
+    auto& current_patch = LocalPatch::getCurrentPatch();
+    auto& original_patch = LocalPatch::getOriginalPatch();
 
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_BASE);
     if (_page == Page::Edit)    drawEditPanel(current_patch, original_patch);

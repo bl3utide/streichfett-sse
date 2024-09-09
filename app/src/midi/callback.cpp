@@ -4,8 +4,8 @@
 #include "logger.hpp"
 #include "operation.hpp"
 #include "state.hpp"
-#include "data/internal_patch.hpp"
-#include "data/internal_setting.hpp"
+#include "data/local_patch.hpp"
+#include "data/local_setting.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/erstwhile_message_handler.hpp"
@@ -172,10 +172,10 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
                 handler.validate();
                 const auto global_data = handler.getDataBytes();
 
-                auto& setting = InternalSetting::getGlobalData();
+                auto& setting = LocalSetting::getGlobalData();
 
                 // throwable function
-                InternalSetting::setSettingFromBytes(setting, global_data);
+                LocalSetting::setSettingFromBytes(setting, global_data);
 
                 // received correct dump
                 Logger::debug("received correct global dump");
@@ -255,20 +255,20 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
                 handler.validate();
                 const auto sound_data = handler.getDataBytes();
 
-                auto& original = InternalPatch::getOriginalPatch();
-                auto& current = InternalPatch::getCurrentPatch();
+                auto& original = LocalPatch::getOriginalPatch();
+                auto& current = LocalPatch::getCurrentPatch();
 
                 // throwable function
-                InternalPatch::setPatchFromBytes(original, sound_data);
-                InternalPatch::copyPatchAtoB(original, current);
+                LocalPatch::setPatchFromBytes(original, sound_data);
+                LocalPatch::copyPatchAtoB(original, current);
 
                 // received correct dump
                 Logger::debug("received correct sound dump");
                 requestSuccessful(State::Idle);
 
-                auto& patch_addr = InternalPatch::getCurrentPatchAddress();
-                const auto bb = InternalPatch::getPatchBankChar(patch_addr);
-                const auto bs = InternalPatch::getPatchSoundNumber(patch_addr);
+                auto& patch_addr = LocalPatch::getCurrentPatchAddress();
+                const auto bb = LocalPatch::getPatchBankChar(patch_addr);
+                const auto bs = LocalPatch::getPatchSoundNumber(patch_addr);
                 char buf[64];
                 sprintf(buf, "Sound %c%d loaded.", bb, bs);
                 Annotation::setText(buf, Annotation::Type::General);
@@ -385,7 +385,7 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
         ByteVec send_message;
         if (Connector::force_adjust_midi_channel)
         {
-            const auto ch = InternalSetting::getDeviceMidiChannel();
+            const auto ch = LocalSetting::getDeviceMidiChannel();
             if (ErstwhileMessageHandler::isNoteOff(*message))
             {
                 send_message =
@@ -428,23 +428,23 @@ void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_dat
 // DSI: Streichfett
 Uint32 storeDelay(Uint32 interval, void* param)
 {
-    auto patch_address_ptr = static_cast<InternalPatch::PatchAddress*>(param);
+    auto patch_address_ptr = static_cast<LocalPatch::PatchAddress*>(param);
 
     int sound = patch_address_ptr->sound;
 
     // -1: sent to edit buffer
     if (sound != -1)
     {
-        auto& original = InternalPatch::getOriginalPatch();
-        auto& current = InternalPatch::getCurrentPatch();
-        InternalPatch::copyPatchAtoB(current, original);
+        auto& original = LocalPatch::getOriginalPatch();
+        auto& current = LocalPatch::getCurrentPatch();
+        LocalPatch::copyPatchAtoB(current, original);
 
-        const auto bb = InternalPatch::getPatchBankChar(sound);
-        const auto bs = InternalPatch::getPatchSoundNumber(sound);
+        const auto bb = LocalPatch::getPatchBankChar(sound);
+        const auto bs = LocalPatch::getPatchSoundNumber(sound);
         char buf[64];
         sprintf(buf, "The sound has stored to %c%d", bb, bs);
         Annotation::setText(buf, Annotation::Type::General);
-        InternalPatch::current_patch_changed = false;
+        LocalPatch::current_patch_changed = false;
     }
 
     SDL_RemoveTimer(waiting_timer);

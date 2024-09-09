@@ -2,8 +2,8 @@
 #include "operation.hpp"
 #include "state.hpp"
 #include "config/config.hpp"
-#include "data/internal_patch.hpp"
-#include "data/internal_setting.hpp"
+#include "data/local_patch.hpp"
+#include "data/local_setting.hpp"
 #include "midi/connector.hpp"
 #ifdef _DEBUG
 #include "logger.hpp"
@@ -51,8 +51,8 @@ bool processForCurrentState()
     switch (state_)
     {
     case State::InitInternalData:
-        InternalPatch::initData();
-        InternalSetting::initData();
+        LocalPatch::initData();
+        LocalSetting::initData();
         c::resetAllConnections();
         setNextState(State::ApplyConfig);
         break;

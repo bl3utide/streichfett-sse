@@ -1,5 +1,5 @@
 ﻿#include "common.hpp"
-#include "data/internal_patch.hpp"
+#include "data/local_patch.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
@@ -69,7 +69,7 @@ static void setWheelControl(Ev& v, int param_index)
         if (io.MouseWheel < 0) --v;
         Midi::TaskList::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
-        InternalPatch::current_patch_changed = true;
+        LocalPatch::current_patch_changed = true;
     }
 }
 
@@ -89,7 +89,7 @@ static void drawParamValueContextMenu(const char* label,
             v = original_v;
             Midi::TaskList::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
-            InternalPatch::current_patch_changed = true;
+            LocalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
         }
         GuiUtil::MouseCursorToHand();
@@ -98,7 +98,7 @@ static void drawParamValueContextMenu(const char* label,
             v.setDefault();
             Midi::TaskList::addParamChangedTask(param_index, v.toDv());
             Annotation::clearText();
-            InternalPatch::current_patch_changed = true;
+            LocalPatch::current_patch_changed = true;
             ImGui::CloseCurrentPopup();
         }
         GuiUtil::MouseCursorToHand();
@@ -122,7 +122,7 @@ static void drawSlider(const char* label, int label_index, float label_width, fl
     {
         Midi::TaskList::addParamChangedTask(param_index, v.toDv());
         Annotation::clearText();
-        InternalPatch::current_patch_changed = true;
+        LocalPatch::current_patch_changed = true;
     }
     if (changed_from_org) ImGui::PopStyleColor();
     GuiUtil::MouseCursorToHand();
@@ -152,7 +152,7 @@ static void drawCombo(const char* label, int label_index, float label_width, flo
                 int send_value = v.ev();
                 Midi::TaskList::addParamChangedTask(param_index, send_value);
                 Annotation::clearText();
-                InternalPatch::current_patch_changed = true;
+                LocalPatch::current_patch_changed = true;
             }
             GuiUtil::MouseCursorToHand();
             ImGui::PopStyleColor();
@@ -174,18 +174,18 @@ static void drawPatchSelector()
 
     ImGui::PushStyleColor(ImGuiCol_Text, UI_COLOR_TEXT_PATCH_INFO);
     GuiUtil::PushFont((int)Font::PatchInfo);
-    auto& patch_addr = InternalPatch::getCurrentPatchAddress();
+    auto& patch_addr = LocalPatch::getCurrentPatchAddress();
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     for (auto patch_i = 0; patch_i < 12; ++patch_i)
     {
-        char bb = InternalPatch::getPatchBankChar(patch_i);
-        int bs = InternalPatch::getPatchSoundNumber(patch_i);
+        char bb = LocalPatch::getPatchBankChar(patch_i);
+        int bs = LocalPatch::getPatchSoundNumber(patch_i);
         char buf[4];
         sprintf(buf, "%c%d", bb, bs);
         ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
         if (ImGui::Selectable(buf, patch_i == patch_addr.sound, 0, ImVec2(40.0f, 20.0f)))
         {
-            InternalPatch::setCurrentPatchAddress(patch_i);
+            LocalPatch::setCurrentPatchAddress(patch_i);
             setNextState(State::RequestGlobal);
         }
         ImGui::PopStyleVar();
@@ -228,7 +228,7 @@ static void drawPatchSelector()
 // DSI: Streichfett
 static void drawPatchOperators(SoundModel::Patch& cp)
 {
-    bool current_patch_changed = InternalPatch::current_patch_changed;
+    bool current_patch_changed = LocalPatch::current_patch_changed;
 
     ImGui::Indent(4.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, 2.0f));
@@ -266,7 +266,7 @@ static void drawPatchOperators(SoundModel::Patch& cp)
             cp.init();
             reserved_funcs.push_back(std::bind(Midi::Connector::sendSoundDump, true));
             Annotation::clearText();
-            InternalPatch::current_patch_changed = true;
+            LocalPatch::current_patch_changed = true;
         }
         GuiUtil::MouseCursorToHand();
         ImGui::EndPopup();

@@ -1,9 +1,9 @@
 ﻿#include "common.hpp"
-#include "data/internal_setting.hpp"
+#include "data/local_setting.hpp"
 
 namespace StreichfettSse
 {
-namespace InternalSetting
+namespace LocalSetting
 {
 
 // private
@@ -50,5 +50,5 @@ int getDeviceId() noexcept
     return global_data_.device_id.ev();
 }
 
-} // InternalSetting
+} // LocalSetting
 } // StreichfettSse

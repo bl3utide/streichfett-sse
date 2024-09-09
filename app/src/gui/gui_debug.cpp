@@ -5,8 +5,8 @@
 #include "config/config.hpp"
 #include "config/cv.hpp"
 #include "config/section.hpp"
-#include "data/internal_patch.hpp"
-#include "data/internal_setting.hpp"
+#include "data/local_patch.hpp"
+#include "data/local_setting.hpp"
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
@@ -196,8 +196,8 @@ static void drawDebugTabItemParams()
     {
         ImGui::BeginChild("params_list", ImVec2(0, 500));
         {
-            auto& po = InternalPatch::getOriginalPatch();
-            auto& pc = InternalPatch::getCurrentPatch();
+            auto& po = LocalPatch::getOriginalPatch();
+            auto& pc = LocalPatch::getCurrentPatch();
 
             auto drawParamRow = [](const char* name, Ev& ov, Ev& cv)
             {
@@ -251,7 +251,7 @@ static void drawDebugTabItemDeviceSetting()
 {
     if (ImGui::BeginTabItem("Device Setting"))
     {
-        const auto& global = InternalSetting::getGlobalData();
+        const auto& global = LocalSetting::getGlobalData();
 
         ImGui::Text("%-16s: %s", "MIDI Channel", global.midi_channel.evs());
         ImGui::Text("%-16s: %d", "Tuning", global.tuning.ev());

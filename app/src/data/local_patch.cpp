@@ -1,9 +1,9 @@
 ﻿#include "common.hpp"
-#include "data/internal_patch.hpp"
+#include "data/local_patch.hpp"
 
 namespace StreichfettSse
 {
-namespace InternalPatch
+namespace LocalPatch
 {
 
 // public
