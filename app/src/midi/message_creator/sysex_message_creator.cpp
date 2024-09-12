@@ -1,4 +1,6 @@
 ﻿#include "common.hpp"
+#include "data/local_patch.hpp"
+#include "data/local_setting.hpp"
 #include "model/sound.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/message_creator/sysex_message_creator.h"
@@ -51,8 +53,40 @@ const ByteVec RequestSoundCreator::create() const
 
 const ByteVec SoundDumpCreator::create() const
 {
-    // TODO impl
-    return ByteVec();
+    const auto sound_data = LocalPatch::getDataBytes(patch_);
+    const auto device_id = LocalSetting::getDeviceId();
+
+    ByteVec m;
+    m.push_back(SYSEX_FIRST);
+    m.push_back(DEVICE_MANUFACTURER_ID);
+    m.push_back(DEVICE_FAMILY_CODE);
+    m.push_back(static_cast<Byte>(device_id));
+    m.push_back(ORDER_SOUND_DUMP);
+
+    if (sound_ == -1)
+    {
+        m.push_back(static_cast<Byte>(SOUND_EDIT_BUFFER));
+    }
+    else
+    {
+        m.push_back(static_cast<Byte>(sound_));
+    }
+
+    for (auto i = 0; i < sound_data.size(); ++i)
+    {
+        m.push_back(sound_data[i]);
+    }
+
+    // calculate bytesum
+    auto sum = 0;
+    for (auto i = 1; i < m.size(); ++i)
+    {
+        sum += m[i];
+    }
+    m.push_back(static_cast<Byte>(sum & 0x7F));
+    m.push_back(SYSEX_LAST);
+
+    return m;
 }
 
 } // Midi

@@ -224,42 +224,42 @@ bool isNoteOn(const ByteVec& mb) noexcept
 //}
 
 // DSI: Streichfett
-const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& patch)
-{
-    const auto sound_data = LocalPatch::getDataBytes(patch);
-    const auto device_id = LocalSetting::getDeviceId();
-
-    ByteVec req;
-    req.clear();
-    req.push_back(SYSEX_FIRST);
-    req.push_back(DEVICE_MANUFACTURER_ID);
-    req.push_back(DEVICE_FAMILY_CODE);
-    req.push_back(static_cast<Byte>(device_id));
-    req.push_back(ORDER_SOUND_DUMP);
-    if (sound == -1)
-    {
-        req.push_back(static_cast<Byte>(SOUND_EDIT_BUFFER));
-    }
-    else
-    {
-        req.push_back(static_cast<Byte>(sound));
-    }
-    for (auto i = 0; i < sound_data.size(); ++i)
-    {
-        req.push_back(sound_data[i]);
-    }
-
-    // calculate bytesum
-    auto sum = 0;
-    for (auto i = 1; i < req.size(); ++i)
-    {
-        sum += req[i];
-    }
-    req.push_back(static_cast<Byte>(sum & 0x7F));
-    req.push_back(SYSEX_LAST);
-
-    return req;
-}
+//const ByteVec getSoundDumpMessageFromPatch(int sound, const SoundModel::Patch& patch)
+//{
+//    const auto sound_data = LocalPatch::getDataBytes(patch);
+//    const auto device_id = LocalSetting::getDeviceId();
+//
+//    ByteVec req;
+//    req.clear();
+//    req.push_back(SYSEX_FIRST);
+//    req.push_back(DEVICE_MANUFACTURER_ID);
+//    req.push_back(DEVICE_FAMILY_CODE);
+//    req.push_back(static_cast<Byte>(device_id));
+//    req.push_back(ORDER_SOUND_DUMP);
+//    if (sound == -1)
+//    {
+//        req.push_back(static_cast<Byte>(SOUND_EDIT_BUFFER));
+//    }
+//    else
+//    {
+//        req.push_back(static_cast<Byte>(sound));
+//    }
+//    for (auto i = 0; i < sound_data.size(); ++i)
+//    {
+//        req.push_back(sound_data[i]);
+//    }
+//
+//    // calculate bytesum
+//    auto sum = 0;
+//    for (auto i = 1; i < req.size(); ++i)
+//    {
+//        sum += req[i];
+//    }
+//    req.push_back(static_cast<Byte>(sum & 0x7F));
+//    req.push_back(SYSEX_LAST);
+//
+//    return req;
+//}
 
 // DSI: Streichfett
 //const ByteVec getSoundParameterChangeMessage(int index, Byte value)

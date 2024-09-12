@@ -384,9 +384,9 @@ void sendSoundDump(bool is_edit_buffer)
     auto& patch_addr = LocalPatch::getCurrentPatchAddress();
     const auto sound = is_edit_buffer ? -1 : patch_addr.sound;
     const auto& current_patch = LocalPatch::getCurrentPatch();
+    SoundDumpCreator creator(sound, current_patch);
 
-    // TODO 別のモジュールから作成(ErstwhileMessageHandler廃止のため)
-    const auto sound_dump = ErstwhileMessageHandler::getSoundDumpMessageFromPatch(sound, current_patch);
+    const auto sound_dump = creator.create();
 
     try
     {
