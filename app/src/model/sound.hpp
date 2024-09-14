@@ -9,23 +9,23 @@ namespace SoundModel
 {
 
 // DSI: Streichfett
-#define PNAME_REGISTRATION      "Registration"
-#define PNAME_OCTAVE_SWITCH     "Octave Switch"
-#define PNAME_ENSEMBLE_EFFECT   "Ensemble Effect"
-#define PNAME_ENSEMBLE          "Ensemble"
-#define PNAME_CRESCENDO         "Crescendo"
-#define PNAME_RELEASE           "Release"
-#define PNAME_TONE              "Tone"
-#define PNAME_TREMOLO           "Tremolo"
-#define PNAME_SPLIT_LAYER       "Split/Layer"
-#define PNAME_SPLIT_KEY         "Split key"
-#define PNAME_ENVELOPE_MODE     "Envelope Mode"
-#define PNAME_ATTACK            "Attack"
-#define PNAME_DECAY             "Decay"
-#define PNAME_BALANCE           "Balance"
-#define PNAME_ANIMATE           "Animate"
-#define PNAME_PHASER            "Phaser"
-#define PNAME_REVERB            "Reverb"
+constexpr auto PNAME_REGISTRATION = "Registration";
+constexpr auto PNAME_OCTAVE_SWITCH = "Octave Switch";
+constexpr auto PNAME_ENSEMBLE_EFFECT = "Ensemble Effect";
+constexpr auto PNAME_ENSEMBLE = "Ensemble";
+constexpr auto PNAME_CRESCENDO = "Crescendo";
+constexpr auto PNAME_RELEASE = "Release";
+constexpr auto PNAME_TONE = "Tone";
+constexpr auto PNAME_TREMOLO = "Tremolo";
+constexpr auto PNAME_SPLIT_LAYER = "Split/Layer";
+constexpr auto PNAME_SPLIT_KEY = "Split key";
+constexpr auto PNAME_ENVELOPE_MODE = "Envelope Mode";
+constexpr auto PNAME_ATTACK = "Attack";
+constexpr auto PNAME_DECAY = "Decay";
+constexpr auto PNAME_BALANCE = "Balance";
+constexpr auto PNAME_ANIMATE = "Animate";
+constexpr auto PNAME_PHASER = "Phaser";
+constexpr auto PNAME_REVERB = "Reverb";
 
 // DSI: Streichfett
 enum class ParamIndex : int
