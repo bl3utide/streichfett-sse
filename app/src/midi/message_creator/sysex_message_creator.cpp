@@ -1,7 +1,6 @@
 ﻿#include "common.hpp"
 #include "data/local_patch.hpp"
 #include "data/local_setting.hpp"
-#include "model/sound.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/message_creator/sysex_message_creator.h"
 
