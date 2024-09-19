@@ -7,10 +7,10 @@ namespace StreichfettSse
 namespace Midi
 {
 
-class MessageStringizer final : public MessageConcept
+class MessageStringizer final : public MessageEntity
 {
     explicit MessageStringizer(const ByteVec& message)
-        : MessageConcept(message)
+        : MessageEntity(message)
     {
     }
 

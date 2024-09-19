@@ -45,17 +45,17 @@ enum class MsgType : int
     _UNDEFINED_,
 };
 
-class MessageConcept
+class MessageEntity
 {
 public:
-    explicit MessageConcept(const ByteVec& message);
-    virtual ~MessageConcept() {}
+    explicit MessageEntity(const ByteVec& message);
+    virtual ~MessageEntity() {}
 
-    MessageConcept() = delete;
-    MessageConcept(const MessageConcept&) = delete;
-    MessageConcept(MessageConcept&&) = delete;
-    MessageConcept& operator=(const MessageConcept&) = delete;
-    MessageConcept& operator=(MessageConcept&&) = delete;
+    MessageEntity() = delete;
+    MessageEntity(const MessageEntity&) = delete;
+    MessageEntity(MessageEntity&&) = delete;
+    MessageEntity& operator=(const MessageEntity&) = delete;
+    MessageEntity& operator=(MessageEntity&&) = delete;
 
     MsgType type() const noexcept { return type_; }
 

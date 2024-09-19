@@ -7,11 +7,11 @@ namespace StreichfettSse
 namespace Midi
 {
 
-class DumpMessage : public MessageConcept
+class DumpMessage : public MessageEntity
 {
 public:
     explicit DumpMessage(const ByteVec& message, const std::string& name)
-        : MessageConcept(message), is_validated_(false), name_(name)
+        : MessageEntity(message), is_validated_(false), name_(name)
     {
     }
     virtual ~DumpMessage() {}

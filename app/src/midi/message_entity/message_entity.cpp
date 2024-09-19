@@ -22,13 +22,13 @@ static MsgType getMsgType(Byte b) noexcept
     return MsgType::_UNDEFINED_;
 }
 
-MessageConcept::MessageConcept(const ByteVec& message)
+MessageEntity::MessageEntity(const ByteVec& message)
     : mbytes(message)
 {
     type_ = getMsgType(mbytes[0]);
 }
 
-bool MessageConcept::empty() const noexcept
+bool MessageEntity::empty() const noexcept
 {
     return mbytes.empty();
 }
