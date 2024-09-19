@@ -6,17 +6,47 @@ namespace Midi
 {
 
 // ------------ common ------------
-const Byte SYSEX_FIRST          = 0xF0;
-const Byte SYSEX_LAST           = 0xF7;
 const Byte SYSEX_SECOND_UNRT    = 0x7E;
 const Byte DEVICE_ID_OMNI       = 0x7F;
-const Byte MIDI_NOTE_OFF        = 0x80;
-const Byte MIDI_NOTE_ON         = 0x90;
-const Byte MIDI_CC              = 0xB0;
-const Byte MIDI_PC              = 0xC0;
-const Byte MAX_CH_OFFSET        = 0x0F;
-// ------------ order ------------
+
+/* MIDI Specification */
+// http://midi.teragonaudio.com/tech/midispec.htm
+// channel voice
+const Byte MCV_STB_NOTE_OFF         = 0x80;
+const Byte MCV_STB_NOTE_ON          = 0x90;
+const Byte MCV_STB_POLY_KEYPRESS    = 0xA0;
+const Byte MCV_STB_CONTROL_CHANGE   = 0xB0;
+const Byte MCV_STB_PROGRAM_CHANGE   = 0xC0;
+const Byte MCV_STB_CH_PRESSURE      = 0xD0;
+const Byte MCV_STB_PITCH_WHEEL_CHG  = 0xE0;
+const Byte STB_MAX_CH_OFFSET        = 0x0F;
+// channel mode
+const Byte MCM_DTB_ALL_SOUND_OFF    = 0x78;
+const Byte MCM_DTB_RESET_ALL_CTRLR  = 0x79;
+const Byte MCM_DTB_LOCAL_CTRL       = 0x7A;
+const Byte MCM_DTB_ALL_NOTES_OFF    = 0x7B;
+const Byte MCM_DTB_OMNI_OFF         = 0x7C;
+const Byte MCM_DTB_OMNI_ON          = 0x7D;
+const Byte MCM_DTB_MONO_MODE        = 0x7E;
+const Byte MCM_DTB_POLY_MODE        = 0x7F;
+// System Common
+const Byte MSC_STB_SYSEX_BEGIN      = 0xF0;
+const Byte MSC_STB_TIMECODE         = 0xF1;
+const Byte MSC_STB_SONG_POSITION    = 0xF2;
+const Byte MSC_STB_SONG_SELECT      = 0xF3;
+const Byte MSC_STB_TUNE_REQUEST     = 0xF6;
+const Byte MSC_STB_SYSEX_END        = 0xF7;
+// System Realtime
+const Byte MSR_STB_CLOCK            = 0xF8;
+const Byte MSR_STB_TICK             = 0xF9;
+const Byte MSR_STB_START            = 0xFA;
+const Byte MSR_STB_CONTINUE         = 0xFB;
+const Byte MSR_STB_STOP             = 0xFC;
+const Byte MSR_STB_ACTIVE_SENSE     = 0xFE;
+const Byte MSR_STB_RESET            = 0xFF;
+
 // DSI: Streichfett
+// Order
 const Byte ORDER_INQUIRY            = 0x06;
 const Byte ORDER_INQUIRY_REQUEST    = 0x01;
 const Byte ORDER_INQUIRY_RESPONSE   = 0x02;
@@ -24,13 +54,11 @@ const Byte ORDER_SOUND_REQUEST      = 0x00;
 const Byte ORDER_SOUND_DUMP         = 0x10;
 const Byte ORDER_GLOBAL_REQUEST     = 0x01;
 const Byte ORDER_GLOBAL_DUMP        = 0x11;
-// ------------ parameter ------------
-// DSI: Streichfett
+// Parameter
 const Byte DEVICE_MANUFACTURER_ID   = 0x3E;     // Waldorf
 const Byte DEVICE_FAMILY_CODE       = 0x19;     // Streichfett
 const Byte SOUND_EDIT_BUFFER        = 0x7F;
-// ------------ data ------------
-// DSI: Streichfett
+// Data
 const size_t INQUIRY_DUMP_SIZE      = 13;
 const size_t GLOBAL_DUMP_SIZE       = 16;
 const size_t SOUND_DUMP_SIZE        = 32;
