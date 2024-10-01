@@ -74,7 +74,7 @@ const std::string MessageStringizer::describe() const noexcept
     {
         ss << "Program Change (" << static_cast<int>(mbytes.at(1)) << ")";
     }
-    else if (msg_type == MessageType::SystemExclusive)
+    else if (isSysEx())
     {
         ss << "SysEx: ";
         if (mbytes.at(3) == ORDER_GENERAL_INFO)
