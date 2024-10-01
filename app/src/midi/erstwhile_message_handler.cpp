@@ -89,15 +89,15 @@ const ByteVec getRequestDeviceInquiryMessage()
 //    return aso;
 //}
 
-bool isNoteOff(const ByteVec& mb) noexcept
-{
-    return MIDI_NOTE_OFF <= mb[0] && mb[0] <= MIDI_NOTE_OFF + MAX_CH_OFFSET;
-}
-
-bool isNoteOn(const ByteVec& mb) noexcept
-{
-    return MIDI_NOTE_ON <= mb[0] && mb[0] <= MIDI_NOTE_ON + MAX_CH_OFFSET;
-}
+//bool isNoteOff(const ByteVec& mb) noexcept
+//{
+//    return MIDI_NOTE_OFF <= mb[0] && mb[0] <= MIDI_NOTE_OFF + MAX_CH_OFFSET;
+//}
+//
+//bool isNoteOn(const ByteVec& mb) noexcept
+//{
+//    return MIDI_NOTE_ON <= mb[0] && mb[0] <= MIDI_NOTE_ON + MAX_CH_OFFSET;
+//}
 
 // DSI: Streichfett
 // TODO delete, use message_validator instead
@@ -276,120 +276,120 @@ bool isNoteOn(const ByteVec& mb) noexcept
 //    return req;
 //}
 
-const std::string getByteVecString(const ByteVec& bytes)
-{
-    std::stringstream ss;
+//const std::string getByteVecString(const ByteVec& bytes)
+//{
+//    std::stringstream ss;
+//
+//    for (const auto& byte : bytes)
+//    {
+//        ss << "0x" << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(byte) << " ";
+//    }
+//
+//    const auto str = ss.str();
+//
+//    return str.substr(0, str.size() - 1);
+//}
 
-    for (const auto& byte : bytes)
-    {
-        ss << "0x" << std::uppercase << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(byte) << " ";
-    }
-
-    const auto str = ss.str();
-
-    return str.substr(0, str.size() - 1);
-}
-
-#ifdef _DEBUG
-const std::string getMessageDesc(const ByteVec& data)
-{
-    std::stringstream ss;
-
-    if (data.empty())
-    {
-        ss << "Empty Message";
-    }
-    else if (MIDI_NOTE_OFF <= data[0] && data[0] <= MIDI_NOTE_ON + MAX_CH_OFFSET)
-    {
-        if (data[0] < MIDI_NOTE_ON) ss << "Note Off";
-        else ss << "Note On";
-
-        ss << " <" << static_cast<int>(data[1]) << "> Vel(" << static_cast<int>(data[2]) << ")";
-    }
-    else if (MIDI_CC <= data[0] && data[0] <= MIDI_CC + MAX_CH_OFFSET)
-    {
-        if (data[1] == 0x00)      ss << "Bank Select MSB: " << static_cast<int>(data[2]);
-        else if (data[1] == 0x01) ss << "Modulation: " << static_cast<int>(data[2]);
-        else if (data[1] == 0x20) ss << "Bank Select LSB: " << static_cast<int>(data[2]);
-        else if (data[1] == 0x40) ss << "Damper Pedal: " << static_cast<int>(data[2]);
-        else if (data[1] == 0x78) ss << "All Sound Off";
-        else if (data[1] == 0x79) ss << "Reset All Controllers";
-        else if (data[1] == 0x7A)
-        {
-            ss << "Local Control";
-            if (data[2] == 0)        ss << " Off";
-            else if (data[2] == 127) ss << " On";
-            else                     ss << " (unknown 3rd byte)";
-        }
-        else if (data[1] == 0x7B)
-        {
-            ss << "All Notes Off";
-        }
-        else if (data[1] == 0x7C)
-        {
-            ss << "Omni Mode Off";
-        }
-        else if (data[1] == 0x7D)
-        {
-            ss << "Omni Mode On";
-        }
-        else
-        {
-            ss << "Control Change (" << static_cast<int>(data[1]) << "): "
-                << static_cast<int>(data[2]);
-        }
-    }
-    else if (MIDI_PC <= data[0] && data[0] <= MIDI_PC + MAX_CH_OFFSET)
-    {
-        ss << "Program Change (" << static_cast<int>(data[1]) << ")";
-    }
-    else if (data[0] == SYSEX_FIRST && data[data.size() - 1] == SYSEX_LAST)
-    {
-        ss << "SysEx: ";
-        if (data[3] == ORDER_INQUIRY)
-        {
-            if (data[4] == ORDER_INQUIRY_REQUEST)
-            {
-                ss << "Identity Request";
-            }
-            else if (data[4] == ORDER_INQUIRY_RESPONSE)
-            {
-                ss << "Identity Reply";
-            }
-        }
-        else if (data[4] == ORDER_SOUND_REQUEST)
-        {
-            ss << "Sound Request (";
-            if (data[5] == SOUND_EDIT_BUFFER) ss << "edit buffer)";
-            else ss << static_cast<int>(data[5]) << ")";
-        }
-        else if (data[4] == ORDER_GLOBAL_REQUEST)
-        {
-            ss << "Global Request";
-        }
-        else if (data[4] == ORDER_SOUND_DUMP)
-        {
-            ss << "Sound Dump (";
-            if (data[5] == SOUND_EDIT_BUFFER) ss << "edit buffer)";
-            else ss << static_cast<int>(data[5]) << ")";
-        }
-        else if (data[4] == ORDER_GLOBAL_DUMP)
-        {
-            ss << "Global Dump";
-        }
-        else
-        {
-            ss << "Device specific or other message";
-        }
-    }
-    else
-    {
-        ss << "?";
-    }
-
-    return ss.str();
-}
-#endif
+//#ifdef _DEBUG
+//const std::string getMessageDesc(const ByteVec& data)
+//{
+//    std::stringstream ss;
+//
+//    if (data.empty())
+//    {
+//        ss << "Empty Message";
+//    }
+//    else if (MIDI_NOTE_OFF <= data[0] && data[0] <= MIDI_NOTE_ON + MAX_CH_OFFSET)
+//    {
+//        if (data[0] < MIDI_NOTE_ON) ss << "Note Off";
+//        else ss << "Note On";
+//
+//        ss << " <" << static_cast<int>(data[1]) << "> Vel(" << static_cast<int>(data[2]) << ")";
+//    }
+//    else if (MIDI_CC <= data[0] && data[0] <= MIDI_CC + MAX_CH_OFFSET)
+//    {
+//        if (data[1] == 0x00)      ss << "Bank Select MSB: " << static_cast<int>(data[2]);
+//        else if (data[1] == 0x01) ss << "Modulation: " << static_cast<int>(data[2]);
+//        else if (data[1] == 0x20) ss << "Bank Select LSB: " << static_cast<int>(data[2]);
+//        else if (data[1] == 0x40) ss << "Damper Pedal: " << static_cast<int>(data[2]);
+//        else if (data[1] == 0x78) ss << "All Sound Off";
+//        else if (data[1] == 0x79) ss << "Reset All Controllers";
+//        else if (data[1] == 0x7A)
+//        {
+//            ss << "Local Control";
+//            if (data[2] == 0)        ss << " Off";
+//            else if (data[2] == 127) ss << " On";
+//            else                     ss << " (unknown 3rd byte)";
+//        }
+//        else if (data[1] == 0x7B)
+//        {
+//            ss << "All Notes Off";
+//        }
+//        else if (data[1] == 0x7C)
+//        {
+//            ss << "Omni Mode Off";
+//        }
+//        else if (data[1] == 0x7D)
+//        {
+//            ss << "Omni Mode On";
+//        }
+//        else
+//        {
+//            ss << "Control Change (" << static_cast<int>(data[1]) << "): "
+//                << static_cast<int>(data[2]);
+//        }
+//    }
+//    else if (MIDI_PC <= data[0] && data[0] <= MIDI_PC + MAX_CH_OFFSET)
+//    {
+//        ss << "Program Change (" << static_cast<int>(data[1]) << ")";
+//    }
+//    else if (data[0] == SYSEX_FIRST && data[data.size() - 1] == SYSEX_LAST)
+//    {
+//        ss << "SysEx: ";
+//        if (data[3] == ORDER_INQUIRY)
+//        {
+//            if (data[4] == ORDER_INQUIRY_REQUEST)
+//            {
+//                ss << "Identity Request";
+//            }
+//            else if (data[4] == ORDER_INQUIRY_RESPONSE)
+//            {
+//                ss << "Identity Reply";
+//            }
+//        }
+//        else if (data[4] == ORDER_SOUND_REQUEST)
+//        {
+//            ss << "Sound Request (";
+//            if (data[5] == SOUND_EDIT_BUFFER) ss << "edit buffer)";
+//            else ss << static_cast<int>(data[5]) << ")";
+//        }
+//        else if (data[4] == ORDER_GLOBAL_REQUEST)
+//        {
+//            ss << "Global Request";
+//        }
+//        else if (data[4] == ORDER_SOUND_DUMP)
+//        {
+//            ss << "Sound Dump (";
+//            if (data[5] == SOUND_EDIT_BUFFER) ss << "edit buffer)";
+//            else ss << static_cast<int>(data[5]) << ")";
+//        }
+//        else if (data[4] == ORDER_GLOBAL_DUMP)
+//        {
+//            ss << "Global Dump";
+//        }
+//        else
+//        {
+//            ss << "Device specific or other message";
+//        }
+//    }
+//    else
+//    {
+//        ss << "?";
+//    }
+//
+//    return ss.str();
+//}
+//#endif
 
 } // ErstwhileMessageHandler
 } // Midi
