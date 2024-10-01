@@ -9,6 +9,7 @@ namespace Midi
 
 class MessageStringizer final : public MessageEntity
 {
+public:
     explicit MessageStringizer(const ByteVec& message)
         : MessageEntity(message)
     {
