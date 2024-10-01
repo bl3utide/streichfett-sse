@@ -25,6 +25,7 @@ enum class MessageType : int
 
     // System-Realtime
     TimingClock,
+    Tick,
     Start,
     Continue,
     Stop,
