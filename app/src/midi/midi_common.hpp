@@ -6,7 +6,7 @@ namespace Midi
 {
 
 // ------------ common ------------
-const Byte DEVICE_ID_OMNI       = 0x7F;
+const Byte DEVICE_ID_OMNI           = 0x7F;
 
 /* MIDI Specification */
 // http://midi.teragonaudio.com/tech/midispec.htm
