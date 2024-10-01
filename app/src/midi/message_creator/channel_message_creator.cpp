@@ -9,10 +9,10 @@ namespace Midi
 
 const ByteVec ControlChangeCreator::create() const
 {
-    const Byte order_byte = MIDI_CC + static_cast<Byte>(ch_);
+    const Byte order_byte = MCV_STB_CONTROL_CHANGE + static_cast<Byte>(ch_);
 
     ByteVec cc;
-    cc.push_back(MIDI_CC + static_cast<Byte>(ch_));
+    cc.push_back(order_byte);
     cc.push_back(static_cast<Byte>(cc_index_));
     cc.push_back(static_cast<Byte>(value_));
     return cc;
@@ -20,7 +20,7 @@ const ByteVec ControlChangeCreator::create() const
 
 const ByteVec ProgramChangeCreator::create() const
 {
-    const Byte order_byte = MIDI_PC + static_cast<Byte>(ch_);
+    const Byte order_byte = MCV_STB_PROGRAM_CHANGE + static_cast<Byte>(ch_);
 
     ByteVec pc;
     pc.push_back(order_byte);
@@ -30,11 +30,11 @@ const ByteVec ProgramChangeCreator::create() const
 
 const ByteVec AllSoundOffCreator::create() const
 {
-    const Byte order_byte = MIDI_CC + static_cast<Byte>(ch_);
+    const Byte order_byte = MCV_STB_CONTROL_CHANGE + static_cast<Byte>(ch_);
 
     ByteVec aso;
     aso.push_back(order_byte);
-    aso.push_back(static_cast<Byte>(0x78));
+    aso.push_back(static_cast<Byte>(MCM_DTB_ALL_SOUND_OFF));
     return aso;
 }
 
