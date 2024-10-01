@@ -8,8 +8,9 @@
 #include "data/local_setting.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
-#include "midi/erstwhile_message_handler.hpp"
 #include "midi/message_entity/dump_message.h"
+#include "midi/message_entity/message_stringizer.h"
+#include "midi/message_creator/channel_message_creator.h"
 #ifdef _DEBUG
 #include "midi/connector_debug.hpp"
 #endif
@@ -379,30 +380,23 @@ Uint32 timeout(Uint32 interval, void* param)
 // DSI: Streichfett
 void receiveKeyDeviceMessage(double delta_time, ByteVec* message, void* user_data)
 {
+    const auto type = MessageEntity{ *message }.type();
     if (Connector::isSynthConnected() &&
-        (ErstwhileMessageHandler::isNoteOff(*message) || ErstwhileMessageHandler::isNoteOn(*message)))
+        (type == MessageType::NoteOff || type == MessageType::NoteOn))
     {
         ByteVec send_message;
         if (Connector::force_adjust_midi_channel)
         {
             const auto ch = LocalSetting::getDeviceMidiChannel();
-            if (ErstwhileMessageHandler::isNoteOff(*message))
+            const auto note = static_cast<int>(message->at(1));
+            const auto velocity = static_cast<int>(message->at(2));
+            if (type == MessageType::NoteOff)
             {
-                send_message =
-                {
-                    static_cast<Byte>(0x80 + ch),
-                    message->at(1),
-                    message->at(2)
-                };
+                send_message = NoteOffCreator{ ch, note, velocity }.create();
             }
             else
             {
-                send_message =
-                {
-                    static_cast<Byte>(0x90 + ch),
-                    message->at(1),
-                    message->at(2)
-                };
+                send_message = NoteOnCreator{ ch, note, velocity }.create();
             }
         }
         else
