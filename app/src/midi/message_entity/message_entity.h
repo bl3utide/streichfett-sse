@@ -16,16 +16,6 @@ enum class MessageType : int
     ChannelPressure,
     PitchBendChange,
 
-    // Channel-Mode
-    AllSoundOff,
-    ResetAllController,
-    LocalControl,
-    AllNotesOff,
-    OmniOff,
-    OmniOn,
-    MonophonicOn,
-    PolyphonicOn,
-
     // System-Common
     SystemExclusive,
     QuarterFrame,
@@ -45,6 +35,21 @@ enum class MessageType : int
     _UNDEFINED_,
 };
 
+enum class ChannelMode : int
+{
+    AllSoundOff,
+    ResetAllController,
+    LocalControl,
+    AllNotesOff,
+    OmniOff,
+    OmniOn,
+    MonophonicOn,
+    PolyphonicOn,
+    Other,
+
+    _NONE_,
+};
+
 class MessageEntity
 {
 public:
@@ -58,6 +63,7 @@ public:
     MessageEntity& operator=(MessageEntity&&) = delete;
 
     MessageType type() const noexcept { return type_; }
+    ChannelMode channelMode() const noexcept { return channel_mode_; }
 
 protected:
     bool empty() const noexcept;
@@ -66,6 +72,7 @@ protected:
 
 private:
     MessageType type_;
+    ChannelMode channel_mode_;
 };
 
 } // Midi
