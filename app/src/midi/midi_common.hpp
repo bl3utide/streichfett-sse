@@ -48,7 +48,7 @@ const Byte MSR_STB_RESET            = 0xFF;
 
 // DSI: Streichfett
 // Order
-const Byte ORDER_INQUIRY            = 0x06;
+const Byte ORDER_GENERAL_INFO       = 0x06;
 const Byte ORDER_INQUIRY_REQUEST    = 0x01;
 const Byte ORDER_INQUIRY_RESPONSE   = 0x02;
 const Byte ORDER_SOUND_REQUEST      = 0x00;

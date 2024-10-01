@@ -16,7 +16,7 @@ const ByteVec RequestDeviceInquiryCreator::create() const
     m.push_back(SYSEX_IDNUM_NONREALTIME);
     m.push_back(DEVICE_ID_OMNI);
     // Identity Request (2 bytes)
-    m.push_back(ORDER_INQUIRY);
+    m.push_back(ORDER_GENERAL_INFO);
     m.push_back(ORDER_INQUIRY_REQUEST);
     m.push_back(MSC_END_SYSEX);
     return m;
