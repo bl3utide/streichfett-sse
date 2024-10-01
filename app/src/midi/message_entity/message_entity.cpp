@@ -33,5 +33,10 @@ bool MessageEntity::empty() const noexcept
     return mbytes.empty();
 }
 
+bool MessageEntity::isSysEx() const noexcept
+{
+    return mbytes.front() == MSC_STB_SYSEX && mbytes.back() == MSC_END_SYSEX;
+}
+
 } // Midi
 } // StreichfettSse

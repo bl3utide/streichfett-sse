@@ -27,11 +27,6 @@ void DumpMessage::failCauseNotValidated() const
     fail("not validated yet");
 }
 
-bool DumpMessage::isSysEx() const noexcept
-{
-    return mbytes.front() == SYSEX_FIRST && mbytes.back() == SYSEX_LAST;
-}
-
 void DumpMessage::validateSysEx() const
 {
     if (empty()) fail("empty data");

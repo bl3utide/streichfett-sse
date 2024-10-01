@@ -61,6 +61,7 @@ public:
 
 protected:
     bool empty() const noexcept;
+    bool isSysEx() const noexcept;
     ByteVec mbytes;
 
 private:

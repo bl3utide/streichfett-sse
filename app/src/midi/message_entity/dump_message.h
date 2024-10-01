@@ -32,7 +32,6 @@ protected:
 
 private:
     void failCauseNotValidated() const;
-    bool isSysEx() const noexcept;
     bool is_validated_;
     std::string name_;
 };
