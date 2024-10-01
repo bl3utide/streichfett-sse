@@ -111,7 +111,7 @@ void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_da
             {
                 Logger::debug(e.what());
 
-                const auto byte_str = ErstwhileMessageHandler::getByteVecString(*message);
+                const auto byte_str = MessageStringizer{ *message }.toString();
                 Logger::debug(std::format(" >> {}", byte_str));
 
                 if (request_try_count.reachedLimit())
@@ -194,7 +194,7 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
             {
                 Logger::debug(e.what());
 
-                const auto byte_str = ErstwhileMessageHandler::getByteVecString(*message);
+                const auto byte_str = MessageStringizer{ *message }.toString();
                 Logger::debug(std::format(" >> {}", byte_str));
 
                 if (request_try_count.reachedLimit())
@@ -278,7 +278,7 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
             {
                 Logger::debug(e.what());
 
-                const auto byte_str = ErstwhileMessageHandler::getByteVecString(*message);
+                const auto byte_str = MessageStringizer{ *message }.toString();
                 Logger::debug(std::format(" >> {}", byte_str));
 
                 if (request_try_count.reachedLimit())
