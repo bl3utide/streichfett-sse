@@ -11,7 +11,7 @@ const Byte DEVICE_ID_OMNI       = 0x7F;
 
 /* MIDI Specification */
 // http://midi.teragonaudio.com/tech/midispec.htm
-// channel voice
+// Channel Voice
 const Byte MCV_STB_NOTE_OFF         = 0x80;
 const Byte MCV_STB_NOTE_ON          = 0x90;
 const Byte MCV_STB_POLY_KEYPRESS    = 0xA0;
@@ -20,7 +20,7 @@ const Byte MCV_STB_PROGRAM_CHANGE   = 0xC0;
 const Byte MCV_STB_CH_PRESSURE      = 0xD0;
 const Byte MCV_STB_PITCH_WHEEL_CHG  = 0xE0;
 const Byte STB_MAX_CH_OFFSET        = 0x0F;
-// channel mode
+// Channel Mode
 const Byte MCM_DTB_ALL_SOUND_OFF    = 0x78;
 const Byte MCM_DTB_RESET_ALL_CTRLR  = 0x79;
 const Byte MCM_DTB_LOCAL_CTRL       = 0x7A;
