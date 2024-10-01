@@ -14,7 +14,7 @@ enum class MessageType : int
     ControlChange,
     ProgramChange,
     ChannelPressure,
-    PitchBendChange,
+    PitchWheelChange,
 
     // System-Common
     SystemExclusive,
