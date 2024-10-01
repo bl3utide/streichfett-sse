@@ -22,7 +22,6 @@ enum class MessageType : int
     SongPositionPointer,
     SongSelect,
     TuneRequest,
-    EndOfExclusive,
 
     // System-Realtime
     TimingClock,
