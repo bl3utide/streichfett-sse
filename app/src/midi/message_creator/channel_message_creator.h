@@ -26,6 +26,46 @@ protected:
     int ch_;
 };
 
+class NoteOffCreator final : public ChannelMessageCreator
+{
+public:
+    explicit NoteOffCreator(int midi_ch, int note_num, int velocity)
+        : ChannelMessageCreator(midi_ch), note_(note_num), vel_(velocity)
+    {
+    }
+    const ByteVec create() const override;
+
+    NoteOffCreator() = delete;
+    NoteOffCreator(const NoteOffCreator&) = delete;
+    NoteOffCreator(NoteOffCreator&&) = delete;
+    NoteOffCreator& operator=(const NoteOffCreator&) = delete;
+    NoteOffCreator& operator=(NoteOffCreator&&) = delete;
+
+private:
+    int note_;
+    int vel_;
+};
+
+class NoteOnCreator final : public ChannelMessageCreator
+{
+public:
+    explicit NoteOnCreator(int midi_ch, int note_num, int velocity)
+        : ChannelMessageCreator(midi_ch), note_(note_num), vel_(velocity)
+    {
+    }
+    const ByteVec create() const override;
+
+    NoteOnCreator() = delete;
+    NoteOnCreator(const NoteOnCreator&) = delete;
+    NoteOnCreator(NoteOnCreator&&) = delete;
+    NoteOnCreator& operator=(const NoteOnCreator&) = delete;
+    NoteOnCreator& operator=(NoteOnCreator&&) = delete;
+
+private:
+    int note_;
+    int vel_;
+};
+
 class ControlChangeCreator final : public ChannelMessageCreator
 {
 public:

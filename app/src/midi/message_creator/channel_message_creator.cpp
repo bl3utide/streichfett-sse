@@ -7,6 +7,28 @@ namespace StreichfettSse
 namespace Midi
 {
 
+const ByteVec NoteOffCreator::create() const
+{
+    const Byte order_byte = MCV_STB_NOTE_OFF + static_cast<Byte>(ch_);
+
+    ByteVec note;
+    note.push_back(order_byte);
+    note.push_back(static_cast<Byte>(note_));
+    note.push_back(static_cast<Byte>(vel_));
+    return note;
+}
+
+const ByteVec NoteOnCreator::create() const
+{
+    const Byte order_byte = MCV_STB_NOTE_ON + static_cast<Byte>(ch_);
+
+    ByteVec note;
+    note.push_back(order_byte);
+    note.push_back(static_cast<Byte>(note_));
+    note.push_back(static_cast<Byte>(vel_));
+    return note;
+}
+
 const ByteVec ControlChangeCreator::create() const
 {
     const Byte order_byte = MCV_STB_CONTROL_CHANGE + static_cast<Byte>(ch_);
