@@ -83,7 +83,7 @@ void DeviceInquiryDumpMessage::validate()
     }
 
     // Device Inquiry Dump
-    if (mbytes[3] != ORDER_INQUIRY || mbytes[4] != ORDER_INQUIRY_RESPONSE)
+    if (mbytes[3] != ORDER_GENERAL_INFO || mbytes[4] != ORDER_INQUIRY_RESPONSE)
     {
         fail("not device inquiry dump");
     }
