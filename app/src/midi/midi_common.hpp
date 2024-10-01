@@ -6,7 +6,6 @@ namespace Midi
 {
 
 // ------------ common ------------
-const Byte SYSEX_SECOND_UNRT    = 0x7E;
 const Byte DEVICE_ID_OMNI       = 0x7F;
 
 /* MIDI Specification */
@@ -30,12 +29,14 @@ const Byte MCM_DTB_OMNI_ON          = 0x7D;
 const Byte MCM_DTB_MONO_MODE        = 0x7E;
 const Byte MCM_DTB_POLY_MODE        = 0x7F;
 // System Common
-const Byte MSC_STB_SYSEX_BEGIN      = 0xF0;
+const Byte MSC_STB_SYSEX            = 0xF0;
 const Byte MSC_STB_TIMECODE         = 0xF1;
 const Byte MSC_STB_SONG_POSITION    = 0xF2;
 const Byte MSC_STB_SONG_SELECT      = 0xF3;
 const Byte MSC_STB_TUNE_REQUEST     = 0xF6;
-const Byte MSC_STB_SYSEX_END        = 0xF7;
+const Byte MSC_END_SYSEX            = 0xF7;
+const Byte SYSEX_IDNUM_NONREALTIME  = 0x7E;
+const Byte SYSEX_IDNUM_REALTIME     = 0x7F;
 // System Realtime
 const Byte MSR_STB_CLOCK            = 0xF8;
 const Byte MSR_STB_TICK             = 0xF9;

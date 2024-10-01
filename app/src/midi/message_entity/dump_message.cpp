@@ -77,7 +77,7 @@ void DeviceInquiryDumpMessage::validate()
     }
 
     // Universal SysEx Header
-    if (mbytes[1] != SYSEX_SECOND_UNRT)
+    if (mbytes[1] != SYSEX_IDNUM_NONREALTIME)
     {
         fail("not Universal Non-Real Time SysEx");
     }

@@ -25,7 +25,7 @@ const ByteVec getRequestDeviceInquiryMessage()
     ByteVec req;
     req.clear();
     req.push_back(SYSEX_FIRST);
-    req.push_back(SYSEX_SECOND_UNRT);
+    req.push_back(SYSEX_ID_NONREALTIME);
     req.push_back(DEVICE_ID_OMNI);
     // Identity Request (2 bytes)
     req.push_back(ORDER_INQUIRY);
@@ -121,7 +121,7 @@ bool isNoteOn(const ByteVec& mb) noexcept
 //    }
 //
 //    // Universal SysEx Header
-//    if (dump[1] != SYSEX_SECOND_UNRT)
+//    if (dump[1] != SYSEX_ID_NONREALTIME)
 //    {
 //        throw std::exception(std::format(EMFMT, "not Universal Non-Real Time SysEx").c_str());
 //    }

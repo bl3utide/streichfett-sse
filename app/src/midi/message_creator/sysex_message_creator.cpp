@@ -12,13 +12,13 @@ namespace Midi
 const ByteVec RequestDeviceInquiryCreator::create() const
 {
     ByteVec m;
-    m.push_back(SYSEX_FIRST);
-    m.push_back(SYSEX_SECOND_UNRT);
+    m.push_back(MSC_STB_SYSEX);
+    m.push_back(SYSEX_IDNUM_NONREALTIME);
     m.push_back(DEVICE_ID_OMNI);
     // Identity Request (2 bytes)
     m.push_back(ORDER_INQUIRY);
     m.push_back(ORDER_INQUIRY_REQUEST);
-    m.push_back(SYSEX_LAST);
+    m.push_back(MSC_END_SYSEX);
     return m;
 }
 
@@ -26,13 +26,13 @@ const ByteVec RequestDeviceInquiryCreator::create() const
 const ByteVec RequestGlobalCreator::create() const
 {
     ByteVec m;
-    m.push_back(SYSEX_FIRST);
+    m.push_back(MSC_STB_SYSEX);
     m.push_back(DEVICE_MANUFACTURER_ID);
     m.push_back(DEVICE_FAMILY_CODE);
     m.push_back(DEVICE_ID_OMNI);
     m.push_back(ORDER_GLOBAL_REQUEST);
     m.push_back(0x00);    // Reserved
-    m.push_back(SYSEX_LAST);
+    m.push_back(MSC_END_SYSEX);
     return m;
 }
 
@@ -40,13 +40,13 @@ const ByteVec RequestGlobalCreator::create() const
 const ByteVec RequestSoundCreator::create() const
 {
     ByteVec m;
-    m.push_back(SYSEX_FIRST);
+    m.push_back(MSC_STB_SYSEX);
     m.push_back(DEVICE_MANUFACTURER_ID);
     m.push_back(DEVICE_FAMILY_CODE);
     m.push_back(DEVICE_ID_OMNI);
     m.push_back(ORDER_SOUND_REQUEST);
     m.push_back(static_cast<Byte>(sound_));
-    m.push_back(SYSEX_LAST);
+    m.push_back(MSC_END_SYSEX);
     return m;
 }
 
@@ -56,7 +56,7 @@ const ByteVec SoundDumpCreator::create() const
     const auto device_id = LocalSetting::getDeviceId();
 
     ByteVec m;
-    m.push_back(SYSEX_FIRST);
+    m.push_back(MSC_STB_SYSEX);
     m.push_back(DEVICE_MANUFACTURER_ID);
     m.push_back(DEVICE_FAMILY_CODE);
     m.push_back(static_cast<Byte>(device_id));
@@ -83,7 +83,7 @@ const ByteVec SoundDumpCreator::create() const
         sum += m[i];
     }
     m.push_back(static_cast<Byte>(sum & 0x7F));
-    m.push_back(SYSEX_LAST);
+    m.push_back(MSC_END_SYSEX);
 
     return m;
 }
