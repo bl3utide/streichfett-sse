@@ -5,7 +5,7 @@ namespace StreichfettSse
 namespace Midi
 {
 
-enum class MsgType : int
+enum class MessageType : int
 {
     // Channel-Voice
     NoteOn,
@@ -57,14 +57,14 @@ public:
     MessageEntity& operator=(const MessageEntity&) = delete;
     MessageEntity& operator=(MessageEntity&&) = delete;
 
-    MsgType type() const noexcept { return type_; }
+    MessageType type() const noexcept { return type_; }
 
 protected:
     bool empty() const noexcept;
     ByteVec mbytes;
 
 private:
-    MsgType type_;
+    MessageType type_;
 };
 
 } // Midi
