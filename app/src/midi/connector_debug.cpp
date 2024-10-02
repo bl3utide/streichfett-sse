@@ -6,7 +6,7 @@
 #include "midi/callback_debug.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
-#include "midi/erstwhile_message_handler.hpp"
+#include "midi/message_entity/message_stringizer.h"
 #include "midi/message_creator/sysex_message_creator.h"
 
 namespace StreichfettSse
@@ -40,7 +40,7 @@ void addProcessedHistory(bool transmitted, const std::string& device_name, const
         << '.' << std::setfill('0') << std::setw(3) << now_ms.count();
     const auto timestamp = now_ss.str();
 
-    const auto description = ErstwhileMessageHandler::getMessageDesc(data);
+    const auto description = MessageStringizer{ data }.describe();
 
     std::unique_lock lock(history_mutex);
     history.emplace_back(ProcessedMidiMessage(timestamp, transmitted, device_name, description, data));
