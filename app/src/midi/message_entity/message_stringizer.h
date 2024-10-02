@@ -15,8 +15,6 @@ public:
     {
     }
 
-    // TODO string format option?
-    //  -> strinf formatってなんだっけ・・・
     const std::string toString() const noexcept;
     const std::string describe() const noexcept;
 
