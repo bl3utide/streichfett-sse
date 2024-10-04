@@ -9,7 +9,6 @@
 #include "midi/midi_common.hpp"
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
-#include "midi/erstwhile_message_handler.hpp"
 #include "midi/message_creator/channel_message_creator.h"
 #include "midi/message_creator/sysex_message_creator.h"
 #include "midi/task_list.hpp"
