@@ -121,9 +121,9 @@ void InputConnection::close() noexcept
     Connection::close();
 }
 
-void InputConnection::setCallback(RtMidiIn::RtMidiCallback callback, void* userData)
+void InputConnection::setCallback(RtMidiIn::RtMidiCallback callback, void* user_data)
 {
-    dynamic_cast<RtMidiIn*>(rtmidi)->setCallback(callback, userData);
+    dynamic_cast<RtMidiIn*>(rtmidi)->setCallback(callback, user_data);
 }
 
 void InputConnection::cancelCallback()
@@ -131,9 +131,9 @@ void InputConnection::cancelCallback()
     dynamic_cast<RtMidiIn*>(rtmidi)->cancelCallback();
 }
 
-void InputConnection::ignoreTypes(bool midiSysex, bool midiTime, bool midiSense)
+void InputConnection::ignoreTypes(bool sysex, bool timing, bool active_sensing)
 {
-    dynamic_cast<RtMidiIn*>(rtmidi)->ignoreTypes(midiSysex, midiTime, midiSense);
+    dynamic_cast<RtMidiIn*>(rtmidi)->ignoreTypes(sysex, timing, active_sensing);
 }
 
 OutputConnection::OutputConnection() : Connection()
