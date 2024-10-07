@@ -7,20 +7,7 @@ namespace StreichfettSse
 namespace Midi
 {
 
-class SysExMessageCreator : public MessageCreator
-{
-public:
-    virtual ~SysExMessageCreator() {}
-    SysExMessageCreator(const SysExMessageCreator&) = delete;
-    SysExMessageCreator(SysExMessageCreator&&) = delete;
-    SysExMessageCreator& operator=(const SysExMessageCreator&) = delete;
-    SysExMessageCreator& operator=(SysExMessageCreator&&) = delete;
-
-protected:
-    SysExMessageCreator() {}
-};
-
-class RequestDeviceInquiryCreator final : public SysExMessageCreator
+class RequestDeviceInquiryCreator final : public MessageCreator
 {
 public:
     explicit RequestDeviceInquiryCreator() {}
@@ -32,7 +19,7 @@ public:
     RequestDeviceInquiryCreator& operator=(RequestDeviceInquiryCreator&&) = delete;
 };
 
-class RequestGlobalCreator final : public SysExMessageCreator
+class RequestGlobalCreator final : public MessageCreator
 {
 public:
     explicit RequestGlobalCreator() {}
@@ -45,7 +32,7 @@ public:
 };
 
 // DSI: Streichfett
-class RequestSoundCreator final : public SysExMessageCreator
+class RequestSoundCreator final : public MessageCreator
 {
 public:
     explicit RequestSoundCreator(int sound)
@@ -64,7 +51,7 @@ private:
     int sound_;
 };
 
-class SoundDumpCreator final : public SysExMessageCreator
+class SoundDumpCreator final : public MessageCreator
 {
 public:
     explicit SoundDumpCreator(int sound, const SoundModel::Patch& patch)
