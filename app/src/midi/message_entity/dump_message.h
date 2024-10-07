@@ -19,10 +19,6 @@ public:
     virtual void validate() = 0;
 
     DumpMessage() = delete;
-    DumpMessage(const DumpMessage&) = delete;
-    DumpMessage(DumpMessage&&) = delete;
-    DumpMessage& operator=(const DumpMessage&) = delete;
-    DumpMessage& operator=(DumpMessage&&) = delete;
 
 protected:
     void fail(std::string_view cause_desc) const;
