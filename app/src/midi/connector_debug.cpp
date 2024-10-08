@@ -40,7 +40,7 @@ void addProcessedHistory(bool transmitted, const std::string& device_name, const
         << '.' << std::setfill('0') << std::setw(3) << now_ms.count();
     const auto timestamp = now_ss.str();
 
-    const auto description = MessageStringizer{ data }.describe();
+    const auto description = MessageDescriber{ data }.toString();
 
     std::unique_lock lock(history_mutex);
     history.emplace_back(ProcessedMidiMessage(timestamp, transmitted, device_name, description, data));

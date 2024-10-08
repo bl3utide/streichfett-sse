@@ -7,7 +7,7 @@ namespace StreichfettSse
 namespace Midi
 {
 
-class MessageStringizer final : public MessageEntity
+class MessageStringizer : public MessageEntity
 {
 public:
     explicit MessageStringizer(const ByteVec& message)
@@ -15,14 +15,26 @@ public:
     {
     }
 
-    const std::string toString() const noexcept;
-    const std::string describe() const noexcept;
+    virtual const std::string toString() const noexcept;
 
     MessageStringizer() = delete;
     MessageStringizer(const MessageStringizer&) = delete;
     MessageStringizer(MessageStringizer&&) = delete;
     MessageStringizer& operator=(const MessageStringizer&) = delete;
     MessageStringizer& operator=(MessageStringizer&&) = delete;
+};
+
+class MessageDescriber final : public MessageStringizer
+{
+public:
+    explicit MessageDescriber(const ByteVec& message)
+        : MessageStringizer(message)
+    {
+    }
+
+    const std::string toString() const noexcept override;
+
+    MessageDescriber() = delete;
 };
 
 } // Midi

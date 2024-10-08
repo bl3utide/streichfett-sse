@@ -26,7 +26,7 @@ const std::string MessageStringizer::toString() const noexcept
     return str.substr(0, str.size() - 1);
 }
 
-const std::string MessageStringizer::describe() const noexcept
+const std::string MessageDescriber::toString() const noexcept
 {
     std::stringstream ss;
     const auto msg_type = type();
