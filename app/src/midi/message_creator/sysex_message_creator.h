@@ -10,25 +10,15 @@ namespace Midi
 class RequestDeviceInquiryCreator final : public MessageCreator
 {
 public:
-    explicit RequestDeviceInquiryCreator() {}
+    explicit RequestDeviceInquiryCreator() = default;
     const ByteVec create() const override;
-
-    RequestDeviceInquiryCreator(const RequestDeviceInquiryCreator&) = delete;
-    RequestDeviceInquiryCreator(RequestDeviceInquiryCreator&&) = delete;
-    RequestDeviceInquiryCreator& operator=(const RequestDeviceInquiryCreator&) = delete;
-    RequestDeviceInquiryCreator& operator=(RequestDeviceInquiryCreator&&) = delete;
 };
 
 class RequestGlobalCreator final : public MessageCreator
 {
 public:
-    explicit RequestGlobalCreator() {}
+    explicit RequestGlobalCreator() = default;
     const ByteVec create() const override;
-
-    RequestGlobalCreator(const RequestGlobalCreator&) = delete;
-    RequestGlobalCreator(RequestGlobalCreator&&) = delete;
-    RequestGlobalCreator& operator=(const RequestGlobalCreator&) = delete;
-    RequestGlobalCreator& operator=(RequestGlobalCreator&&) = delete;
 };
 
 // DSI: Streichfett
@@ -39,13 +29,8 @@ public:
         : sound_(sound)
     {
     }
-    const ByteVec create() const override;
-
     RequestSoundCreator() = delete;
-    RequestSoundCreator(const RequestSoundCreator&) = delete;
-    RequestSoundCreator(RequestSoundCreator&&) = delete;
-    RequestSoundCreator& operator=(const RequestSoundCreator&) = delete;
-    RequestSoundCreator& operator=(RequestSoundCreator&&) = delete;
+    const ByteVec create() const override;
 
 private:
     int sound_;
@@ -58,6 +43,7 @@ public:
         : sound_(sound), patch_(patch)
     {
     }
+    SoundDumpCreator() = delete;
     const ByteVec create() const override;
 
 private:

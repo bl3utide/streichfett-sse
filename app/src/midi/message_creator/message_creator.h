@@ -8,7 +8,7 @@ namespace Midi
 class MessageCreator
 {
 public:
-    virtual ~MessageCreator() {}
+    virtual ~MessageCreator() = default;
     virtual const ByteVec create() const = 0;
 
 protected:

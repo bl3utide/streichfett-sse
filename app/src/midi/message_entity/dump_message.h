@@ -14,11 +14,9 @@ public:
         : MessageEntity(message), is_validated_(false), name_(name)
     {
     }
-    virtual ~DumpMessage() {}
-
-    virtual void validate() = 0;
-
     DumpMessage() = delete;
+    virtual ~DumpMessage() = default;
+    virtual void validate() = 0;
 
 protected:
     void fail(std::string_view cause_desc) const;
@@ -42,15 +40,9 @@ public:
         di_first_(data_index_first), di_last_(data_index_last)
     {
     }
-    virtual ~DataDumpMessage() {}
-
-    const ByteVec getDataBytes() const;
-
     DataDumpMessage() = delete;
-    DataDumpMessage(const DataDumpMessage&) = delete;
-    DataDumpMessage(DataDumpMessage&&) = delete;
-    DataDumpMessage& operator=(const DataDumpMessage&) = delete;
-    DataDumpMessage& operator=(DataDumpMessage&&) = delete;
+    virtual ~DataDumpMessage() = default;
+    const ByteVec getDataBytes() const;
 
 protected:
     void validateDataSysEx() const;
@@ -67,15 +59,9 @@ public:
         : DumpMessage(device_inquiry_dump, "Device Inquiry Dump")
     {
     }
-
+    DeviceInquiryDumpMessage() = delete;
     void validate() override;
     const DeviceInquiryResult getResult() const;
-
-    DeviceInquiryDumpMessage() = delete;
-    DeviceInquiryDumpMessage(const DeviceInquiryDumpMessage&) = delete;
-    DeviceInquiryDumpMessage(DeviceInquiryDumpMessage&&) = delete;
-    DeviceInquiryDumpMessage& operator=(const DeviceInquiryDumpMessage&) = delete;
-    DeviceInquiryDumpMessage& operator=(DeviceInquiryDumpMessage&&) = delete;
 };
 
 class GlobalDumpMessage final : public DataDumpMessage
@@ -88,14 +74,8 @@ public:
                           GLOBAL_DATA_INDEX_FIRST, GLOBAL_DATA_INDEX_LAST)
     {
     }
-
-    void validate() override;
-
     GlobalDumpMessage() = delete;
-    GlobalDumpMessage(const GlobalDumpMessage&) = delete;
-    GlobalDumpMessage(GlobalDumpMessage&&) = delete;
-    GlobalDumpMessage& operator=(const GlobalDumpMessage&) = delete;
-    GlobalDumpMessage& operator=(GlobalDumpMessage&&) = delete;
+    void validate() override;
 };
 
 class SoundDumpMessage final : public DataDumpMessage
@@ -108,14 +88,8 @@ public:
                              SOUND_DATA_INDEX_FIRST, SOUND_DATA_INDEX_LAST)
     {
     }
-
-    void validate() override;
-
     SoundDumpMessage() = delete;
-    SoundDumpMessage(const SoundDumpMessage&) = delete;
-    SoundDumpMessage(SoundDumpMessage&&) = delete;
-    SoundDumpMessage& operator=(const SoundDumpMessage&) = delete;
-    SoundDumpMessage& operator=(SoundDumpMessage&&) = delete;
+    void validate() override;
 };
 
 } // Midi

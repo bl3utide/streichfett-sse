@@ -10,12 +10,8 @@ namespace Midi
 class ChannelMessageCreator : public MessageCreator
 {
 public:
-    virtual ~ChannelMessageCreator() {}
     ChannelMessageCreator() = delete;
-    ChannelMessageCreator(const ChannelMessageCreator&) = delete;
-    ChannelMessageCreator(ChannelMessageCreator&&) = delete;
-    ChannelMessageCreator& operator=(const ChannelMessageCreator&) = delete;
-    ChannelMessageCreator& operator=(ChannelMessageCreator&&) = delete;
+    virtual ~ChannelMessageCreator() = default;
 
 protected:
     ChannelMessageCreator(int midi_ch)
@@ -33,13 +29,8 @@ public:
         : ChannelMessageCreator(midi_ch), note_(note_num), vel_(velocity)
     {
     }
-    const ByteVec create() const override;
-
     NoteOffCreator() = delete;
-    NoteOffCreator(const NoteOffCreator&) = delete;
-    NoteOffCreator(NoteOffCreator&&) = delete;
-    NoteOffCreator& operator=(const NoteOffCreator&) = delete;
-    NoteOffCreator& operator=(NoteOffCreator&&) = delete;
+    const ByteVec create() const override;
 
 private:
     int note_;
@@ -53,13 +44,8 @@ public:
         : ChannelMessageCreator(midi_ch), note_(note_num), vel_(velocity)
     {
     }
-    const ByteVec create() const override;
-
     NoteOnCreator() = delete;
-    NoteOnCreator(const NoteOnCreator&) = delete;
-    NoteOnCreator(NoteOnCreator&&) = delete;
-    NoteOnCreator& operator=(const NoteOnCreator&) = delete;
-    NoteOnCreator& operator=(NoteOnCreator&&) = delete;
+    const ByteVec create() const override;
 
 private:
     int note_;
@@ -73,13 +59,8 @@ public:
         : ChannelMessageCreator(midi_ch), cc_index_(cc), value_(value)
     {
     }
-    const ByteVec create() const override;
-
     ControlChangeCreator() = delete;
-    ControlChangeCreator(const ControlChangeCreator&) = delete;
-    ControlChangeCreator(ControlChangeCreator&&) = delete;
-    ControlChangeCreator& operator=(const ControlChangeCreator&) = delete;
-    ControlChangeCreator& operator=(ControlChangeCreator&&) = delete;
+    const ByteVec create() const override;
 
 private:
     int cc_index_;
@@ -93,13 +74,8 @@ public:
         : ChannelMessageCreator(midi_ch), value_(value)
     {
     }
-    const ByteVec create() const override;
-
     ProgramChangeCreator() = delete;
-    ProgramChangeCreator(const ProgramChangeCreator&) = delete;
-    ProgramChangeCreator(ProgramChangeCreator&&) = delete;
-    ProgramChangeCreator& operator=(const ProgramChangeCreator&) = delete;
-    ProgramChangeCreator& operator=(ProgramChangeCreator&&) = delete;
+    const ByteVec create() const override;
 
 private:
     int value_;
@@ -112,13 +88,8 @@ public:
         : ChannelMessageCreator(midi_ch)
     {
     }
-    const ByteVec create() const override;
-
     AllSoundOffCreator() = delete;
-    AllSoundOffCreator(const AllSoundOffCreator&) = delete;
-    AllSoundOffCreator(AllSoundOffCreator&&) = delete;
-    AllSoundOffCreator& operator=(const AllSoundOffCreator&) = delete;
-    AllSoundOffCreator& operator=(AllSoundOffCreator&&) = delete;
+    const ByteVec create() const override;
 };
 
 } // Midi

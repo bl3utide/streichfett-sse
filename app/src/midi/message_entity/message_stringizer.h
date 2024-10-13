@@ -18,10 +18,6 @@ public:
     virtual const std::string toString() const noexcept;
 
     MessageStringizer() = delete;
-    MessageStringizer(const MessageStringizer&) = delete;
-    MessageStringizer(MessageStringizer&&) = delete;
-    MessageStringizer& operator=(const MessageStringizer&) = delete;
-    MessageStringizer& operator=(MessageStringizer&&) = delete;
 };
 
 class MessageDescriber final : public MessageStringizer

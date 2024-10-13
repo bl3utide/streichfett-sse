@@ -54,13 +54,9 @@ class MessageEntity
 {
 public:
     explicit MessageEntity(const ByteVec& message);
-    virtual ~MessageEntity() {}
+    virtual ~MessageEntity() = default;
 
     MessageEntity() = delete;
-    MessageEntity(const MessageEntity&) = delete;
-    MessageEntity(MessageEntity&&) = delete;
-    MessageEntity& operator=(const MessageEntity&) = delete;
-    MessageEntity& operator=(MessageEntity&&) = delete;
 
     MessageType type() const noexcept { return type_; }
     ChannelMode channelMode() const noexcept { return channel_mode_; }
