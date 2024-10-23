@@ -8,6 +8,7 @@
 #include "data/local_setting.hpp"
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
+#include "midi/device_inquiry_info.h"
 #include "midi/message_entity/dump_message.h"
 #include "midi/message_entity/data_dump_picker.h"
 #include "midi/message_entity/message_stringizer.h"
@@ -100,7 +101,7 @@ void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_da
                 DeviceInquiryDumpValidator{ *message }.validate();
 
                 // apply the result of inquiry dump locally
-                inquiry_result = handler.getResult();
+                inquiry_info = DeviceInquiryInfo::makeFromMessage(*message);
 
                 // received correct dump
                 Logger::debug("received correct inquiry dump");

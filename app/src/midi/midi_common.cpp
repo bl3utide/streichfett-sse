@@ -7,7 +7,7 @@ namespace Midi
 {
 
 // public
-DeviceInquiryResult inquiry_result;
+DeviceInquiryInfo inquiry_info;
 SDL_TimerID waiting_timer;
 CallbackMutex callback_mutex;
 RequestCounter request_try_count;

@@ -231,7 +231,7 @@ static void drawOptionGroupDeviceSettingInfo()
         ImGui::PopStyleColor();
 
         drawOptionItem("Firmware Version");
-        drawOptionItemValue(Midi::inquiry_result.getFirmwareVersion().c_str(), displayable_synth_info && Midi::inquiry_result.isReceived());
+        drawOptionItemValue(Midi::inquiry_info.getFirmwareVersion().c_str(), displayable_synth_info && Midi::inquiry_info.isReceived());
 
         const auto& global = LocalSetting::getGlobalData();
         drawOptionItem("Device ID");

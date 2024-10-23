@@ -125,10 +125,10 @@ static void drawDebugTabItemGeneral()
         ImGui::Text(" %-23s: %d", "synth input", c::synth_input.getLastFailedPortIndex());
         ImGui::Text(" %-23s: %d", "synth output", c::synth_output.getLastFailedPortIndex());
         ImGui::Text(" %-23s: %d", "keyboard input", c::key_input.getLastFailedPortIndex());
-        if (Midi::inquiry_result.isReceived())
+        if (Midi::inquiry_info.isReceived())
         {
-            ImGui::Text("%-24s: %d", "inquired device id", Midi::inquiry_result.getDeviceId());
-            ImGui::Text("%-24s: %s", "inquired device ver", Midi::inquiry_result.getFirmwareVersion().c_str());
+            ImGui::Text("%-24s: %d", "inquired device id", Midi::inquiry_info.getDeviceId());
+            ImGui::Text("%-24s: %s", "inquired device ver", Midi::inquiry_info.getFirmwareVersion().c_str());
         }
         else
         {

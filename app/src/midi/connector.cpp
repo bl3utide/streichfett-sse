@@ -98,7 +98,7 @@ void initialize()
     store_delay_duration = 200;
     is_synth_connected_ = false;
 
-    inquiry_result = DeviceInquiryResult();
+    inquiry_info = DeviceInquiryInfo();
     request_try_count = RequestCounter(MAX_REQUEST_TRY);
     setWaitingStoreDelay(false);
 
@@ -507,7 +507,7 @@ void setSynthConnected(bool connected) noexcept
     {
         is_synth_connected_ = false;
         Annotation::setText(Annotation::Message::DisconnectedAlert, Annotation::Type::Alert);
-        Midi::inquiry_result.initialize();
+        Midi::inquiry_info.initialize();
     }
 }
 

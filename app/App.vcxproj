@@ -121,6 +121,7 @@
     <ClCompile Include="src\gui\gui_debug.cpp" />
     <ClCompile Include="src\gui\gui_edit.cpp" />
     <ClCompile Include="src\gui\gui_option.cpp" />
+    <ClCompile Include="src\midi\device_inquiry_info.cpp" />
     <ClCompile Include="src\midi\message_creator\channel_message_creator.cpp" />
     <ClCompile Include="src\midi\message_entity\data_dump_picker.cpp" />
     <ClCompile Include="src\midi\message_entity\dump_message.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="src\gui\gui_font.hpp" />
     <ClInclude Include="src\gui\gui.hpp" />
     <ClInclude Include="src\gui\gui_color.hpp" />
+    <ClInclude Include="src\midi\device_inquiry_info.h" />
     <ClInclude Include="src\midi\message_creator\channel_message_creator.h" />
     <ClInclude Include="src\midi\message_creator\message_creator.h" />
     <ClInclude Include="src\midi\message_entity\data_dump_picker.h" />

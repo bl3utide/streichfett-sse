@@ -68,45 +68,6 @@ const int GLOBAL_DATA_INDEX_LAST    = 13;
 const int SOUND_DATA_INDEX_FIRST    = 6;
 const int SOUND_DATA_INDEX_LAST     = 29;
 
-// DSI: Streichfett
-class DeviceInquiryResult
-{
-public:
-    explicit DeviceInquiryResult(int device_id, const std::string_view ver)
-        : received_(true), device_id_(device_id), firmware_version_(ver)
-    {
-    }
-
-    explicit DeviceInquiryResult()
-        : received_(false), device_id_(-1), firmware_version_("")
-    {
-    }
-
-    DeviceInquiryResult& operator=(const DeviceInquiryResult& rhs)
-    {
-        received_ = rhs.received_;
-        device_id_ = rhs.device_id_;
-        firmware_version_ = rhs.firmware_version_;
-        return *this;
-    }
-
-    DeviceInquiryResult(const DeviceInquiryResult& rhs) = delete;
-
-    void initialize() noexcept
-    {
-        received_ = false;
-    }
-
-    bool isReceived() const noexcept { return received_; }
-    int getDeviceId() const noexcept { return device_id_; }
-    const std::string getFirmwareVersion() const noexcept { return firmware_version_; }
-
-private:
-    bool received_;
-    int device_id_;
-    std::string firmware_version_;
-};
-
 struct CallbackMutex
 {
     std::mutex guard;
@@ -174,7 +135,7 @@ enum class RequestType : int
     _COUNT_,
 };
 
-extern DeviceInquiryResult inquiry_result;
+extern DeviceInquiryInfo inquiry_info;
 extern SDL_TimerID waiting_timer;
 extern CallbackMutex callback_mutex;
 extern RequestCounter request_try_count;
