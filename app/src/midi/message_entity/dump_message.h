@@ -1,21 +1,21 @@
 ﻿#pragma once
 
-#include "midi/message_entity/message_entity.h"
-
 namespace StreichfettSse
 {
 namespace Midi
 {
 
-class DumpMessage : public MessageEntity
+class MessageEntity;
+
+class DumpValidator
 {
 public:
-    explicit DumpMessage(const ByteVec& message, const std::string& name)
-        : MessageEntity(message), is_validated_(false), name_(name)
+    explicit DumpValidator(const ByteVec& message, const std::string& name)
+        : entity(std::make_unique<MessageEntity>(message)),
+        is_valid_(false), name_(name)
     {
     }
-    DumpMessage() = delete;
-    virtual ~DumpMessage() = default;
+    virtual ~DumpValidator() = default;
     virtual void validate() = 0;
 
 protected:
@@ -23,26 +23,25 @@ protected:
     void checkValidated() const;
     void setValidated() noexcept;
     void validateSysEx() const;
+    std::unique_ptr<MessageEntity> entity;
 
 private:
-    void failCauseNotValidated() const;
-    bool is_validated_;
+    bool is_valid_;
     std::string name_;
 };
 
-class DataDumpMessage : public DumpMessage
+class DataDumpValidator : public DumpValidator
 {
 public:
-    explicit DataDumpMessage(const ByteVec& message,
-                             const std::string& name,
-                             int data_index_first, int data_index_last)
-        : DumpMessage(message, name),
+    explicit DataDumpValidator(const ByteVec& message,
+                               const std::string& name,
+                               int data_index_first,
+                               int data_index_last)
+        : DumpValidator(message, name),
         di_first_(data_index_first), di_last_(data_index_last)
     {
     }
-    DataDumpMessage() = delete;
-    virtual ~DataDumpMessage() = default;
-    const ByteVec getDataBytes() const;
+    virtual ~DataDumpValidator() = default;
 
 protected:
     void validateDataSysEx() const;
@@ -52,43 +51,39 @@ private:
     int di_last_;
 };
 
-class DeviceInquiryDumpMessage final : public DumpMessage
+class DeviceInquiryDumpValidator final : public DumpValidator
 {
 public:
-    explicit DeviceInquiryDumpMessage(const ByteVec& device_inquiry_dump)
-        : DumpMessage(device_inquiry_dump, "Device Inquiry Dump")
+    explicit DeviceInquiryDumpValidator(const ByteVec& device_inquiry_dump)
+        : DumpValidator(device_inquiry_dump, "Device Inquiry Dump")
     {
     }
-    DeviceInquiryDumpMessage() = delete;
     void validate() override;
-    const DeviceInquiryResult getResult() const;
 };
 
-class GlobalDumpMessage final : public DataDumpMessage
+class GlobalDumpValidator final : public DataDumpValidator
 {
     static_assert(GLOBAL_DATA_INDEX_LAST < GLOBAL_DUMP_SIZE);
 
 public:
-    explicit GlobalDumpMessage(const ByteVec& global_dump)
-        : DataDumpMessage(global_dump, "Global Dump",
+    explicit GlobalDumpValidator(const ByteVec& global_dump)
+        : DataDumpValidator(global_dump, "Global Dump",
                           GLOBAL_DATA_INDEX_FIRST, GLOBAL_DATA_INDEX_LAST)
     {
     }
-    GlobalDumpMessage() = delete;
     void validate() override;
 };
 
-class SoundDumpMessage final : public DataDumpMessage
+class SoundDumpValidator final : public DataDumpValidator
 {
     static_assert(SOUND_DATA_INDEX_LAST < SOUND_DUMP_SIZE);
 
 public:
-    explicit SoundDumpMessage(const ByteVec& sound_dump)
-        : DataDumpMessage(sound_dump, "Sound Dump",
+    explicit SoundDumpValidator(const ByteVec& sound_dump)
+        : DataDumpValidator(sound_dump, "Sound Dump",
                              SOUND_DATA_INDEX_FIRST, SOUND_DATA_INDEX_LAST)
     {
     }
-    SoundDumpMessage() = delete;
     void validate() override;
 };
 

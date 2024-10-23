@@ -1,5 +1,6 @@
 ﻿#include "common.hpp"
 #include "midi/midi_common.hpp"
+#include "midi/message_entity/message_entity.h"
 #include "midi/message_entity/dump_message.h"
 
 namespace StreichfettSse
@@ -7,95 +8,80 @@ namespace StreichfettSse
 namespace Midi
 {
 
-void DumpMessage::fail(std::string_view cause_desc) const
+void DumpValidator::fail(std::string_view cause_desc) const
 {
     throw std::exception(std::format("{1} failed: {2)", name_, cause_desc).c_str());
 }
 
-void DumpMessage::checkValidated() const
+void DumpValidator::checkValidated() const
 {
-    if (!is_validated_) failCauseNotValidated();
-}
-
-void DumpMessage::setValidated() noexcept
-{
-    is_validated_ = true;
-}
-
-void DumpMessage::failCauseNotValidated() const
-{
-    fail("not validated yet");
-}
-
-void DumpMessage::validateSysEx() const
-{
-    if (empty()) fail("empty data");
-
-    if (!isSysEx()) fail("not SysEx");
-}
-
-const ByteVec DataDumpMessage::getDataBytes() const
-{
-    checkValidated();
-
-    ByteVec data;
-
-    for (auto i = di_first_; i <= di_last_; ++i)
+    if (!is_valid_)
     {
-        data.push_back(mbytes[i]);
+        fail("not validated yet");
     }
+}
 
-    return data;
+void DumpValidator::setValidated() noexcept
+{
+    is_valid_ = true;
+}
+
+void DumpValidator::validateSysEx() const
+{
+    if (entity->empty()) fail("empty data");
+
+    if (!entity->isSysEx()) fail("not SysEx");
 }
 
 // DSI: Streichfett
-void DataDumpMessage::validateDataSysEx() const
+void DataDumpValidator::validateDataSysEx() const
 {
     validateSysEx();
 
     // Waldorf Music Manufacturer ID
-    if (mbytes[1] != DEVICE_MANUFACTURER_ID)
+    if (entity->at(1) != DEVICE_MANUFACTURER_ID)
     {
         fail("SysEx has incorrect manufacturer id");
     }
 
     // Device Family Code
-    if (mbytes[2] != DEVICE_FAMILY_CODE)
+    if (entity->at(2) != DEVICE_FAMILY_CODE)
     {
         fail("SysEx has incorrect device family code");
     }
 }
 
 // DSI: Streichfett
-void DeviceInquiryDumpMessage::validate()
+void DeviceInquiryDumpValidator::validate()
 {
     validateSysEx();
 
-    if (mbytes.size() != INQUIRY_DUMP_SIZE)
+    if (entity->size() != INQUIRY_DUMP_SIZE)
     {
         fail("SysEx byte length");
     }
 
     // Universal SysEx Header
-    if (mbytes[1] != SYSEX_IDNUM_NONREALTIME)
+    if (entity->at(1) != SYSEX_IDNUM_NONREALTIME)
     {
         fail("not Universal Non-Real Time SysEx");
     }
 
     // Device Inquiry Dump
-    if (mbytes[3] != ORDER_GENERAL_INFO || mbytes[4] != ORDER_INQUIRY_RESPONSE)
+    if (entity->at(3) != ORDER_GENERAL_INFO ||
+        entity->at(4) != ORDER_INQUIRY_RESPONSE)
     {
         fail("not device inquiry dump");
     }
 
     // Waldorf Music Manufacturer ID
-    if (mbytes[5] != DEVICE_MANUFACTURER_ID)
+    if (entity->at(5) != DEVICE_MANUFACTURER_ID)
     {
         fail("SysEx has incorrect manufacturer id");
     }
 
     // Device Family Code
-    if (mbytes[6] != DEVICE_FAMILY_CODE)
+    if (entity->at(6) != DEVICE_FAMILY_CODE)
     {
         fail("SysEx has incorrect device family code");
     }
@@ -104,26 +90,16 @@ void DeviceInquiryDumpMessage::validate()
 }
 
 // DSI: Streichfett
-const DeviceInquiryResult DeviceInquiryDumpMessage::getResult() const
-{
-    checkValidated();
-
-    const auto device_id = static_cast<int>(mbytes[2]);
-    const auto firmware_version = std::format("{0}.{1}", mbytes[10], mbytes[11]);
-    return DeviceInquiryResult(device_id, firmware_version);
-}
-
-// DSI: Streichfett
-void GlobalDumpMessage::validate()
+void GlobalDumpValidator::validate()
 {
     validateDataSysEx();
 
-    if (mbytes.size() != GLOBAL_DUMP_SIZE)
+    if (entity->size() != GLOBAL_DUMP_SIZE)
     {
         fail("SysEx byte length");
     }
 
-    if (mbytes[4] != ORDER_GLOBAL_DUMP)
+    if (entity->at(4) != ORDER_GLOBAL_DUMP)
     {
         fail("not global dump SysEx");
     }
@@ -132,16 +108,16 @@ void GlobalDumpMessage::validate()
 }
 
 // DSI: Streichfett
-void SoundDumpMessage::validate()
+void SoundDumpValidator::validate()
 {
     validateDataSysEx();
 
-    if (mbytes.size() != SOUND_DUMP_SIZE)
+    if (entity->size() != SOUND_DUMP_SIZE)
     {
         fail("SysEx byte length");
     }
 
-    if (mbytes[4] != ORDER_SOUND_DUMP)
+    if (entity->at(4) != ORDER_SOUND_DUMP)
     {
         fail("not sound dump SysEx");
     }
