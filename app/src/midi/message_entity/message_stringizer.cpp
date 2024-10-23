@@ -11,14 +11,15 @@ const std::string MessageStringizer::toString() const noexcept
 {
     std::stringstream ss;
 
-    for (const auto& byte : mbytes)
+    const auto entity_size = entity->size();
+    for (auto e_i = 0; e_i < entity_size; ++e_i)
     {
         ss << "0x"
             << std::uppercase
             << std::setfill('0')
             << std::setw(2)
             << std::hex
-            << static_cast<int>(byte) << " ";
+            << static_cast<int>(entity->at(e_i)) << " ";
     }
 
     const auto str = ss.str();
@@ -29,9 +30,9 @@ const std::string MessageStringizer::toString() const noexcept
 const std::string MessageDescriber::toString() const noexcept
 {
     std::stringstream ss;
-    const auto msg_type = type();
+    const auto msg_type = entity->type();
 
-    if (empty())
+    if (entity->empty())
     {
         ss << "Empty Message";
     }
@@ -40,14 +41,14 @@ const std::string MessageDescriber::toString() const noexcept
         if (msg_type == MessageType::NoteOff) ss << "Note Off";
         else ss << "Note On";
 
-        ss << " <" << static_cast<int>(mbytes.at(1))
-            << "> Vel(" << static_cast<int>(mbytes.at(2))
+        ss << " <" << static_cast<int>(entity->at(1))
+            << "> Vel(" << static_cast<int>(entity->at(2))
             << ")";
     }
     else if (msg_type == MessageType::ControlChange)
     {
-        const auto cc_type = mbytes.at(1);
-        const auto cc_value = static_cast<int>(mbytes.at(1));
+        const auto cc_type = entity->at(1);
+        const auto cc_value = static_cast<int>(entity->at(1));
         if      (cc_type == 0x00) ss << "Bank Select MSB: " << cc_value;
         else if (cc_type == 0x01) ss << "Modulation: " << cc_value;
         else if (cc_type == 0x20) ss << "Bank Select LSB: " << cc_value;
@@ -72,18 +73,18 @@ const std::string MessageDescriber::toString() const noexcept
     }
     else if (msg_type == MessageType::ProgramChange)
     {
-        ss << "Program Change (" << static_cast<int>(mbytes.at(1)) << ")";
+        ss << "Program Change (" << static_cast<int>(entity->at(1)) << ")";
     }
-    else if (isSysEx())
+    else if (entity->isSysEx())
     {
         ss << "SysEx: ";
-        if (mbytes.at(3) == ORDER_GENERAL_INFO)
+        if (entity->at(3) == ORDER_GENERAL_INFO)
         {
-            if (mbytes.at(4) == ORDER_INQUIRY_REQUEST)
+            if (entity->at(4) == ORDER_INQUIRY_REQUEST)
             {
                 ss << "Identity Request";
             }
-            else if (mbytes.at(4) == ORDER_INQUIRY_RESPONSE)
+            else if (entity->at(4) == ORDER_INQUIRY_RESPONSE)
             {
                 ss << "Identity Response";
             }
@@ -92,23 +93,23 @@ const std::string MessageDescriber::toString() const noexcept
                 ss << "(unknown order)";
             }
         }
-        else if (mbytes.at(4) == ORDER_SOUND_REQUEST)
+        else if (entity->at(4) == ORDER_SOUND_REQUEST)
         {
             ss << "Sound Request (";
-            if (mbytes.at(5) == SOUND_EDIT_BUFFER) ss << "edit buffer)";
-            else ss << static_cast<int>(mbytes.at(5)) << ")";
+            if (entity->at(5) == SOUND_EDIT_BUFFER) ss << "edit buffer)";
+            else ss << static_cast<int>(entity->at(5)) << ")";
         }
-        else if (mbytes.at(4) == ORDER_GLOBAL_REQUEST)
+        else if (entity->at(4) == ORDER_GLOBAL_REQUEST)
         {
             ss << "Global Request";
         }
-        else if (mbytes.at(4) == ORDER_SOUND_DUMP)
+        else if (entity->at(4) == ORDER_SOUND_DUMP)
         {
             ss << "Sound Dump (";
-            if (mbytes.at(5) == SOUND_EDIT_BUFFER) ss << "edit buffer)";
-            else ss << static_cast<int>(mbytes.at(5)) << ")";
+            if (entity->at(5) == SOUND_EDIT_BUFFER) ss << "edit buffer)";
+            else ss << static_cast<int>(entity->at(5)) << ")";
         }
-        else if (mbytes.at(4) == ORDER_GLOBAL_DUMP)
+        else if (entity->at(4) == ORDER_GLOBAL_DUMP)
         {
             ss << "Global Dump";
         }
