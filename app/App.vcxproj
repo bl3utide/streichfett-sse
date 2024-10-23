@@ -122,6 +122,7 @@
     <ClCompile Include="src\gui\gui_edit.cpp" />
     <ClCompile Include="src\gui\gui_option.cpp" />
     <ClCompile Include="src\midi\message_creator\channel_message_creator.cpp" />
+    <ClCompile Include="src\midi\message_entity\data_dump_picker.cpp" />
     <ClCompile Include="src\midi\message_entity\dump_message.cpp" />
     <ClCompile Include="src\midi\message_entity\message_entity.cpp" />
     <ClCompile Include="src\midi\message_creator\sysex_message_creator.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="src\gui\gui_color.hpp" />
     <ClInclude Include="src\midi\message_creator\channel_message_creator.h" />
     <ClInclude Include="src\midi\message_creator\message_creator.h" />
+    <ClInclude Include="src\midi\message_entity\data_dump_picker.h" />
     <ClInclude Include="src\midi\message_entity\dump_message.h" />
     <ClInclude Include="src\midi\message_entity\message_entity.h" />
     <ClInclude Include="src\midi\message_creator\sysex_message_creator.h" />

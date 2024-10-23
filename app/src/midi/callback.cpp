@@ -9,6 +9,7 @@
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/message_entity/dump_message.h"
+#include "midi/message_entity/data_dump_picker.h"
 #include "midi/message_entity/message_stringizer.h"
 #include "midi/message_creator/channel_message_creator.h"
 #ifdef _DEBUG
@@ -167,6 +168,7 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
             {
                 // throwable
                 GlobalDumpValidator{ *message }.validate();
+                const auto global_data = GlobalDumpPicker{ *message }.getDataBytes();
 
                 auto& setting = LocalSetting::getGlobalData();
 
@@ -247,6 +249,7 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
             {
                 // throwable
                 SoundDumpValidator{ *message }.validate();
+                const auto sound_data = SoundDumpPicker{ *message }.getDataBytes();
 
                 auto& original = LocalPatch::getOriginalPatch();
                 auto& current = LocalPatch::getCurrentPatch();
