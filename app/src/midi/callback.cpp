@@ -9,6 +9,7 @@
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/device_inquiry_info.h"
+#include "midi/message_entity/message_entity.h"
 #include "midi/message_entity/data_dump_picker.h"
 #include "midi/message_entity/dump_validator.h"
 #include "midi/message_entity/message_stringizer.h"
