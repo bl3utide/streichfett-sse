@@ -108,7 +108,7 @@
     <ClCompile Include="src\midi\message_creator\sysex_message_creator.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\midi\message_entity\dump_message.cpp">
+    <ClCompile Include="src\midi\message_entity\dump_validator.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\midi\message_entity\message_stringizer.cpp">
@@ -242,7 +242,7 @@
     <ClInclude Include="src\midi\message_creator\channel_message_creator.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\midi\message_entity\dump_message.h">
+    <ClInclude Include="src\midi\message_entity\dump_validator.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\midi\message_entity\message_stringizer.h">
