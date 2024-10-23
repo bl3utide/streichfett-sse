@@ -1,11 +1,11 @@
 ﻿#pragma once
 
-#include "midi/message_entity/message_entity.h"
-
 namespace StreichfettSse
 {
 namespace Midi
 {
+
+class MessageEntity;
 
 class MessageStringizer
 {
