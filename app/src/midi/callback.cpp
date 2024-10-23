@@ -95,10 +95,8 @@ void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_da
 
             try
             {
-                auto handler = DeviceInquiryDumpMessage(*message);
-
                 // throwable function
-                handler.validate();
+                DeviceInquiryDumpValidator{ *message }.validate();
 
                 // apply the result of inquiry dump locally
                 inquiry_result = handler.getResult();
@@ -167,11 +165,8 @@ void receiveGlobalDump(double delta_time, ByteVec* message, void* user_data)
 
             try
             {
-                GlobalDumpMessage handler(*message);
-
                 // throwable
-                handler.validate();
-                const auto global_data = handler.getDataBytes();
+                GlobalDumpValidator{ *message }.validate();
 
                 auto& setting = LocalSetting::getGlobalData();
 
@@ -250,11 +245,8 @@ void receiveSoundDump(double delta_time, ByteVec* message, void* user_data)
 
             try
             {
-                SoundDumpMessage handler(*message);
-
                 // throwable
-                handler.validate();
-                const auto sound_data = handler.getDataBytes();
+                SoundDumpValidator{ *message }.validate();
 
                 auto& original = LocalPatch::getOriginalPatch();
                 auto& current = LocalPatch::getCurrentPatch();

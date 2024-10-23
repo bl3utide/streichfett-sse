@@ -33,8 +33,7 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
             case cd::SendTestType::DeviceInquiry:
                 try
                 {
-                    auto handler = DeviceInquiryDumpMessage(*message);
-                    handler.validate();
+                    DeviceInquiryDumpValidator{ *message }.validate();
                     cd::send_test.at(type) = cd::SendTestResult::Ok;
                     cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::None;
                 }
@@ -47,8 +46,7 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
             case cd::SendTestType::Global:
                 try
                 {
-                    auto handler = GlobalDumpMessage(*message);
-                    handler.validate();
+                    GlobalDumpValidator{ *message }.validate();
                     cd::send_test.at(type) = cd::SendTestResult::Ok;
                     cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::None;
                 }
@@ -61,8 +59,7 @@ void receiveTestSysex(double delta_time, ByteVec* message, void* user_data)
             case cd::SendTestType::Sound:
                 try
                 {
-                    auto handler = SoundDumpMessage(*message);
-                    handler.validate();
+                    SoundDumpValidator{ *message }.validate();
                     cd::send_test.at(type) = cd::SendTestResult::Ok;
                     cd::send_test_failed_cause.at(type) = cd::SendTestFailedCause::None;
                 }
