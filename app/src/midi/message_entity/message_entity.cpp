@@ -7,7 +7,7 @@ namespace StreichfettSse
 namespace Midi
 {
 
-static MessageType getMessageType(const ByteVec bv) noexcept
+static MessageType getMessageType(const ByteVec& bv) noexcept
 {
     auto checkf = [](Byte target, Byte order)
     {
@@ -56,6 +56,17 @@ static ChannelMode getChannelMode(Byte b) noexcept
     return ChannelMode::Other;
 }
 
+bool MessageEntity::isSysEx() const noexcept
+{
+    return mbytes.front() == MSC_STB_SYSEX && mbytes.back() == MSC_END_SYSEX;
+}
+
+Byte MessageEntity::at(int index) const
+{
+    assert(index < static_cast<int>(mbytes.size()));
+    return mbytes.at(index);
+}
+
 MessageEntity::MessageEntity(const ByteVec& message)
     : mbytes(message), channel_mode_(ChannelMode::_NONE_)
 {
@@ -64,16 +75,6 @@ MessageEntity::MessageEntity(const ByteVec& message)
     {
         channel_mode_ = getChannelMode(mbytes[1]);
     }
-}
-
-bool MessageEntity::empty() const noexcept
-{
-    return mbytes.empty();
-}
-
-bool MessageEntity::isSysEx() const noexcept
-{
-    return mbytes.front() == MSC_STB_SYSEX && mbytes.back() == MSC_END_SYSEX;
 }
 
 } // Midi
