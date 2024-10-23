@@ -12,7 +12,7 @@ public:
     virtual const ByteVec create() const = 0;
 
 protected:
-    MessageCreator() {}
+    MessageCreator() = default;
 };
 
 } // Midi
