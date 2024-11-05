@@ -6,7 +6,7 @@ namespace StreichfettSse
 namespace Midi
 {
 
-const DeviceInquiryInfo DeviceInquiryInfo::makeFromMessage(const ByteVec& message)
+const DeviceInquiryInfo DeviceInquiryInfo::createFromMessage(const ByteVec& message)
 {
     const auto device_id = static_cast<int>(message.at(2));
     const auto firmware_version
