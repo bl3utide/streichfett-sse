@@ -102,7 +102,7 @@ void receiveDeviceInquiryDump(double delta_time, ByteVec* message, void* user_da
                 DeviceInquiryDumpValidator{ *message }.validate();
 
                 // apply the result of inquiry dump locally
-                inquiry_info = DeviceInquiryInfo::makeFromMessage(*message);
+                inquiry_info = DeviceInquiryInfo::createFromMessage(*message);
 
                 // received correct dump
                 Logger::debug("received correct inquiry dump");
