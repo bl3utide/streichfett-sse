@@ -6,6 +6,7 @@
 #include "midi/callback_debug.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
+#include "midi/message_entity/message_entity.h"
 #include "midi/message_entity/message_stringizer.h"
 #include "midi/message_creator/sysex_message_creator.h"
 
@@ -65,26 +66,15 @@ void sendTest(SendTestType type)
     switch (type)
     {
         case SendTestType::DeviceInquiry:
-        {
-            RequestDeviceInquiryCreator creator;
-            request = creator.create();
-        }
+            request = RequestDeviceInquiryCreator().create();
             break;
         case SendTestType::Global:
-        {
-            RequestGlobalCreator creator;
-            request = creator.create();
-        }
+            request = RequestGlobalCreator().create();
             break;
         case SendTestType::Sound:
-        {
             auto& patch_addr = LocalPatch::getCurrentPatchAddress();
-            RequestSoundCreator creator(patch_addr.sound);
-            request = creator.create();
-        }
+            request = RequestSoundCreator{ patch_addr.sound }.create();
             break;
-        default:
-            return;
     }
 
     send_test.at(type) = SendTestResult::WaitReceive;

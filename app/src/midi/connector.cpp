@@ -9,6 +9,7 @@
 #include "midi/midi_common.hpp"
 #include "midi/callback.hpp"
 #include "midi/connector.hpp"
+#include "midi/device_inquiry_info.h"
 #include "midi/message_creator/channel_message_creator.h"
 #include "midi/message_creator/sysex_message_creator.h"
 #include "midi/task_list.hpp"
@@ -98,7 +99,7 @@ void initialize()
     store_delay_duration = 200;
     is_synth_connected_ = false;
 
-    inquiry_info = DeviceInquiryInfo();
+    inquiry_info.reset(DeviceInquiryInfo::createInitializedOne());
     request_try_count = RequestCounter(MAX_REQUEST_TRY);
     setWaitingStoreDelay(false);
 
@@ -507,7 +508,7 @@ void setSynthConnected(bool connected) noexcept
     {
         is_synth_connected_ = false;
         Annotation::setText(Annotation::Message::DisconnectedAlert, Annotation::Type::Alert);
-        Midi::inquiry_info.initialize();
+        Midi::inquiry_info->initialize();
     }
 }
 

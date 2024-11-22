@@ -1,4 +1,5 @@
 ﻿#include "common.hpp"
+#include "midi/device_inquiry_info.h"
 #include "midi/midi_common.hpp"
 
 namespace StreichfettSse
@@ -7,7 +8,7 @@ namespace Midi
 {
 
 // public
-DeviceInquiryInfo inquiry_info;
+std::unique_ptr<DeviceInquiryInfo> inquiry_info;
 SDL_TimerID waiting_timer;
 CallbackMutex callback_mutex;
 RequestCounter request_try_count;

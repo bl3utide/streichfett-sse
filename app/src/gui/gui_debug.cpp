@@ -10,6 +10,7 @@
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
+#include "midi/device_inquiry_info.h"
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "midi/connector_debug.hpp"
@@ -125,10 +126,10 @@ static void drawDebugTabItemGeneral()
         ImGui::Text(" %-23s: %d", "synth input", c::synth_input.getLastFailedPortIndex());
         ImGui::Text(" %-23s: %d", "synth output", c::synth_output.getLastFailedPortIndex());
         ImGui::Text(" %-23s: %d", "keyboard input", c::key_input.getLastFailedPortIndex());
-        if (Midi::inquiry_info.isReceived())
+        if (Midi::inquiry_info->isReceived())
         {
-            ImGui::Text("%-24s: %d", "inquired device id", Midi::inquiry_info.getDeviceId());
-            ImGui::Text("%-24s: %s", "inquired device ver", Midi::inquiry_info.getFirmwareVersion().c_str());
+            ImGui::Text("%-24s: %d", "inquired device id", Midi::inquiry_info->getDeviceId());
+            ImGui::Text("%-24s: %s", "inquired device ver", Midi::inquiry_info->getFirmwareVersion().c_str());
         }
         else
         {

@@ -135,7 +135,8 @@ enum class RequestType : int
     _COUNT_,
 };
 
-extern DeviceInquiryInfo inquiry_info;
+class DeviceInquiryInfo;
+extern std::unique_ptr<DeviceInquiryInfo> inquiry_info;
 extern SDL_TimerID waiting_timer;
 extern CallbackMutex callback_mutex;
 extern RequestCounter request_try_count;

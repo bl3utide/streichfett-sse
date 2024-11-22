@@ -4,6 +4,7 @@
 #include "gui/gui.hpp"
 #include "gui/gui_color.hpp"
 #include "gui/gui_font.hpp"
+#include "midi/device_inquiry_info.h"
 #include "midi/midi_common.hpp"
 #include "midi/connector.hpp"
 #include "model/global.hpp"
@@ -231,7 +232,7 @@ static void drawOptionGroupDeviceSettingInfo()
         ImGui::PopStyleColor();
 
         drawOptionItem("Firmware Version");
-        drawOptionItemValue(Midi::inquiry_info.getFirmwareVersion().c_str(), displayable_synth_info && Midi::inquiry_info.isReceived());
+        drawOptionItemValue(Midi::inquiry_info->getFirmwareVersion().c_str(), displayable_synth_info && Midi::inquiry_info->isReceived());
 
         const auto& global = LocalSetting::getGlobalData();
         drawOptionItem("Device ID");
